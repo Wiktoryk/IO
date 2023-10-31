@@ -1,0 +1,54 @@
+{
+    "name": "IA_Lobby",
+    "maps": [
+        {
+            "name": "main",
+            "id": "a57bc237-37d6-4d61-807d-ce6209f6bf79",
+            "actions": [
+                {
+                    "name": "sliding",
+                    "type": "Value",
+                    "id": "dded12de-29fb-47e5-aa2d-c2ce5c890e76",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "Hold(pressPoint=0.1)",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "applySliding",
+                    "type": "Value",
+                    "id": "1937f139-b0b9-44dd-97ec-df80eea7ab9d",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "4e80674e-a0a3-47a6-a17b-95b747927c29",
+                    "path": "<Touchscreen>/primaryTouch/delta/x",
+                    "interactions": "",
+                    "processors": "Invert",
+                    "groups": "",
+                    "action": "sliding",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d9d14487-7860-4f99-9ff1-25180cd7b899",
+                    "path": "<Touchscreen>/primaryTouch/press",
+                    "interactions": "Press(behavior=1)",
+                    "processors": "",
+                    "groups": "",
+                    "action": "applySliding",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
