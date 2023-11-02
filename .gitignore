@@ -72,3 +72,11 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
 .idea/
+Assets/Editor Default Resources/Firebase/
+Assets/Editor Default Resources/Firebase.meta
+Assets/ExternalDependencyManager/Editor/
+Assets/ExternalDependencyManager/Editor.meta
+Assets/Firebase/
+Assets/Firebase.meta
+Assets/Editor Default Resources.meta
+Assets/ExternalDependencyManager.meta
