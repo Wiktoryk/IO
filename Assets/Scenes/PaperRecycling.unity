@@ -310,7 +310,7 @@ MonoBehaviour:
   prefabZone: {fileID: 1618931588}
   paperZone: {fileID: 2007856230}
   scoreText: {fileID: 79198029}
-  animalZoneCollider: {fileID: 0}
+  animalZoneCollider: {fileID: 1618931591}
   paperCollider: {fileID: 2007856233}
   animalZoneCorners:
   - {x: 0, y: 0, z: 0}
