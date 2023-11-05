@@ -8,7 +8,7 @@ Projekt na IO.
 4 ponowne wykorzystanie - szklanych butelek, podstawiamy odpowiednie butelki pod lejące się napoje, żeby je napełnić
 5 transport publiczny - mapka z przystankami -> rozwozimy pasażerów
 6 odpady nierecyklowalne - labirynt - idziesz z baterią do punktu zbiórki
-7 papier podczas drukowania - układanie obrazków na kartce papieru ()
+7 papier podczas drukowania - układanie obrazków na kartce papieru (dostępna wersja próbna w PaperRecycling.unity)
 
 minigierki -> integracja - interfejs minigierki
 baza -> minigierki - high score
