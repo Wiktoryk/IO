@@ -50,8 +50,8 @@ public class AuthManager : MonoBehaviour
 
     public void LoginButton()
     {
-        //StartCoroutine(Login("test@test.com", "123456"));
-        StartCoroutine(Login("cos@email.com", "password"));
+        StartCoroutine(Login("test@test.com", "123456"));
+        //StartCoroutine(Login("cos@email.com", "password"));
     }
 
     public void RegisterButton()
