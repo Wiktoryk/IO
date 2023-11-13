@@ -71,6 +71,7 @@ public class PaperGameManager : MonoBehaviour
 
     public void SpawnInsideTheZone()
     {
+        List<Vector2> physicsShape = new List<Vector2>();
         float scale = Random.Range(0.5f, 2.5f);
         float rotation = Random.Range(0f, 360f);
         Vector3 spawnPosition = new Vector3(Random.Range(animalZoneCorners[0].x + 50,animalZoneCorners[2].x - 50)   , Random.Range(animalZoneCorners[0].y + 50,animalZoneCorners[2].y - 50) , 0);
@@ -78,12 +79,16 @@ public class PaperGameManager : MonoBehaviour
         AnimalStampComponent currentStamp = spriteObject.GetComponent<AnimalStampComponent>();
         currentStamp.paperGameManager = this;
         RectTransform rt = spriteObject.GetComponent<RectTransform>();
-        BoxCollider2D bc = spriteObject.GetComponent<BoxCollider2D>();
         rt.position = spawnPosition;
         rt.localScale *= scale;
         rt.Rotate(Vector3.forward,rotation);
-        bc.size = rt.rect.size * 0.8f;
         spriteObject.GetComponent<Image>().sprite = sprites[Random.Range(0,sprites.Count)];
+        spriteObject.GetComponent<Image>().sprite.GetPhysicsShape(0,physicsShape);
+        for (int i = 0; i < physicsShape.Count; i++)
+        {
+            physicsShape[i] *= 100;
+        }
+        spriteObject.GetComponent<PolygonCollider2D>().SetPath(0,physicsShape);
         currentStamp.scale = scale;
         stamps.Add(currentStamp);
     }
