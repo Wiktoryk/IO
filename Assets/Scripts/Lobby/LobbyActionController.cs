@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
@@ -31,6 +32,12 @@ public class LobbyActionController : MonoBehaviour
     private readonly float slidingScreenPart = 0.5f;
 
     public GameObject npcDialogWindowManager = null;
+
+    [Header("Data Panels")]
+    public ProfilePanelController profilePanelController = null;
+    public FriendsPanelController friendsPanelController = null;
+    public ChalangesPanelController chalangesPanelController = null;
+
     void Start()
     {
         cam = Camera.main;
@@ -227,5 +234,35 @@ public class LobbyActionController : MonoBehaviour
 
         npcDialogWindowManager.GetComponent<NPCDialogWindowController>().ActivateNPCDialogWindow(currentCharacterIndex);
 
+    }
+
+    public void OpenProfilePanel()
+    {
+        profilePanelController.show(true);
+    }
+
+    public void OpenFriendsPanel()
+    {
+        friendsPanelController.show(true);
+    }
+
+    public void OpenChalangesPanel()
+    {
+        chalangesPanelController.show(true);
+    }
+
+    public void EnableSliding()
+    {
+        slidingFactor = originalSlidingFactor;
+    }
+
+    public void DisableSliding()
+    {
+        slidingFactor = 0;
+    }
+
+    public void GoToMinigame(int MinigameIndex)
+    {
+        Debug.Log("Przejœcie do minigry!");
     }
 }
