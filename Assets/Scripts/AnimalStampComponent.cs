@@ -32,6 +32,14 @@ public class AnimalStampComponent :  MonoBehaviour, IPointerDownHandler, IPointe
         // Calculate the offset between the pointer position and the sprite position
         pointerOffset = eventData.position - spriteRectTransform.anchoredPosition;
         isDragging = true;
+        if (!collides && !inPaper)
+        {
+            this.GetComponent<Image>().color = new Color(255,255,255,255);
+        }
+        else
+        {
+            //TODO throw it pack to animal zone
+        }
     }
 
     public void OnPointerUp(PointerEventData eventData)
@@ -80,13 +88,13 @@ public class AnimalStampComponent :  MonoBehaviour, IPointerDownHandler, IPointe
     
     bool doesCollideWithOtherStamps()
     {
-        BoxCollider2D box = GetComponent<BoxCollider2D>();
-
+        PolygonCollider2D polygonCollider = GetComponent<PolygonCollider2D>();
+        
         foreach (var stamp in paperGameManager.stamps)
         {
             if (stamp != this)
             {
-                if (box.bounds.Intersects(stamp.GetComponent<BoxCollider2D>().bounds))
+                if (polygonCollider.IsTouching(stamp.GetComponent<PolygonCollider2D>()))
                 {
                     return true;
                 }
@@ -98,22 +106,14 @@ public class AnimalStampComponent :  MonoBehaviour, IPointerDownHandler, IPointe
     bool isInsideZone(Vector3[] corners,BoxCollider2D collider2D)
     {
         RectTransform rt = this.GetComponent<RectTransform>();
-        BoxCollider2D bc = this.GetComponent<BoxCollider2D>();
+        PolygonCollider2D polygonCollider = this.GetComponent<PolygonCollider2D>();
         Debug.Log("Sprite pos:" + rt.position.ToString());
         Debug.Log("Border pos:" + corners[0].ToString() + corners[1].ToString());
-
-        Vector2[] bcCorners =
-        {
-            new Vector2(bc.bounds.min.x, bc.bounds.max.y),
-            bc.bounds.max,
-            bc.bounds.min,
-            new Vector2(bc.bounds.max.x, bc.bounds.min.y)
-        };
-
+        
         bool isIside = true;
-        foreach (var corner in bcCorners)
+        foreach (var corner in polygonCollider.GetPath(0))
         {
-            if (!collider2D.bounds.Contains(corner))
+            if (!collider2D.bounds.Contains(corner + rt.anchoredPosition))
             {
                 isIside = false;
             }
