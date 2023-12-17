@@ -47,7 +47,7 @@ namespace MinigameWaterSaving
 
         public void ToLobby()
         {
-            SceneManager.LoadScene("Lobby");
+            SceneManager.LoadScene(0);
             Time.timeScale = 1;
         }
 
