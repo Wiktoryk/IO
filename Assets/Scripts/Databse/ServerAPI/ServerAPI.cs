@@ -165,9 +165,12 @@ public class ServerAPI : MonoBehaviour
 
         LoggedUser = new UserData(loggedUser, new List<string>(), new List<float>(), new List<string>(), new List<ChallengeData>());
 
-        if (!UpdateUserNickname(nickname))
+        if (!UpdateUserNicknameAuth(nickname))
         {
-            return ServerRegisterError.NicknameSetupFailed;
+            if (!UpdateUserNicknameDatabase(nickname))
+            {
+                return ServerRegisterError.NicknameSetupFailed;
+            }
         }
         return ServerRegisterError.None;
     }
