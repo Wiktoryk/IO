@@ -1,4 +1,3 @@
-using Codice.Client.BaseCommands;
 using Firebase;
 using Firebase.Auth;
 using Firebase.Database;
@@ -12,30 +11,8 @@ public class ServerAPI : MonoBehaviour
     private static FirebaseAuth auth;
     private static FirebaseDatabase database;
 
-    private static ServerAPI instance = null;
-    public static ServerAPI Instance {
-
-        get
-        {
-            if (instance == null)
-            {
-                InitFirebase();
-                instance = new ServerAPI();
-            }
-            return instance;
-        }
-
-        private set
-        {
-            if (instance != value)
-            {
-                instance = value;
-            }
-        }
-    }
-
-    public UserData? LoggedUser = null;
-    private FirebaseUser user;
+    private static FirebaseUser loggedUser = null;
+    private static UserData? LoggedUser = null;
 
     private static void InitFirebase()
     {
@@ -66,8 +43,10 @@ public class ServerAPI : MonoBehaviour
         });
     }
 
-    public bool Login(string email, string password)
+    public static ServerLogInError Login(string email, string password)
     {
+        InitFirebase();
+
         var LoginTask = auth.SignInWithEmailAndPasswordAsync(email, password);
 
         while (!LoginTask.IsCompleted)
@@ -82,48 +61,53 @@ public class ServerAPI : MonoBehaviour
             AuthError errorCode = (AuthError)firebaseEx.ErrorCode;
 
             string message = "";
+            ServerLogInError error = ServerLogInError.Other;
             switch (errorCode)
             {
+                case AuthError.None:
+                    message = "None";
+                    error = ServerLogInError.None;
+                    break;
                 case AuthError.MissingEmail:
                     message = "Missing Email";
+                    error = ServerLogInError.MissingEmail;
                     break;
                 case AuthError.MissingPassword:
                     message = "Missing Password";
+                    error = ServerLogInError.MissingPassword;
                     break;
                 case AuthError.WrongPassword:
                     message = "Wrong Password";
+                    error = ServerLogInError.WrongPassword;
                     break;
                 case AuthError.InvalidEmail:
                     message = "Invalid Email";
+                    error = ServerLogInError.WrongEmail;
                     break;
                 case AuthError.UserNotFound:
                     message = "Account dose not exist";
+                    error = ServerLogInError.UserNotFound;
                     break;
                 default:
                     message = $"Login Failed! Code {(int)errorCode}";
+                    error = ServerLogInError.Other;
                     break;
             }
             Debug.LogWarning(message);
-            return false;
+            return error;
         }
 
-        user = LoginTask.Result.User;
-        Debug.LogFormat("User signed in successfully: {0} ({1})", user.DisplayName, user.Email);
+        loggedUser = LoginTask.Result.User;
+        LoggedUser = new UserData(loggedUser, new List<string>(), new List<float>(), new List<string>(), new List<ChallengeData>());
+        Debug.LogFormat("User signed in successfully: {0} ({1})", LoggedUser.Value.Nickname, LoggedUser.Value.Email);
         Debug.Log("Logged In");
-        LoggedUser = new UserData
-        {
-            ID = 0,
-            Nickname = user.DisplayName,
-            Friends = new List<int>(),
-            Highscores = new List<float>(),
-            FriendRequests = new List<int>(),
-            ChallengeData = new List<ChallengeData>()
-        };
-        return true;
+        return ServerLogInError.None;
     }
 
-    public bool Register(string email, string password, string nickname)
+    public static ServerRegisterError Register(string email, string password, string nickname)
     {
+        InitFirebase();
+
         var RegisterTask = auth.CreateUserWithEmailAndPasswordAsync(email, password);
 
         while (!RegisterTask.IsCompleted)
@@ -138,102 +122,172 @@ public class ServerAPI : MonoBehaviour
             AuthError errorCode = (AuthError)firebaseEx.ErrorCode;
 
             string message = "";
+            ServerRegisterError error = ServerRegisterError.Other;
             switch (errorCode)
             {
+                case AuthError.None:
+                    message = "None";
+                    error = ServerRegisterError.Other;
+                    break;
                 case AuthError.MissingEmail:
                     message = "Missing Email";
+                    error = ServerRegisterError.MissingEmail;
                     break;
                 case AuthError.MissingPassword:
                     message = "Missing Password";
+                    error = ServerRegisterError.MissingPassword;
                     break;
                 case AuthError.WeakPassword:
                     message = "Weak Password";
+                    error = ServerRegisterError.WeakPassword;
                     break;
                 case AuthError.EmailAlreadyInUse:
                     message = "Email Already In Use";
+                    error = ServerRegisterError.EmailAlreadyInUse;
                     break;
                 default:
                     message = $"Register Failde! Error {(int)errorCode}";
+                    error = ServerRegisterError.Other;
                     break;
 
             }
             Debug.LogWarning(message);
+            return error;
+        }
+
+        loggedUser = RegisterTask.Result.User;
+        if (loggedUser == null)
+        {
+            LoggedUser = null;
+            return ServerRegisterError.Other;
+        }
+
+        LoggedUser = new UserData(loggedUser, new List<string>(), new List<float>(), new List<string>(), new List<ChallengeData>());
+
+        if (!UpdateUserNickname(nickname))
+        {
+            return ServerRegisterError.NicknameSetupFailed;
+        }
+        return ServerRegisterError.None;
+    }
+
+    public static ServerUserUpdateError UpdateUserData(UserData userData)
+    {
+        // U¿ytkownik nie zalogowany
+        if (LoggedUser == null)
+        {
+            return ServerUserUpdateError.UserNotLoggedIn;
+        }
+
+        // Niektóre dane mog¹ byæ aktualizowane jeœli nale¿¹ do zalogowanego u¿ytkownika
+        if (userData.ID == LoggedUser.Value.ID)
+        {
+            // Update Nickname
+            if (userData.Nickname != LoggedUser.Value.Nickname)
+            {
+                if (!UpdateUserNickname(userData.Nickname))
+                {
+                    return ServerUserUpdateError.NicknameUpdateFailed;
+                }
+            }
+        }
+
+        return ServerUserUpdateError.None;
+    }
+
+    private static bool UpdateUserNickname(string nickname)
+    {
+        UserProfile profile = new() { DisplayName = nickname };
+        var ProfileTask = loggedUser.UpdateUserProfileAsync(profile);
+
+        while (!ProfileTask.IsCompleted) { }
+        //yield return new WaitUntil(() => ProfileTask.IsCompleted);
+
+        if (ProfileTask.Exception != null)
+        {
+            Debug.LogWarning($"Failed to register task with {ProfileTask.Exception}");
+            FirebaseException firebaseEx = ProfileTask.Exception.GetBaseException() as FirebaseException;
+            AuthError errorCode = (AuthError)firebaseEx.ErrorCode;
+            Debug.LogWarning("Username Set Failed!");
             return false;
         }
 
-        user = RegisterTask.Result.User;
-
-        if (user != null)
-        {
-            UserProfile profile = new() { DisplayName = user.DisplayName };
-
-            var ProfileTask = user.UpdateUserProfileAsync(profile);
-            
-            while (!ProfileTask.IsCompleted) { }
-            //yield return new WaitUntil(() => ProfileTask.IsCompleted);
-
-            if (ProfileTask.Exception != null)
-            {
-                Debug.LogWarning($"Failed to register task with {ProfileTask.Exception}");
-                FirebaseException firebaseEx = ProfileTask.Exception.GetBaseException() as FirebaseException;
-                AuthError errorCode = (AuthError)firebaseEx.ErrorCode;
-                Debug.LogWarning("Username Set Failed!");
-                return false;
-            }
-            else
-            {
-                // Uda³o siê wszystko
-                LoggedUser = new UserData
-                {
-                    ID = 0,
-                    Nickname = user.DisplayName,
-                    Friends = new List<int>(),
-                    Highscores = new List<float>(),
-                    FriendRequests = new List<int>(),
-                    ChallengeData = new List<ChallengeData>()
-                };
-                return true;
-            }
-        }
-        return false;
+        // Uda³o siê wszystko
+        UserData user = LoggedUser.Value;
+        user.Nickname = nickname;
+        LoggedUser = user;
+        return true;
     }
 
-    public bool UpdateUserData(UserData userData)
+    public static (ServerSearchError, UserData?) GetLoggedUserData()
+    {
+        if (LoggedUser == null)
+        {
+            return (ServerSearchError.UserNotLogged, null);
+        }
+        return (ServerSearchError.None, LoggedUser.Value);
+    }
+
+    public static List<int> GetMinigamesIDs()
+    {
+        return new List<int>();
+    }
+
+    public static bool Logout()
     {
         if (LoggedUser == null)
         {
             return false;
         }
+
+        auth.SignOut();
+        loggedUser = null;
+        LoggedUser = null;
         return true;
     }
 
-    public UserData GetLoggedUserData()
+    public static (ServerSearchError, UserData?) GetUserDataByNickname(string nickname)
     {
-        return LoggedUser.Value;
+        if (LoggedUser != null)
+        {
+            return (ServerSearchError.UserNotLogged, null);
+        }
+
+        // jeœli nie znajdzie o zadanym nicku
+        //return (ServerSearchError.NoUserFound, null);
+
+        // Na razie nie ma bazy danych wiêc nie znamy ID
+        UserData userData = LoggedUser.Value;
+        return (ServerSearchError.None, userData);
     }
 
-    public List<int> GetMinigamesIDs()
+    public static (ServerSearchError, UserData?) GetUserDataByEmail(string email)
     {
-        return new List<int>();
+        if (LoggedUser != null)
+        {
+            return (ServerSearchError.UserNotLogged, null);
+        }
+
+        // jeœli nie znajdzie o zadanym email-u
+        //return (ServerSearchError.NoUserFound, null);
+
+        // Na razie nie ma bazy danych wiêc nie znamy ID
+        UserData userData = LoggedUser.Value;
+        return (ServerSearchError.None, userData);
     }
 
-    public bool Logout()
+    public static (ServerSearchError, UserData?) GetUserDataByID(int id)
     {
-        return false;
-    }
+        if (LoggedUser != null)
+        {
+            return (ServerSearchError.UserNotLogged, null);
+        }
 
-    public UserData GetUserDataByNickname(string nickname)
-    {
-        return LoggedUser.Value;
-    }
+        // jeœli nie znajdzie o zadanym id
+        //return (ServerSearchError.NoUserFound, null);
 
-    public UserData GetUserDataByEmail(string email)
-    {
-        return LoggedUser.Value;
-    }
-
-    public UserData GetUserDataByID(int id)
-    {
-        return LoggedUser.Value;
+        // Na razie nie ma bazy danych wiêc nie znamy ID
+        UserData userData = LoggedUser.Value;
+        return (ServerSearchError.None, userData);
     }
 }
