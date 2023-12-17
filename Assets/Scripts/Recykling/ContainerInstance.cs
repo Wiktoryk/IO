@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 public enum ContainerType
 {
@@ -22,9 +23,12 @@ public class ContainerInstance : MonoBehaviour
     public Sprite bioSprite;
     public Sprite otherSprite;
 
+    public RecyklingGameScript rgs;
+
     void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
+
         switch (containerType)
         {
             case ContainerType.Paper:
@@ -51,4 +55,5 @@ public class ContainerInstance : MonoBehaviour
     {
         
     }
+
 }
