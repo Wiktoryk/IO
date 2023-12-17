@@ -100,7 +100,7 @@ public class ServerAPI : MonoBehaviour
         }
 
         loggedUser = LoginTask.Result.User;
-        LoggedUser = new UserData(loggedUser, new List<string>(), new List<float>(), new List<string>(), new List<ChallengeData>());
+        LoggedUser = new UserData(loggedUser, new List<string>(), new List<float>(), new Dictionary<string, bool>(), new List<string>(), new List<ChallengeData>());
         Debug.LogFormat("User signed in successfully: {0} ({1})", LoggedUser.Value.Nickname, LoggedUser.Value.Email);
         Debug.Log("Logged In");
         return ServerLogInError.None;
@@ -164,7 +164,7 @@ public class ServerAPI : MonoBehaviour
             return ServerRegisterError.Other;
         }
 
-        LoggedUser = new UserData(loggedUser, new List<string>(), new List<float>(), new List<string>(), new List<ChallengeData>());
+        LoggedUser = new UserData(loggedUser, new List<string>(), new List<float>(), new Dictionary<string, bool>(), new List<string>(), new List<ChallengeData>());
 
         if (!UpdateUserNicknameAuth(nickname))
         {
@@ -248,6 +248,208 @@ public class ServerAPI : MonoBehaviour
         }
     }
 
+    private static bool UpdateUserHighscoreDatabase(int minigameId, float score)
+    {
+        var DBTask = dbReference.Child("users").Child(loggedUser.UserId).Child("highscores").Child(minigameId.ToString()).SetValueAsync(score);
+
+        while (!DBTask.IsCompleted) { }
+        //yield return new WaitUntil(predicate: () => DBTask.IsCompleted);
+
+        if (DBTask.Exception != null)
+        {
+            Debug.LogWarning(message: $"Failed to register task with {DBTask.Exception}");
+            return false;
+        }
+        else
+        {
+            UserData user = LoggedUser.Value;
+
+            while (minigameId > user.Highscores.Count)
+            {
+                user.Highscores.Add(0.0f);
+            }
+
+            if (minigameId == user.Highscores.Count)
+            {
+                user.Highscores.Add(score);
+            }
+            else
+            {
+                user.Highscores[minigameId] = score;
+            }
+
+            LoggedUser = user;
+
+            return true;
+        }
+    }
+
+    private static bool UpdateUserFriendsListDatabase(string friendId)
+    {
+        var DBTask = dbReference.Child("users").Child(loggedUser.UserId).Child("friends").Child(friendId).SetValueAsync(true);
+
+        while (!DBTask.IsCompleted) { }
+        //yield return new WaitUntil(predicate: () => DBTask.IsCompleted);
+
+        if (DBTask.Exception != null)
+        {
+            Debug.LogWarning(message: $"Failed to register task with {DBTask.Exception}");
+            return false;
+        }
+        else
+        {
+            UserData user = LoggedUser.Value;
+            user.Friends.Add(friendId);
+            LoggedUser = user;
+            return true;
+        }
+    }
+
+    private static bool AddUserFriendInvitesDatabase(string friendId)
+    {
+        var DBTask = dbReference.Child("users").Child(loggedUser.UserId).Child("friendInvites").Child(friendId).SetValueAsync(true);
+
+        while (!DBTask.IsCompleted) { }
+        //yield return new WaitUntil(predicate: () => DBTask.IsCompleted);
+
+        if (DBTask.Exception != null)
+        {
+            Debug.LogWarning(message: $"Failed to register task with {DBTask.Exception}");
+            return false;
+        }
+        else
+        {
+            UserData user = LoggedUser.Value;
+            user.FriendInvites.Add(friendId);
+            LoggedUser = user;
+            return true;
+        }
+    }
+
+    private static bool DeleteUserFriendInvitesDatabase(string friendId)
+    {
+        var DBTask = dbReference.Child("users").Child(loggedUser.UserId).Child("friendInvites").Child(friendId).RemoveValueAsync();
+
+        while (!DBTask.IsCompleted) { }
+        //yield return new WaitUntil(predicate: () => DBTask.IsCompleted);
+
+        if (DBTask.Exception != null)
+        {
+            Debug.LogWarning(message: $"Failed to register task with {DBTask.Exception}");
+            return false;
+        }
+        else
+        {
+            UserData user = LoggedUser.Value;
+            user.FriendInvites.Remove(friendId);
+            LoggedUser = user;
+            return true;
+        }
+    }
+
+    private static bool SendFriendRequestDatabase(string friendId, bool accept)
+    {
+        var DBTask = dbReference.Child("users").Child(friendId).Child("friendRequests").Child(loggedUser.UserId).SetValueAsync(accept);
+
+        while (!DBTask.IsCompleted) { }
+        //yield return new WaitUntil(predicate: () => DBTask.IsCompleted);
+
+        if (DBTask.Exception != null)
+        {
+            Debug.LogWarning(message: $"Failed to register task with {DBTask.Exception}");
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+
+    private static bool DeleteFriendRequestDatabase(string friendId)
+    {
+        var DBTask = dbReference.Child("users").Child(loggedUser.UserId).Child("friendRequests").Child(friendId).RemoveValueAsync();
+
+        while (!DBTask.IsCompleted) { }
+        //yield return new WaitUntil(predicate: () => DBTask.IsCompleted);
+
+        if (DBTask.Exception != null)
+        {
+            Debug.LogWarning(message: $"Failed to register task with {DBTask.Exception}");
+            return false;
+        }
+        else
+        {
+            UserData user = LoggedUser.Value;
+            user.FriendRequests.Remove(friendId);
+            LoggedUser = user;
+            return true;
+        }
+    }
+
+    private static bool SendChallangeDatabase(string friendId, ChallengeData challenge)
+    {
+        var DBTask = dbReference.Child("users").Child(friendId).Child("challanges").Child(loggedUser.UserId + "_" + challenge.MinigameID.ToString()).Child("userId").SetValueAsync(challenge.UserID);
+
+        while (!DBTask.IsCompleted) { }
+        //yield return new WaitUntil(predicate: () => DBTask.IsCompleted);
+
+        if (DBTask.Exception != null)
+        {
+            Debug.LogWarning(message: $"Failed to register task with {DBTask.Exception}");
+            return false;
+        }
+        else
+        {
+            DBTask = dbReference.Child("users").Child(friendId).Child("challanges").Child(loggedUser.UserId + "_" + challenge.MinigameID.ToString()).Child("minigameId").SetValueAsync(challenge.MinigameID);
+
+            while (!DBTask.IsCompleted) { }
+            //yield return new WaitUntil(predicate: () => DBTask.IsCompleted);
+
+            if (DBTask.Exception != null)
+            {
+                Debug.LogWarning(message: $"Failed to register task with {DBTask.Exception}");
+                return false;
+            }
+            else
+            {
+                DBTask = dbReference.Child("users").Child(friendId).Child("challanges").Child(loggedUser.UserId + "_" + challenge.MinigameID.ToString()).Child("score").SetValueAsync(challenge.Score);
+
+                while (!DBTask.IsCompleted) { }
+                //yield return new WaitUntil(predicate: () => DBTask.IsCompleted);
+
+                if (DBTask.Exception != null)
+                {
+                    Debug.LogWarning(message: $"Failed to register task with {DBTask.Exception}");
+                    return false;
+                }
+            }
+
+            return true;
+        }
+    }
+
+    private static bool DeleteChallangeDatabase(ChallengeData challenge)
+    {
+        var DBTask = dbReference.Child("users").Child(loggedUser.UserId).Child("challanges").Child(challenge.UserID + "_" + challenge.MinigameID.ToString()).RemoveValueAsync();
+
+        while (!DBTask.IsCompleted) { }
+        //yield return new WaitUntil(predicate: () => DBTask.IsCompleted);
+
+        if (DBTask.Exception != null)
+        {
+            Debug.LogWarning(message: $"Failed to register task with {DBTask.Exception}");
+            return false;
+        }
+        else
+        {
+            UserData user = LoggedUser.Value;
+            user.ChallengeData.Remove(challenge);
+            LoggedUser = user;
+
+            return true;
+        }
+    }
+
     public static (ServerSearchError, UserData?) GetLoggedUserData()
     {
         if (LoggedUser == null)
@@ -325,16 +527,27 @@ public class ServerAPI : MonoBehaviour
 
             user.ChallengeData = challengesData;
 
-            List<string> friendsReqData = new();
+            Dictionary<string, bool> friendsReqData = new();
 
             DataSnapshot friendsReq = snapshot.Child("friendRequests");
 
             foreach (DataSnapshot req in friendsReq.Children)
             {
-                friendsReqData.Add(req.Key.ToString());
+                friendsReqData.Add(req.Key.ToString(), bool.Parse(req.Value.ToString()));
             }
 
             user.FriendRequests = friendsReqData;
+
+            List<string> friendsInvData = new();
+
+            DataSnapshot friendsInv = snapshot.Child("friendInvites");
+
+            foreach (DataSnapshot inv in friendsInv.Children)
+            {
+                friendsInvData.Add(inv.Key.ToString());
+            }
+
+            user.FriendInvites = friendsInvData;
 
             List<string> friendsData = new();
 
@@ -412,16 +625,27 @@ public class ServerAPI : MonoBehaviour
 
                     user.ChallengeData = challengesData;
 
-                    List<string> friendsReqData = new();
+                    Dictionary<string, bool> friendsReqData = new();
 
-                    DataSnapshot friendsReq = childSnapshot.Child("friendRequests");
+                    DataSnapshot friendsReq = snapshot.Child("friendRequests");
 
                     foreach (DataSnapshot req in friendsReq.Children)
                     {
-                        friendsReqData.Add(req.Key.ToString());
+                        friendsReqData.Add(req.Key.ToString(), bool.Parse(req.Value.ToString()));
                     }
 
                     user.FriendRequests = friendsReqData;
+
+                    List<string> friendsInvData = new();
+
+                    DataSnapshot friendsInv = snapshot.Child("friendInvites");
+
+                    foreach (DataSnapshot inv in friendsInv.Children)
+                    {
+                        friendsInvData.Add(inv.Key.ToString());
+                    }
+
+                    user.FriendInvites = friendsInvData;
 
                     List<string> friendsData = new();
 
@@ -511,16 +735,27 @@ public class ServerAPI : MonoBehaviour
 
                     user.ChallengeData = challengesData;
 
-                    List<string> friendsReqData = new();
+                    Dictionary<string, bool> friendsReqData = new();
 
-                    DataSnapshot friendsReq = childSnapshot.Child("friendRequests");
+                    DataSnapshot friendsReq = snapshot.Child("friendRequests");
 
                     foreach (DataSnapshot req in friendsReq.Children)
                     {
-                        friendsReqData.Add(req.Key.ToString());
+                        friendsReqData.Add(req.Key.ToString(), bool.Parse(req.Value.ToString()));
                     }
 
                     user.FriendRequests = friendsReqData;
+
+                    List<string> friendsInvData = new();
+
+                    DataSnapshot friendsInv = snapshot.Child("friendInvites");
+
+                    foreach (DataSnapshot inv in friendsInv.Children)
+                    {
+                        friendsInvData.Add(inv.Key.ToString());
+                    }
+
+                    user.FriendInvites = friendsInvData;
 
                     List<string> friendsData = new();
 
@@ -608,16 +843,27 @@ public class ServerAPI : MonoBehaviour
 
             user.ChallengeData = challengesData;
 
-            List<string> friendsReqData = new();
+            Dictionary<string, bool> friendsReqData = new();
 
             DataSnapshot friendsReq = snapshot.Child("friendRequests");
 
             foreach (DataSnapshot req in friendsReq.Children)
             {
-                friendsReqData.Add(req.Key.ToString());
+                friendsReqData.Add(req.Key.ToString(), bool.Parse(req.Value.ToString()));
             }
 
             user.FriendRequests = friendsReqData;
+
+            List<string> friendsInvData = new();
+
+            DataSnapshot friendsInv = snapshot.Child("friendInvites");
+
+            foreach (DataSnapshot inv in friendsInv.Children)
+            {
+                friendsInvData.Add(inv.Key.ToString());
+            }
+
+            user.FriendInvites = friendsInvData;
 
             List<string> friendsData = new();
 
