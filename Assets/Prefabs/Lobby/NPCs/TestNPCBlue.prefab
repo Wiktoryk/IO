@@ -47,8 +47,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   statementsFileName: NPC1
   miniGames:
-  - miniGameName: MINI
-    miniGameSceneName: TestMiniGameScene
+  - miniGameName: BioProducts
+    miniGameSceneName: BioProducts
 --- !u!212 &1577454549830758114
 SpriteRenderer:
   m_ObjectHideFlags: 0

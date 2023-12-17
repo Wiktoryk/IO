@@ -1,6 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
+using UnityEngine.SceneManagement;
+using UnityEngine.SocialPlatforms.Impl;
 using UnityEngine.UI;
 
 public class BioGameDisplay : MonoBehaviour
@@ -46,11 +49,29 @@ public class BioGameDisplay : MonoBehaviour
         currentProductDisplay.GetComponent<UnityEngine.UI.Image>().sprite = null;
         gameDisplay.SetActive(false);
         endGameDisplay.SetActive(true);
-
+Debug.Log("d");
         GameObject endText = GameObject.Find("FinishText");
         endText.GetComponent<Text>().text = "Congratulations!           Your final score:                   " + previousScore.ToString();
+        
     }
 
+
+    void Update()
+    {
+        
+
+        if (Input.GetKeyUp(KeyCode.E))
+        {
+            Debug.Log("MiniGameScoreExit: " );
+            MiniGameStatus.Instance.SetStatus("MINI", previousScore);
+            SceneManager.LoadScene("LobbyScene");
+        }
+    }
+
+    public void ReturnToLobby()
+    {
+        SceneManager.LoadScene("LobbyScene");
+    }
 
 
     public void UpdateDisplay(Product currentProduct, int score, float timeLeft)

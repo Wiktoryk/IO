@@ -71,7 +71,7 @@ public class NPCScript : MonoBehaviour
         { 
             if (miniGame.miniGameName == miniGameName)
             {
-                SceneManager.LoadScene(miniGame.miniGameSceneName); 
+                SceneManager.LoadScene(miniGame.miniGameSceneName);     
                 break;
             }
         }
