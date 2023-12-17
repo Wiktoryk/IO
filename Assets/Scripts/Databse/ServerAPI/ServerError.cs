@@ -30,6 +30,7 @@ public enum ServerUserUpdateError
 public enum ServerSearchError
 {
     None = 0,
-    UserNotLogged = 1,
-    NoUserFound = 2
+    Other = 1,
+    UserNotLogged = 2,
+    NoUserFound = 3
 }

@@ -1,14 +1,26 @@
 {
     "Database": {
-        "users": [
-            {
-                "uid": "HXLKH4qBuka6BxmXOzXeFBTYLKr2",
+        "users": {
+            "HXLKH4qBuka6BxmXOzXeFBTYLKr2": {
+                "email": "test@test.com",
                 "nickname": "test",
-                "friends": [],
-                "highscores": [],
-                "friendRequests": [],
-                "challanges": []
+                "friends": {
+                    "SDASASJKIUUWaw222jajs": true
+                },
+                "highscores": {
+                    "0": 0.0
+                },
+                "friendRequests": {
+                    "ZZASASJKIUUWaw222jaw2": true
+                },
+                "challanges": {
+                    "SDASASJKIUUWaw222jajs_0": {
+                        "userId": "SDASASJKIUUWaw222jajs",
+                        "minigameId": 0,
+                        "score": 0.0
+                    }
+                }
             }
-        ]
+        }
     }
 }

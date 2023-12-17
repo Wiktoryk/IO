@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public struct UserData
 {
-    public readonly string ID;
+    public string ID;
     public string Email;
     public string Nickname;
 

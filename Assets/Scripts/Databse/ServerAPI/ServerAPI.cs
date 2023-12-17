@@ -3,6 +3,7 @@ using Firebase.Auth;
 using Firebase.Database;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class ServerAPI : MonoBehaviour
@@ -276,6 +277,11 @@ public class ServerAPI : MonoBehaviour
 
     public static (ServerSearchError, UserData?) GetLoggedUserDatabase()
     {
+        if (LoggedUser != null)
+        {
+            return (ServerSearchError.UserNotLogged, null);
+        }
+
         var DBTask = dbReference.Child("users").Child(loggedUser.UserId).GetValueAsync();
 
         //yield return new WaitUntil(predicate: () => DBTask.IsCompleted);
@@ -285,15 +291,14 @@ public class ServerAPI : MonoBehaviour
         {
             Debug.LogWarning(message: $"Failed to register task with {DBTask.Exception}");
 
-            // Powinno chyba byc cos innego
-            return (ServerSearchError.NoUserFound, null);
+            return (ServerSearchError.Other, null);
         }
         else if (DBTask.Result.Value == null)
         {
             UserData user = LoggedUser.Value;
-            user.ChallengeData = new List<ChallengeData>();
-            user.FriendRequests = new List<string>();
-            user.Friends = new List<string>();
+            user.ChallengeData = new();
+            user.FriendRequests = new();
+            user.Friends = new();
             user.Highscores = new List<float> { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f };
 
             return (ServerSearchError.None, user);
@@ -303,15 +308,60 @@ public class ServerAPI : MonoBehaviour
             DataSnapshot snapshot = DBTask.Result;
 
             UserData user = LoggedUser.Value;
-            user.FriendRequests = (List<string>)snapshot.Child("friendRequests").Value;
-            user.Friends = (List<string>)snapshot.Child("friends").Value;
-            user.Highscores = (List<float>)snapshot.Child("highscores").Value;
+
+            List<ChallengeData> challengesData = new();
+
+            DataSnapshot challanges = snapshot.Child("challanges");
+
+            foreach (DataSnapshot challange in challanges.Children)
+            {
+                ChallengeData challangeData;
+                challangeData.MinigameID = int.Parse(challange.Child("minigameId").Value.ToString());
+                challangeData.Score = float.Parse(challange.Child("score").Value.ToString());
+                challangeData.UserID = challange.Child("userId").Value.ToString();
+
+                challengesData.Add(challangeData);
+            }
+
+            user.ChallengeData = challengesData;
+
+            List<string> friendsReqData = new();
+
+            DataSnapshot friendsReq = snapshot.Child("friendRequests");
+
+            foreach (DataSnapshot req in friendsReq.Children)
+            {
+                friendsReqData.Add(req.Key.ToString());
+            }
+
+            user.FriendRequests = friendsReqData;
+
+            List<string> friendsData = new();
+
+            DataSnapshot friends = snapshot.Child("friends");
+
+            foreach (DataSnapshot friend in friends.Children)
+            {
+                friendsData.Add(friend.Key.ToString());
+            }
+
+            user.Friends = friendsData;
+
+            List<float> highscoresData = new();
+
+            DataSnapshot highscores = snapshot.Child("highscores");
+
+            foreach (DataSnapshot highscore in highscores.Children)
+            {
+                highscoresData.Add(float.Parse(highscore.Value.ToString()));
+            }
+
+            user.Highscores = highscoresData;
 
             return (ServerSearchError.None, user);
         }
     }
 
-    /*
     public static (ServerSearchError, UserData?) GetUserDataByNickname(string nickname)
     {
         if (LoggedUser != null)
@@ -319,12 +369,96 @@ public class ServerAPI : MonoBehaviour
             return (ServerSearchError.UserNotLogged, null);
         }
 
-        // jeœli nie znajdzie o zadanym nicku
-        //return (ServerSearchError.NoUserFound, null);
+        var DBTask = dbReference.Child("users").OrderByChild("nickname").GetValueAsync();
 
-        // Na razie nie ma bazy danych wiêc nie znamy ID
-        UserData userData = LoggedUser.Value;
-        return (ServerSearchError.None, userData);
+        //yield return new WaitUntil(predicate: () => DBTask.IsCompleted);
+        while (!DBTask.IsCompleted) { }
+
+        if (DBTask.Exception != null)
+        {
+            Debug.LogWarning(message: $"Failed to register task with {DBTask.Exception}");
+
+            return (ServerSearchError.Other, null);
+        }
+        else
+        {
+            DataSnapshot snapshot = DBTask.Result;
+
+            UserData user = new();
+
+            bool found = false;
+
+            foreach (DataSnapshot childSnapshot in snapshot.Children.Reverse())
+            {
+                if (childSnapshot.Child("nickname").Value.ToString().Equals(nickname))
+                {
+                    user.ID = childSnapshot.Key;
+                    user.Email = childSnapshot.Child("email").Value.ToString();
+                    user.Nickname = childSnapshot.Child("nickname").Value.ToString();
+
+                    List<ChallengeData> challengesData = new(); 
+
+                    DataSnapshot challanges = childSnapshot.Child("challanges");
+
+                    foreach (DataSnapshot challange in challanges.Children)
+                    {
+                        ChallengeData challangeData;
+                        challangeData.MinigameID = int.Parse(challange.Child("minigameId").Value.ToString());
+                        challangeData.Score = float.Parse(challange.Child("score").Value.ToString());
+                        challangeData.UserID = challange.Child("userId").Value.ToString();
+
+                        challengesData.Add(challangeData);
+                    }
+
+                    user.ChallengeData = challengesData;
+
+                    List<string> friendsReqData = new();
+
+                    DataSnapshot friendsReq = childSnapshot.Child("friendRequests");
+
+                    foreach (DataSnapshot req in friendsReq.Children)
+                    {
+                        friendsReqData.Add(req.Key.ToString());
+                    }
+
+                    user.FriendRequests = friendsReqData;
+
+                    List<string> friendsData = new();
+
+                    DataSnapshot friends = childSnapshot.Child("friends");
+
+                    foreach (DataSnapshot friend in friends.Children)
+                    {
+                        friendsData.Add(friend.Key.ToString());
+                    }
+
+                    user.Friends = friendsData;
+
+                    List<float> highscoresData = new();
+
+                    DataSnapshot highscores = childSnapshot.Child("highscores");
+
+                    foreach (DataSnapshot highscore in highscores.Children)
+                    {
+                        highscoresData.Add(float.Parse(highscore.Value.ToString()));
+                    }
+
+                    user.Highscores = highscoresData;
+
+                    found = true;
+                    break;
+                }
+            }
+
+            if (found)
+            {
+                return (ServerSearchError.None, user);
+            }
+            else
+            {
+                return (ServerSearchError.NoUserFound, null);
+            }
+        }
     }
 
     public static (ServerSearchError, UserData?) GetUserDataByEmail(string email)
@@ -334,27 +468,180 @@ public class ServerAPI : MonoBehaviour
             return (ServerSearchError.UserNotLogged, null);
         }
 
-        // jeœli nie znajdzie o zadanym email-u
-        //return (ServerSearchError.NoUserFound, null);
+        var DBTask = dbReference.Child("users").OrderByChild("email").GetValueAsync();
 
-        // Na razie nie ma bazy danych wiêc nie znamy ID
-        UserData userData = LoggedUser.Value;
-        return (ServerSearchError.None, userData);
+        //yield return new WaitUntil(predicate: () => DBTask.IsCompleted);
+        while (!DBTask.IsCompleted) { }
+
+        if (DBTask.Exception != null)
+        {
+            Debug.LogWarning(message: $"Failed to register task with {DBTask.Exception}");
+
+            return (ServerSearchError.Other, null);
+        }
+        else
+        {
+            DataSnapshot snapshot = DBTask.Result;
+
+            UserData user = new();
+
+            bool found = false;
+
+            foreach (DataSnapshot childSnapshot in snapshot.Children.Reverse())
+            {
+                if (childSnapshot.Child("email").Value.ToString().Equals(email))
+                {
+                    user.ID = childSnapshot.Key;
+                    user.Email = childSnapshot.Child("email").Value.ToString();
+                    user.Nickname = childSnapshot.Child("nickname").Value.ToString();
+
+                    List<ChallengeData> challengesData = new();
+
+                    DataSnapshot challanges = childSnapshot.Child("challanges");
+
+                    foreach (DataSnapshot challange in challanges.Children)
+                    {
+                        ChallengeData challangeData;
+                        challangeData.MinigameID = int.Parse(challange.Child("minigameId").Value.ToString());
+                        challangeData.Score = float.Parse(challange.Child("score").Value.ToString());
+                        challangeData.UserID = challange.Child("userId").Value.ToString();
+
+                        challengesData.Add(challangeData);
+                    }
+
+                    user.ChallengeData = challengesData;
+
+                    List<string> friendsReqData = new();
+
+                    DataSnapshot friendsReq = childSnapshot.Child("friendRequests");
+
+                    foreach (DataSnapshot req in friendsReq.Children)
+                    {
+                        friendsReqData.Add(req.Key.ToString());
+                    }
+
+                    user.FriendRequests = friendsReqData;
+
+                    List<string> friendsData = new();
+
+                    DataSnapshot friends = childSnapshot.Child("friends");
+
+                    foreach (DataSnapshot friend in friends.Children)
+                    {
+                        friendsData.Add(friend.Key.ToString());
+                    }
+
+                    user.Friends = friendsData;
+
+                    List<float> highscoresData = new();
+
+                    DataSnapshot highscores = childSnapshot.Child("highscores");
+
+                    foreach (DataSnapshot highscore in highscores.Children)
+                    {
+                        highscoresData.Add(float.Parse(highscore.Value.ToString()));
+                    }
+
+                    user.Highscores = highscoresData;
+
+                    found = true;
+                    break;
+                }
+            }
+
+            if (found)
+            {
+                return (ServerSearchError.None, user);
+            }
+            else
+            {
+                return (ServerSearchError.NoUserFound, null);
+            }
+        }
     }
 
-    public static (ServerSearchError, UserData?) GetUserDataByID(int id)
+    public static (ServerSearchError, UserData?) GetUserDataByID(string id)
     {
         if (LoggedUser != null)
         {
             return (ServerSearchError.UserNotLogged, null);
         }
 
-        // jeœli nie znajdzie o zadanym id
-        //return (ServerSearchError.NoUserFound, null);
+        var DBTask = dbReference.Child("users").Child(id).GetValueAsync();
 
-        // Na razie nie ma bazy danych wiêc nie znamy ID
-        UserData userData = LoggedUser.Value;
-        return (ServerSearchError.None, userData);
+        //yield return new WaitUntil(predicate: () => DBTask.IsCompleted);
+        while (!DBTask.IsCompleted) { }
+
+        if (DBTask.Exception != null)
+        {
+            Debug.LogWarning(message: $"Failed to register task with {DBTask.Exception}");
+
+            return (ServerSearchError.Other, null);
+        }
+        else if (DBTask.Result.Value == null)
+        {
+            return (ServerSearchError.NoUserFound, null);
+        }
+        else
+        {
+            DataSnapshot snapshot = DBTask.Result;
+
+            UserData user;
+
+            user.ID = snapshot.Key.ToString();
+            user.Nickname = snapshot.Child("nickname").Value.ToString();
+            user.Email = snapshot.Child("email").Value.ToString();
+
+            List<ChallengeData> challengesData = new();
+
+            DataSnapshot challanges = snapshot.Child("challanges");
+
+            foreach (DataSnapshot challange in challanges.Children)
+            {
+                ChallengeData challangeData;
+                challangeData.MinigameID = int.Parse(challange.Child("minigameId").Value.ToString());
+                challangeData.Score = float.Parse(challange.Child("score").Value.ToString());
+                challangeData.UserID = challange.Child("userId").Value.ToString();
+
+                challengesData.Add(challangeData);
+            }
+
+            user.ChallengeData = challengesData;
+
+            List<string> friendsReqData = new();
+
+            DataSnapshot friendsReq = snapshot.Child("friendRequests");
+
+            foreach (DataSnapshot req in friendsReq.Children)
+            {
+                friendsReqData.Add(req.Key.ToString());
+            }
+
+            user.FriendRequests = friendsReqData;
+
+            List<string> friendsData = new();
+
+            DataSnapshot friends = snapshot.Child("friends");
+
+            foreach (DataSnapshot friend in friends.Children)
+            {
+                friendsData.Add(friend.Key.ToString());
+            }
+
+            user.Friends = friendsData;
+
+            List<float> highscoresData = new();
+
+            DataSnapshot highscores = snapshot.Child("highscores");
+
+            foreach (DataSnapshot highscore in highscores.Children)
+            {
+                highscoresData.Add(float.Parse(highscore.Value.ToString()));
+            }
+
+            user.Highscores = highscoresData;
+
+            return (ServerSearchError.None, user);
+        }
     }
-    */
 }
