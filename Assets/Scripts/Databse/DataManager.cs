@@ -98,31 +98,22 @@ public class DataManager : MonoBehaviour, IDataManager
         // Example: StartCoroutine(GetUserData());
     }
 
-    public void UpdateUserData(string userData)
+    public ServerUserUpdateError updateUser(UserData newUserData)
     {
-        // Implement logic to update user data in the Main Lobby
-    }
+        var result = ServerAPI.GetLoggedUserData();
 
-    public void SendDataToServer(string data)
-    {
-        if (serverAPI != null)
+        if (result.Item1 != ServerSearchError.None)
         {
-            serverAPI.SendDataToServer(data);
+            return ServerUserUpdateError.UserNotLoggedIn;
         }
-        else
-        {
-            Debug.LogError("ServerAPI reference not found!");
-        }
-    }
 
-    public UserData getUser(string nickname)
-    {
-        (_ServerSearchError, user) = ServerAPI.GetUserDataByNickname(nickname);
-        return user;
-    }
-    void UpdateUserData(string userData)
-    {
-        ServerAPI.UpdateUserData(userData);
+        UserData currentUserData = result.Item2.Value;
+
+        // Here you can update the fields of currentUserData with the values from newUserData
+        // For example:
+        // currentUserData.Nickname = newUserData.Nickname;
+
+        return ServerAPI.UpdateUserData(currentUserData);
     }
     bool login(string email, string password)
     {
@@ -136,25 +127,99 @@ public class DataManager : MonoBehaviour, IDataManager
     {  
         return new List<int>();
     }
-    public bool changeNickname(string nickname)
+    public ServerUserUpdateError changeNickname(string newNickname)
     {
-        if (nickname != null)
+        if (ServerAPI.LoggedUser == null)
         {
-            return ServerAPI.UpdateUserNicknameAuth(nickname);
+            return ServerUserUpdateError.UserNotLoggedIn;
         }
-        return false;
+
+        UserData userData = ServerAPI.LoggedUser.Value;
+        userData.Nickname = newNickname;
+
+        return ServerAPI.UpdateUserData(userData);
     }
     public bool changePassword(string password)
     {
         return false;
     }
-    public bool sendFriendRequest(string nickname)
+    public static bool SendFriendRequest(string friendId)
     {
-        return false;
+        // Wysy³amy zaproszenie do znajomych do bazy danych
+        bool sendRequestResult = SendFriendRequestDatabase(friendId, true);
+        if (!sendRequestResult)
+        {
+            Debug.LogWarning("Failed to send friend request");
+            return false;
+        }
+
+        // Dodajemy zaproszenie do listy zaproszeñ u¿ytkownika
+        bool addUserFriendInvitesResult = AddUserFriendInvitesDatabase(friendId);
+        if (!addUserFriendInvitesResult)
+        {
+            Debug.LogWarning("Failed to add friend invite to user's list");
+            return false;
+        }
+
+        return true;
     }
-    public bool sendChallenge(string nickname)
+
+    public static bool CancelFriendRequest(string friendId)
     {
-        return false;
+        // Usuwamy zaproszenie z listy zaproszeñ u¿ytkownika
+        bool deleteUserFriendInvitesResult = DeleteUserFriendInvitesDatabase(friendId);
+        if (!deleteUserFriendInvitesResult)
+        {
+            Debug.LogWarning("Failed to delete friend invite from user's list");
+            return false;
+        }
+
+        // Usuwamy zaproszenie z bazy danych
+        bool deleteFriendRequestResult = DeleteFriendRequestDatabase(friendId);
+        if (!deleteFriendRequestResult)
+        {
+            Debug.LogWarning("Failed to delete friend request from database");
+            return false;
+        }
+
+        return true;
+    }
+    public static bool SaveScore(int minigameId, float score)
+    {
+        // Pobieramy aktualny najlepszy wynik u¿ytkownika
+        float currentHighscore = 0;
+        if (minigameId < LoggedUser.Value.Highscores.Count)
+        {
+            currentHighscore = LoggedUser.Value.Highscores[minigameId];
+        }
+
+        // Jeœli nowy wynik jest wy¿szy ni¿ aktualny najlepszy wynik, aktualizujemy go
+        if (score > currentHighscore)
+        {
+            return UpdateUserHighscoreDatabase(minigameId, score);
+        }
+
+        // Jeœli nowy wynik nie jest wy¿szy, nie robimy nic
+        return true;
+    }
+    public async Task<(ServerSearchError, UserData?)> fetchUserData()
+    {
+        var result = ServerAPI.GetLoggedUserDatabase();
+
+        if (result.Item1 != ServerSearchError.None)
+        {
+            Debug.LogWarning($"Failed to fetch user data with {result.Item1}");
+        }
+
+        return result;
+    }
+    public bool sendChallenge(string friendId, ChallengeData challenge)
+    {
+        return ServerAPI.SendChallangeDatabase(friendId, challenge);
+    }
+    public bool cancelChallenge(ChallengeData challenge)
+    {
+        return ServerAPI.DeleteChallangeDatabase(challenge);
     }
     public bool respondFriendRequest(bool accepted, string nickname)
     {
