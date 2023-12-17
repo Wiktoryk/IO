@@ -101,6 +101,11 @@ public class ServerAPI : MonoBehaviour
 
         loggedUser = LoginTask.Result.User;
         LoggedUser = new UserData(loggedUser, new List<string>(), new List<float>(), new Dictionary<string, bool>(), new List<string>(), new List<ChallengeData>());
+        (ServerSearchError, UserData?) user = GetLoggedUserDatabase();
+        if (user.Item1 == ServerSearchError.None)
+        {
+            LoggedUser = user.Item2;
+        }
         Debug.LogFormat("User signed in successfully: {0} ({1})", LoggedUser.Value.Nickname, LoggedUser.Value.Email);
         Debug.Log("Logged In");
         return ServerLogInError.None;
@@ -164,15 +169,18 @@ public class ServerAPI : MonoBehaviour
             return ServerRegisterError.Other;
         }
 
-        LoggedUser = new UserData(loggedUser, new List<string>(), new List<float>(), new Dictionary<string, bool>(), new List<string>(), new List<ChallengeData>());
+        LoggedUser = new UserData(loggedUser, new List<string>(), new List<float> { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f }, new Dictionary<string, bool>(), new List<string>(), new List<ChallengeData>());
 
         if (!UpdateUserNicknameAuth(nickname))
         {
-            if (!UpdateUserNicknameDatabase(nickname))
-            {
-                return ServerRegisterError.NicknameSetupFailed;
-            }
+            return ServerRegisterError.NicknameSetupFailed;
         }
+
+        if (!RegisterUserDatabase())
+        {
+            return ServerRegisterError.DatabaseUserRegisterFailed;
+        }
+
         return ServerRegisterError.None;
     }
 
@@ -227,6 +235,38 @@ public class ServerAPI : MonoBehaviour
         return true;
     }
 
+    private static bool RegisterUserDatabase()
+    {
+        if (LoggedUser == null)
+        {
+            return false;
+        }
+
+        UserData user = LoggedUser.Value;
+
+        if (!UpdateUserNicknameDatabase(user.Nickname))
+        {
+            return false;
+        }
+
+        if (!UpdateUserEmailDatabase(user.Email))
+        {
+            return false;
+        }
+
+        int i = 0;
+        foreach (float score in user.Highscores)
+        {
+            if (!UpdateUserHighscoreDatabase(i, score))
+            {
+                return false;
+            }
+            i++;
+        }
+
+        return true;
+    }
+
     private static bool UpdateUserNicknameDatabase(string nickname)
     {
         var DBTask = dbReference.Child("users").Child(loggedUser.UserId).Child("nickname").SetValueAsync(nickname);
@@ -243,6 +283,27 @@ public class ServerAPI : MonoBehaviour
         {
             UserData user = LoggedUser.Value;
             user.Nickname = nickname;
+            LoggedUser = user;
+            return true;
+        }
+    }
+
+    private static bool UpdateUserEmailDatabase(string email)
+    {
+        var DBTask = dbReference.Child("users").Child(loggedUser.UserId).Child("email").SetValueAsync(email);
+
+        while (!DBTask.IsCompleted) { }
+        //yield return new WaitUntil(predicate: () => DBTask.IsCompleted);
+
+        if (DBTask.Exception != null)
+        {
+            Debug.LogWarning(message: $"Failed to register task with {DBTask.Exception}");
+            return false;
+        }
+        else
+        {
+            UserData user = LoggedUser.Value;
+            user.Email = email;
             LoggedUser = user;
             return true;
         }
@@ -479,7 +540,7 @@ public class ServerAPI : MonoBehaviour
 
     public static (ServerSearchError, UserData?) GetLoggedUserDatabase()
     {
-        if (LoggedUser != null)
+        if (LoggedUser == null)
         {
             return (ServerSearchError.UserNotLogged, null);
         }
@@ -577,7 +638,7 @@ public class ServerAPI : MonoBehaviour
 
     public static (ServerSearchError, UserData?) GetUserDataByNickname(string nickname)
     {
-        if (LoggedUser != null)
+        if (LoggedUser == null)
         {
             return (ServerSearchError.UserNotLogged, null);
         }
@@ -687,7 +748,7 @@ public class ServerAPI : MonoBehaviour
 
     public static (ServerSearchError, UserData?) GetUserDataByEmail(string email)
     {
-        if (LoggedUser != null)
+        if (LoggedUser == null)
         {
             return (ServerSearchError.UserNotLogged, null);
         }
@@ -797,7 +858,7 @@ public class ServerAPI : MonoBehaviour
 
     public static (ServerSearchError, UserData?) GetUserDataByID(string id)
     {
-        if (LoggedUser != null)
+        if (LoggedUser == null)
         {
             return (ServerSearchError.UserNotLogged, null);
         }

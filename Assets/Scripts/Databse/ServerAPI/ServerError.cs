@@ -17,7 +17,8 @@ public enum ServerRegisterError
     MissingEmail = 3,
     MissingPassword = 4,
     NicknameSetupFailed = 5,
-    Other = 6
+    DatabaseUserRegisterFailed = 6,
+    Other = 7
 }
 
 public enum ServerUserUpdateError
