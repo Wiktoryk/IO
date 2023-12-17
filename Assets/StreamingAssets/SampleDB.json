@@ -1,0 +1,14 @@
+{
+    "Database": {
+        "users": [
+            {
+                "uid": "HXLKH4qBuka6BxmXOzXeFBTYLKr2",
+                "nickname": "test",
+                "friends": [],
+                "highscores": [],
+                "friendRequests": [],
+                "challanges": []
+            }
+        ]
+    }
+}

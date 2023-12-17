@@ -1,6 +1,7 @@
 using Firebase;
 using Firebase.Auth;
 using Firebase.Database;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,7 +10,7 @@ public class ServerAPI : MonoBehaviour
     private static bool firebaseInizialized = false;
     private static DependencyStatus dependencyStatus;
     private static FirebaseAuth auth;
-    private static FirebaseDatabase database;
+    private static DatabaseReference dbReference;
 
     private static FirebaseUser loggedUser = null;
     private static UserData? LoggedUser = null;
@@ -32,7 +33,7 @@ public class ServerAPI : MonoBehaviour
 
                 Debug.Log("Setting up Firebase Database");
 
-                database = FirebaseDatabase.DefaultInstance;
+                dbReference = FirebaseDatabase.DefaultInstance.RootReference;
 
                 firebaseInizialized = true;
             }
@@ -185,9 +186,12 @@ public class ServerAPI : MonoBehaviour
             // Update Nickname
             if (userData.Nickname != LoggedUser.Value.Nickname)
             {
-                if (!UpdateUserNickname(userData.Nickname))
+                if (!UpdateUserNicknameAuth(userData.Nickname))
                 {
-                    return ServerUserUpdateError.NicknameUpdateFailed;
+                    if (!UpdateUserNicknameDatabase(userData.Nickname))
+                    {
+                        return ServerUserUpdateError.NicknameUpdateFailed;
+                    }
                 }
             }
         }
@@ -195,7 +199,7 @@ public class ServerAPI : MonoBehaviour
         return ServerUserUpdateError.None;
     }
 
-    private static bool UpdateUserNickname(string nickname)
+    private static bool UpdateUserNicknameAuth(string nickname)
     {
         UserProfile profile = new() { DisplayName = nickname };
         var ProfileTask = loggedUser.UpdateUserProfileAsync(profile);
@@ -217,6 +221,27 @@ public class ServerAPI : MonoBehaviour
         user.Nickname = nickname;
         LoggedUser = user;
         return true;
+    }
+
+    private static bool UpdateUserNicknameDatabase(string nickname)
+    {
+        var DBTask = dbReference.Child("users").Child(loggedUser.UserId).Child("nickname").SetValueAsync(nickname);
+
+        while (!DBTask.IsCompleted) { }
+        //yield return new WaitUntil(predicate: () => DBTask.IsCompleted);
+
+        if (DBTask.Exception != null)
+        {
+            Debug.LogWarning(message: $"Failed to register task with {DBTask.Exception}");
+            return false;
+        }
+        else
+        {
+            UserData user = LoggedUser.Value;
+            user.Nickname = nickname;
+            LoggedUser = user;
+            return true;
+        }
     }
 
     public static (ServerSearchError, UserData?) GetLoggedUserData()
@@ -246,6 +271,44 @@ public class ServerAPI : MonoBehaviour
         return true;
     }
 
+    public static (ServerSearchError, UserData?) GetLoggedUserDatabase()
+    {
+        var DBTask = dbReference.Child("users").Child(loggedUser.UserId).GetValueAsync();
+
+        //yield return new WaitUntil(predicate: () => DBTask.IsCompleted);
+        while (!DBTask.IsCompleted) { }
+
+        if (DBTask.Exception != null)
+        {
+            Debug.LogWarning(message: $"Failed to register task with {DBTask.Exception}");
+
+            // Powinno chyba byc cos innego
+            return (ServerSearchError.NoUserFound, null);
+        }
+        else if (DBTask.Result.Value == null)
+        {
+            UserData user = LoggedUser.Value;
+            user.ChallengeData = new List<ChallengeData>();
+            user.FriendRequests = new List<string>();
+            user.Friends = new List<string>();
+            user.Highscores = new List<float> { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f };
+
+            return (ServerSearchError.None, user);
+        }
+        else
+        {
+            DataSnapshot snapshot = DBTask.Result;
+
+            UserData user = LoggedUser.Value;
+            user.FriendRequests = (List<string>)snapshot.Child("friendRequests").Value;
+            user.Friends = (List<string>)snapshot.Child("friends").Value;
+            user.Highscores = (List<float>)snapshot.Child("highscores").Value;
+
+            return (ServerSearchError.None, user);
+        }
+    }
+
+    /*
     public static (ServerSearchError, UserData?) GetUserDataByNickname(string nickname)
     {
         if (LoggedUser != null)
@@ -290,4 +353,5 @@ public class ServerAPI : MonoBehaviour
         UserData userData = LoggedUser.Value;
         return (ServerSearchError.None, userData);
     }
+    */
 }
