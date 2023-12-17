@@ -16,13 +16,20 @@ public class BioProductsManager : MonoBehaviour
     void Start()
     {
         score = 100;
+        timeLeft = 30;
         GenerateProduct();
     }
 
     // Update is called once per frame
     void Update()
     {
-        GetComponent<BioGameDisplay>().UpdateDisplay(currentProduct, score);
+        if (timeLeft > 0)
+        {
+            timeLeft -= Time.deltaTime;
+        }
+
+        GetComponent<BioGameDisplay>().UpdateDisplay(currentProduct, score, timeLeft);
+
 
         if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
         {
@@ -35,26 +42,12 @@ public class BioProductsManager : MonoBehaviour
 
             if(endTouchPos.x < startTouchPos.x)
             {
-                if(currentProduct.GetEcological() == false)
-                {
-                    Choose(true);
-                }
-                else
-                {
-                    Choose(false);
-                }
+                Choose(false);
             }
 
             if(endTouchPos.x > startTouchPos.x)
             {
-                if (currentProduct.GetEcological() == true)
-                {
-                    Choose(true);
-                }
-                else
-                {
-                    Choose(false);
-                }
+                Choose(true);
             }
         }
     }
@@ -65,7 +58,7 @@ public class BioProductsManager : MonoBehaviour
         var products = Resources.LoadAll("Products/");
         numberOfProducts = products.Length;
 
-        int index = Random.Range(0, numberOfProducts - 1);
+        int index = Random.Range(1, numberOfProducts + 1);
 
         currentProduct = Resources.Load<Product>("Products/product" + index.ToString());
         //currentProduct = Resources.Load<Product>("Products/product1");
@@ -86,4 +79,5 @@ public class BioProductsManager : MonoBehaviour
 
     public int GetScore() { return score; }
     public Product GetProduct() { return currentProduct; }
+    //asasa
 }
