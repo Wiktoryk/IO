@@ -1,5 +1,43 @@
 {
   "dependencies": {
+    "com.google.external-dependency-manager": {
+      "version": "file:../Assets/Packages/com.google.external-dependency-manager-1.2.177.tgz",
+      "depth": 0,
+      "source": "local-tarball",
+      "dependencies": {}
+    },
+    "com.google.firebase.analytics": {
+      "version": "file:../Assets/Packages/com.google.firebase.analytics-11.6.0.tgz",
+      "depth": 0,
+      "source": "local-tarball",
+      "dependencies": {
+        "com.google.firebase.app": "11.6.0"
+      }
+    },
+    "com.google.firebase.app": {
+      "version": "file:../Assets/Packages/com.google.firebase.app-11.6.0.tgz",
+      "depth": 0,
+      "source": "local-tarball",
+      "dependencies": {
+        "com.google.external-dependency-manager": "1.2.177"
+      }
+    },
+    "com.google.firebase.auth": {
+      "version": "file:../Assets/Packages/com.google.firebase.auth-11.6.0.tgz",
+      "depth": 0,
+      "source": "local-tarball",
+      "dependencies": {
+        "com.google.firebase.app": "11.6.0"
+      }
+    },
+    "com.google.firebase.database": {
+      "version": "file:../Assets/Packages/com.google.firebase.database-11.6.0.tgz",
+      "depth": 0,
+      "source": "local-tarball",
+      "dependencies": {
+        "com.google.firebase.auth": "11.6.0"
+      }
+    },
     "com.unity.2d.animation": {
       "version": "9.0.4",
       "depth": 1,
@@ -143,7 +181,7 @@
       }
     },
     "com.unity.ide.rider": {
-      "version": "3.0.26",
+      "version": "3.0.27",
       "depth": 0,
       "source": "registry",
       "dependencies": {
