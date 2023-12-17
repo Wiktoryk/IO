@@ -51,6 +51,6 @@ public class RecyklingGameScript : MonoBehaviour
     {
         GameObject trash = Instantiate(trashPrefab);
         trash.transform.position = new Vector3(Random.Range(-150, 250), Random.Range(0, 200), 0);
-        trash.GetComponent<TrashInstance>().trashType = (TrashType)Random.Range(0, 5);
+        trash.GetComponent<TrashInstance>().trashType = (TrashType)Random.Range(0, 6);
     }
 }
