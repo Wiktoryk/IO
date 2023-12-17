@@ -25,7 +25,16 @@ public enum ServerUserUpdateError
 {
     None = 0,
     UserNotLoggedIn = 1,
-    NicknameUpdateFailed = 2
+    NicknameUpdateFailed = 2,
+    HighscoresUpdateFailed = 3,
+    FriendsListUpdateFailed = 4,
+    FriendsInvitesAddFailed = 5,
+    FriendsInvitesRemoveFailed = 6,
+    FreindsRequestsAddFailed = 7,
+    FriendsRequestsRemoveFailed = 8,
+    ChallangesSendFailed = 9,
+    ChallangesRemoveFailed = 10,
+    GetCurrentUserData = 11
 }
 
 public enum ServerSearchError

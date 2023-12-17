@@ -1,7 +1,6 @@
 using Firebase;
 using Firebase.Auth;
 using Firebase.Database;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -216,14 +215,118 @@ public class ServerAPI
             {
                 if (!UpdateUserNicknameAuth(userData.Nickname))
                 {
-                    if (!UpdateUserNicknameDatabase(userData.Nickname))
+                    return ServerUserUpdateError.NicknameUpdateFailed;
+                }
+            }
+
+            // Update Score
+            for (int i = 0; i < userData.Highscores.Count; i++)
+            {
+                if (userData.Highscores[i] != LoggedUser.Value.Highscores[i])
+                {
+                    if (!UpdateUserHighscoreDatabase(i, userData.Highscores[i]))
                     {
-                        return ServerUserUpdateError.NicknameUpdateFailed;
+                        return ServerUserUpdateError.HighscoresUpdateFailed;
+                    }
+                }
+            }
+
+            // Update Friends List
+            foreach (string friendID in userData.Friends)
+            {
+                if (!LoggedUser.Value.Friends.Contains(friendID))
+                {
+                    if (!UpdateUserFriendsListDatabase(friendID))
+                    {
+                        return ServerUserUpdateError.FriendsListUpdateFailed;
+                    }
+                }
+            }
+
+            // Update Friends Invites
+            foreach (string friendID in userData.FriendInvites)
+            {
+                if (!LoggedUser.Value.FriendInvites.Contains(friendID))
+                {
+                    if (!AddUserFriendInvitesDatabase(friendID))
+                    {
+                        return ServerUserUpdateError.FriendsInvitesAddFailed;
+                    }
+                }
+            }
+            foreach (string friendID in LoggedUser.Value.FriendInvites)
+            {
+                if (!userData.FriendInvites.Contains(friendID))
+                {
+                    if (!DeleteUserFriendInvitesDatabase(friendID))
+                    {
+                        return ServerUserUpdateError.FriendsInvitesRemoveFailed;
+                    }
+                }
+            }
+
+            // Remove Friend Requests
+            foreach (var request in LoggedUser.Value.FriendRequests)
+            {
+                if (!userData.FriendRequests.Contains(request))
+                {
+                    if (!DeleteFriendRequestDatabase(request.Key))
+                    {
+                        return ServerUserUpdateError.FriendsRequestsRemoveFailed;
+                    }
+                }
+            }
+
+            // Remove Challange
+            foreach (ChallengeData challange in LoggedUser.Value.ChallengeData)
+            {
+                if (!userData.ChallengeData.Contains(challange))
+                {
+                    if (!DeleteChallangeDatabase(challange))
+                    {
+                        return ServerUserUpdateError.ChallangesRemoveFailed;
                     }
                 }
             }
         }
 
+        (ServerSearchError error, UserData? currUser) = GetUserDataByID(userData.ID);
+        if (error != ServerSearchError.None)
+        {
+            return ServerUserUpdateError.GetCurrentUserData;
+        }
+
+        // Send Friends Requests
+        foreach (var request in userData.FriendRequests)
+        {
+            if (!currUser.Value.FriendRequests.Contains(request))
+            {
+                if (!SendFriendRequestDatabase(userData.ID, request.Value))
+                {
+                    return ServerUserUpdateError.FriendsInvitesAddFailed;
+                }
+            }
+        }
+
+        // Send Challanges
+        foreach (ChallengeData challange in userData.ChallengeData)
+        {
+            if (!currUser.Value.ChallengeData.Contains(challange))
+            {
+                if (!SendChallangeDatabase(userData.ID, challange))
+                {
+                    return ServerUserUpdateError.ChallangesSendFailed;
+                }
+            }
+        }
+
+
+        if (userData.ID == LoggedUser.Value.ID)
+        {
+            UserData updatedUser = userData;
+            updatedUser.Email = LoggedUser.Value.Email;
+            LoggedUser = updatedUser;
+        }
         return ServerUserUpdateError.None;
     }
 
@@ -240,7 +343,7 @@ public class ServerAPI
             Debug.LogWarning($"Failed to register task with {ProfileTask.Exception}");
             FirebaseException firebaseEx = ProfileTask.Exception.GetBaseException() as FirebaseException;
             AuthError errorCode = (AuthError)firebaseEx.ErrorCode;
-            Debug.LogWarning("Username Set Failed!");
+            Debug.LogWarning($"Username Set Failed! Error: {errorCode}");
             return false;
         }
 
@@ -248,7 +351,7 @@ public class ServerAPI
         UserData user = LoggedUser.Value;
         user.Nickname = nickname;
         LoggedUser = user;
-        return true;
+        return UpdateUserNicknameDatabase(nickname);
     }
 
     private bool RegisterUserDatabase()
@@ -538,7 +641,37 @@ public class ServerAPI
 
     public List<int> GetMinigamesIDs()
     {
-        return new List<int>();
+        (bool minigamesIDsGenerated, List<int> minigamesIDs) = GetMinigamesIDsDatabase();
+        if (minigamesIDsGenerated)
+        {
+            return minigamesIDs;
+        }
+
+        // Losowanie
+        minigamesIDs = new List<int>();
+
+        while (minigamesIDs.Count < 4)
+        {
+            int id = (int)Random.Range(0, 8);
+            if (!minigamesIDs.Contains(id))
+            {
+                minigamesIDs.Add(id);
+            }
+        }
+
+        SaveMinigamesIDsDatabase(minigamesIDs);
+
+        return minigamesIDs;
+    }
+
+    private void SaveMinigamesIDsDatabase(List<int> ids)
+    {
+        return;
+    }
+
+    private (bool, List<int>) GetMinigamesIDsDatabase()
+    {
+        return (true, new List<int>{ 0, 7, 2, 3 });
     }
 
     public bool Logout()
