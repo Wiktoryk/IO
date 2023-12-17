@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class BioGameDisplay : MonoBehaviour
@@ -40,6 +41,10 @@ public class BioGameDisplay : MonoBehaviour
         gameDisplay.SetActive(true);
     }
 
+    public void ReturnToLobby()
+    {
+        SceneManager.LoadScene(0);
+    }
     private void EndGame()
     {
         gameObject.GetComponent<BioProductsManager>().enabled = false;
