@@ -114,4 +114,54 @@ public class DataManager : MonoBehaviour, IDataManager
             Debug.LogError("ServerAPI reference not found!");
         }
     }
+
+    public UserData getUser(string nickname)
+    {
+        (_ServerSearchError, user) = ServerAPI.GetUserDataByNickname(nickname);
+        return user;
+    }
+    void UpdateUserData(string userData)
+    {
+        ServerAPI.UpdateUserData(userData);
+    }
+    bool login(string email, string password)
+    {
+        return ServerAPI.login(email, password);
+    }
+    bool register(string email, string nickname, string password)
+    {
+        return ServerAPI.register(email, nickname, password);
+    }
+    public List<int> fetchMiniGamesList()
+    {  
+        return new List<int>();
+    }
+    public bool changeNickname(string nickname)
+    {
+        if (nickname != null)
+        {
+            return ServerAPI.UpdateUserNicknameAuth(nickname);
+        }
+        return false;
+    }
+    public bool changePassword(string password)
+    {
+        return false;
+    }
+    public bool sendFriendRequest(string nickname)
+    {
+        return false;
+    }
+    public bool sendChallenge(string nickname)
+    {
+        return false;
+    }
+    public bool respondFriendRequest(bool accepted, string nickname)
+    {
+        return false;
+    }
+    public bool respondChallenge(string miniGameName)
+    {
+        return false;
+    }
 }
