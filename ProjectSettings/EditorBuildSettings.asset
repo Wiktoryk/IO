@@ -23,4 +23,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/PaperRecycling.unity
     guid: 7d986aebb820e94418ac2733a7786551
+  - enabled: 1
+    path: Assets/Scenes/MinigameWaterSaving.unity
+    guid: 862bef7b447ab374c953bb026310840a
   m_configObjects: {}

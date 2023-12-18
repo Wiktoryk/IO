@@ -47,8 +47,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   statementsFileName: NPC3
   miniGames:
-  - miniGameName: MINI
-    miniGameSceneName: TestMiniGameScene
+  - miniGameName: MinigameWaterSaving
+    miniGameSceneName: MinigameWaterSaving
 --- !u!212 &1577454549830758114
 SpriteRenderer:
   m_ObjectHideFlags: 0
