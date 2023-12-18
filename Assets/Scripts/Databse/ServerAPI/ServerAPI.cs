@@ -1,22 +1,41 @@
 using Firebase;
 using Firebase.Auth;
 using Firebase.Database;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class ServerAPI : MonoBehaviour
+public class ServerAPI
 {
-    private static bool firebaseInizialized = false;
-    private static DependencyStatus dependencyStatus;
-    private static FirebaseAuth auth;
-    private static DatabaseReference dbReference;
+    private bool firebaseInizialized = false;
+    private DependencyStatus dependencyStatus;
+    private FirebaseAuth auth;
+    private DatabaseReference dbReference;
 
-    private static FirebaseUser loggedUser = null;
-    private static UserData? LoggedUser = null;
+    private FirebaseUser firebaseLoggedUser = null;
+    private UserData? LoggedUser = null;
 
-    private static void InitFirebase()
+    private static ServerAPI _instance = null;
+    public static ServerAPI Instance { 
+        get
+        {
+            return _instance ??= new ServerAPI();
+        }
+        private set
+        {
+            if (_instance != value)
+            {
+                _instance = value;
+            }
+        }
+    }
+
+    public ServerAPI()
+    {
+        InitFirebase();
+    }
+
+    private void InitFirebase()
     {
         if (firebaseInizialized)
         {
@@ -45,10 +64,8 @@ public class ServerAPI : MonoBehaviour
         });
     }
 
-    public static ServerLogInError Login(string email, string password)
+    public ServerLogInError Login(string email, string password)
     {
-        InitFirebase();
-
         var LoginTask = auth.SignInWithEmailAndPasswordAsync(email, password);
 
         while (!LoginTask.IsCompleted)
@@ -99,8 +116,8 @@ public class ServerAPI : MonoBehaviour
             return error;
         }
 
-        loggedUser = LoginTask.Result.User;
-        LoggedUser = new UserData(loggedUser, new List<string>(), new List<float>(), new Dictionary<string, bool>(), new List<string>(), new List<ChallengeData>());
+        firebaseLoggedUser = LoginTask.Result.User;
+        LoggedUser = new UserData(firebaseLoggedUser, new List<string>(), new List<float>(), new Dictionary<string, bool>(), new List<string>(), new List<ChallengeData>());
         (ServerSearchError, UserData?) user = GetLoggedUserDatabase();
         if (user.Item1 == ServerSearchError.None)
         {
@@ -111,10 +128,8 @@ public class ServerAPI : MonoBehaviour
         return ServerLogInError.None;
     }
 
-    public static ServerRegisterError Register(string email, string password, string nickname)
+    public ServerRegisterError Register(string email, string password, string nickname)
     {
-        InitFirebase();
-
         var RegisterTask = auth.CreateUserWithEmailAndPasswordAsync(email, password);
 
         while (!RegisterTask.IsCompleted)
@@ -162,14 +177,14 @@ public class ServerAPI : MonoBehaviour
             return error;
         }
 
-        loggedUser = RegisterTask.Result.User;
-        if (loggedUser == null)
+        firebaseLoggedUser = RegisterTask.Result.User;
+        if (firebaseLoggedUser == null)
         {
             LoggedUser = null;
             return ServerRegisterError.Other;
         }
 
-        LoggedUser = new UserData(loggedUser, new List<string>(), new List<float> { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f }, new Dictionary<string, bool>(), new List<string>(), new List<ChallengeData>());
+        LoggedUser = new UserData(firebaseLoggedUser, new List<string>(), new List<float> { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f }, new Dictionary<string, bool>(), new List<string>(), new List<ChallengeData>());
 
         if (!UpdateUserNicknameAuth(nickname))
         {
@@ -184,7 +199,7 @@ public class ServerAPI : MonoBehaviour
         return ServerRegisterError.None;
     }
 
-    public static ServerUserUpdateError UpdateUserData(UserData userData)
+    public ServerUserUpdateError UpdateUserData(UserData userData)
     {
         // U¿ytkownik nie zalogowany
         if (LoggedUser == null)
@@ -200,21 +215,125 @@ public class ServerAPI : MonoBehaviour
             {
                 if (!UpdateUserNicknameAuth(userData.Nickname))
                 {
-                    if (!UpdateUserNicknameDatabase(userData.Nickname))
+                    return ServerUserUpdateError.NicknameUpdateFailed;
+                }
+            }
+
+            // Update Score
+            for (int i = 0; i < userData.Highscores.Count; i++)
+            {
+                if (userData.Highscores[i] != LoggedUser.Value.Highscores[i])
+                {
+                    if (!UpdateUserHighscoreDatabase(i, userData.Highscores[i]))
                     {
-                        return ServerUserUpdateError.NicknameUpdateFailed;
+                        return ServerUserUpdateError.HighscoresUpdateFailed;
+                    }
+                }
+            }
+
+            // Update Friends List
+            foreach (string friendID in userData.Friends)
+            {
+                if (!LoggedUser.Value.Friends.Contains(friendID))
+                {
+                    if (!UpdateUserFriendsListDatabase(friendID))
+                    {
+                        return ServerUserUpdateError.FriendsListUpdateFailed;
+                    }
+                }
+            }
+
+            // Update Friends Invites
+            foreach (string friendID in userData.FriendInvites)
+            {
+                if (!LoggedUser.Value.FriendInvites.Contains(friendID))
+                {
+                    if (!AddUserFriendInvitesDatabase(friendID))
+                    {
+                        return ServerUserUpdateError.FriendsInvitesAddFailed;
+                    }
+                }
+            }
+            foreach (string friendID in LoggedUser.Value.FriendInvites)
+            {
+                if (!userData.FriendInvites.Contains(friendID))
+                {
+                    if (!DeleteUserFriendInvitesDatabase(friendID))
+                    {
+                        return ServerUserUpdateError.FriendsInvitesRemoveFailed;
+                    }
+                }
+            }
+
+            // Remove Friend Requests
+            foreach (var request in LoggedUser.Value.FriendRequests)
+            {
+                if (!userData.FriendRequests.Contains(request))
+                {
+                    if (!DeleteFriendRequestDatabase(request.Key))
+                    {
+                        return ServerUserUpdateError.FriendsRequestsRemoveFailed;
+                    }
+                }
+            }
+
+            // Remove Challange
+            foreach (ChallengeData challange in LoggedUser.Value.ChallengeData)
+            {
+                if (!userData.ChallengeData.Contains(challange))
+                {
+                    if (!DeleteChallangeDatabase(challange))
+                    {
+                        return ServerUserUpdateError.ChallangesRemoveFailed;
                     }
                 }
             }
         }
 
+        (ServerSearchError error, UserData? currUser) = GetUserDataByID(userData.ID);
+        if (error != ServerSearchError.None)
+        {
+            return ServerUserUpdateError.GetCurrentUserData;
+        }
+
+        // Send Friends Requests
+        foreach (var request in userData.FriendRequests)
+        {
+            if (!currUser.Value.FriendRequests.Contains(request))
+            {
+                if (!SendFriendRequestDatabase(userData.ID, request.Value))
+                {
+                    return ServerUserUpdateError.FriendsInvitesAddFailed;
+                }
+            }
+        }
+
+        // Send Challanges
+        foreach (ChallengeData challange in userData.ChallengeData)
+        {
+            if (!currUser.Value.ChallengeData.Contains(challange))
+            {
+                if (!SendChallangeDatabase(userData.ID, challange))
+                {
+                    return ServerUserUpdateError.ChallangesSendFailed;
+                }
+            }
+        }
+
+
+        if (userData.ID == LoggedUser.Value.ID)
+        {
+            UserData updatedUser = userData;
+            updatedUser.Email = LoggedUser.Value.Email;
+            LoggedUser = updatedUser;
+        }
         return ServerUserUpdateError.None;
     }
 
-    private static bool UpdateUserNicknameAuth(string nickname)
+    private bool UpdateUserNicknameAuth(string nickname)
     {
         UserProfile profile = new() { DisplayName = nickname };
-        var ProfileTask = loggedUser.UpdateUserProfileAsync(profile);
+        var ProfileTask = firebaseLoggedUser.UpdateUserProfileAsync(profile);
 
         while (!ProfileTask.IsCompleted) { }
         //yield return new WaitUntil(() => ProfileTask.IsCompleted);
@@ -224,7 +343,7 @@ public class ServerAPI : MonoBehaviour
             Debug.LogWarning($"Failed to register task with {ProfileTask.Exception}");
             FirebaseException firebaseEx = ProfileTask.Exception.GetBaseException() as FirebaseException;
             AuthError errorCode = (AuthError)firebaseEx.ErrorCode;
-            Debug.LogWarning("Username Set Failed!");
+            Debug.LogWarning($"Username Set Failed! Error: {errorCode}");
             return false;
         }
 
@@ -232,10 +351,10 @@ public class ServerAPI : MonoBehaviour
         UserData user = LoggedUser.Value;
         user.Nickname = nickname;
         LoggedUser = user;
-        return true;
+        return UpdateUserNicknameDatabase(nickname);
     }
 
-    private static bool RegisterUserDatabase()
+    private bool RegisterUserDatabase()
     {
         if (LoggedUser == null)
         {
@@ -267,9 +386,9 @@ public class ServerAPI : MonoBehaviour
         return true;
     }
 
-    private static bool UpdateUserNicknameDatabase(string nickname)
+    private bool UpdateUserNicknameDatabase(string nickname)
     {
-        var DBTask = dbReference.Child("users").Child(loggedUser.UserId).Child("nickname").SetValueAsync(nickname);
+        var DBTask = dbReference.Child("users").Child(firebaseLoggedUser.UserId).Child("nickname").SetValueAsync(nickname);
 
         while (!DBTask.IsCompleted) { }
         //yield return new WaitUntil(predicate: () => DBTask.IsCompleted);
@@ -288,9 +407,9 @@ public class ServerAPI : MonoBehaviour
         }
     }
 
-    private static bool UpdateUserEmailDatabase(string email)
+    private bool UpdateUserEmailDatabase(string email)
     {
-        var DBTask = dbReference.Child("users").Child(loggedUser.UserId).Child("email").SetValueAsync(email);
+        var DBTask = dbReference.Child("users").Child(firebaseLoggedUser.UserId).Child("email").SetValueAsync(email);
 
         while (!DBTask.IsCompleted) { }
         //yield return new WaitUntil(predicate: () => DBTask.IsCompleted);
@@ -309,9 +428,9 @@ public class ServerAPI : MonoBehaviour
         }
     }
 
-    private static bool UpdateUserHighscoreDatabase(int minigameId, float score)
+    private bool UpdateUserHighscoreDatabase(int minigameId, float score)
     {
-        var DBTask = dbReference.Child("users").Child(loggedUser.UserId).Child("highscores").Child(minigameId.ToString()).SetValueAsync(score);
+        var DBTask = dbReference.Child("users").Child(firebaseLoggedUser.UserId).Child("highscores").Child(minigameId.ToString()).SetValueAsync(score);
 
         while (!DBTask.IsCompleted) { }
         //yield return new WaitUntil(predicate: () => DBTask.IsCompleted);
@@ -345,9 +464,9 @@ public class ServerAPI : MonoBehaviour
         }
     }
 
-    private static bool UpdateUserFriendsListDatabase(string friendId)
+    private bool UpdateUserFriendsListDatabase(string friendId)
     {
-        var DBTask = dbReference.Child("users").Child(loggedUser.UserId).Child("friends").Child(friendId).SetValueAsync(true);
+        var DBTask = dbReference.Child("users").Child(firebaseLoggedUser.UserId).Child("friends").Child(friendId).SetValueAsync(true);
 
         while (!DBTask.IsCompleted) { }
         //yield return new WaitUntil(predicate: () => DBTask.IsCompleted);
@@ -366,9 +485,9 @@ public class ServerAPI : MonoBehaviour
         }
     }
 
-    private static bool AddUserFriendInvitesDatabase(string friendId)
+    private bool AddUserFriendInvitesDatabase(string friendId)
     {
-        var DBTask = dbReference.Child("users").Child(loggedUser.UserId).Child("friendInvites").Child(friendId).SetValueAsync(true);
+        var DBTask = dbReference.Child("users").Child(firebaseLoggedUser.UserId).Child("friendInvites").Child(friendId).SetValueAsync(true);
 
         while (!DBTask.IsCompleted) { }
         //yield return new WaitUntil(predicate: () => DBTask.IsCompleted);
@@ -387,9 +506,9 @@ public class ServerAPI : MonoBehaviour
         }
     }
 
-    private static bool DeleteUserFriendInvitesDatabase(string friendId)
+    private bool DeleteUserFriendInvitesDatabase(string friendId)
     {
-        var DBTask = dbReference.Child("users").Child(loggedUser.UserId).Child("friendInvites").Child(friendId).RemoveValueAsync();
+        var DBTask = dbReference.Child("users").Child(firebaseLoggedUser.UserId).Child("friendInvites").Child(friendId).RemoveValueAsync();
 
         while (!DBTask.IsCompleted) { }
         //yield return new WaitUntil(predicate: () => DBTask.IsCompleted);
@@ -408,9 +527,9 @@ public class ServerAPI : MonoBehaviour
         }
     }
 
-    private static bool SendFriendRequestDatabase(string friendId, bool accept)
+    private bool SendFriendRequestDatabase(string friendId, bool accept)
     {
-        var DBTask = dbReference.Child("users").Child(friendId).Child("friendRequests").Child(loggedUser.UserId).SetValueAsync(accept);
+        var DBTask = dbReference.Child("users").Child(friendId).Child("friendRequests").Child(firebaseLoggedUser.UserId).SetValueAsync(accept);
 
         while (!DBTask.IsCompleted) { }
         //yield return new WaitUntil(predicate: () => DBTask.IsCompleted);
@@ -426,9 +545,9 @@ public class ServerAPI : MonoBehaviour
         }
     }
 
-    private static bool DeleteFriendRequestDatabase(string friendId)
+    private bool DeleteFriendRequestDatabase(string friendId)
     {
-        var DBTask = dbReference.Child("users").Child(loggedUser.UserId).Child("friendRequests").Child(friendId).RemoveValueAsync();
+        var DBTask = dbReference.Child("users").Child(firebaseLoggedUser.UserId).Child("friendRequests").Child(friendId).RemoveValueAsync();
 
         while (!DBTask.IsCompleted) { }
         //yield return new WaitUntil(predicate: () => DBTask.IsCompleted);
@@ -447,9 +566,9 @@ public class ServerAPI : MonoBehaviour
         }
     }
 
-    private static bool SendChallangeDatabase(string friendId, ChallengeData challenge)
+    private bool SendChallangeDatabase(string friendId, ChallengeData challenge)
     {
-        var DBTask = dbReference.Child("users").Child(friendId).Child("challanges").Child(loggedUser.UserId + "_" + challenge.MinigameID.ToString()).Child("userId").SetValueAsync(challenge.UserID);
+        var DBTask = dbReference.Child("users").Child(friendId).Child("challanges").Child(firebaseLoggedUser.UserId + "_" + challenge.MinigameID.ToString()).Child("userId").SetValueAsync(challenge.UserID);
 
         while (!DBTask.IsCompleted) { }
         //yield return new WaitUntil(predicate: () => DBTask.IsCompleted);
@@ -461,7 +580,7 @@ public class ServerAPI : MonoBehaviour
         }
         else
         {
-            DBTask = dbReference.Child("users").Child(friendId).Child("challanges").Child(loggedUser.UserId + "_" + challenge.MinigameID.ToString()).Child("minigameId").SetValueAsync(challenge.MinigameID);
+            DBTask = dbReference.Child("users").Child(friendId).Child("challanges").Child(firebaseLoggedUser.UserId + "_" + challenge.MinigameID.ToString()).Child("minigameId").SetValueAsync(challenge.MinigameID);
 
             while (!DBTask.IsCompleted) { }
             //yield return new WaitUntil(predicate: () => DBTask.IsCompleted);
@@ -473,7 +592,7 @@ public class ServerAPI : MonoBehaviour
             }
             else
             {
-                DBTask = dbReference.Child("users").Child(friendId).Child("challanges").Child(loggedUser.UserId + "_" + challenge.MinigameID.ToString()).Child("score").SetValueAsync(challenge.Score);
+                DBTask = dbReference.Child("users").Child(friendId).Child("challanges").Child(firebaseLoggedUser.UserId + "_" + challenge.MinigameID.ToString()).Child("score").SetValueAsync(challenge.Score);
 
                 while (!DBTask.IsCompleted) { }
                 //yield return new WaitUntil(predicate: () => DBTask.IsCompleted);
@@ -489,9 +608,9 @@ public class ServerAPI : MonoBehaviour
         }
     }
 
-    private static bool DeleteChallangeDatabase(ChallengeData challenge)
+    private bool DeleteChallangeDatabase(ChallengeData challenge)
     {
-        var DBTask = dbReference.Child("users").Child(loggedUser.UserId).Child("challanges").Child(challenge.UserID + "_" + challenge.MinigameID.ToString()).RemoveValueAsync();
+        var DBTask = dbReference.Child("users").Child(firebaseLoggedUser.UserId).Child("challanges").Child(challenge.UserID + "_" + challenge.MinigameID.ToString()).RemoveValueAsync();
 
         while (!DBTask.IsCompleted) { }
         //yield return new WaitUntil(predicate: () => DBTask.IsCompleted);
@@ -511,7 +630,7 @@ public class ServerAPI : MonoBehaviour
         }
     }
 
-    public static (ServerSearchError, UserData?) GetLoggedUserData()
+    public (ServerSearchError, UserData?) GetLoggedUserData()
     {
         if (LoggedUser == null)
         {
@@ -520,12 +639,42 @@ public class ServerAPI : MonoBehaviour
         return (ServerSearchError.None, LoggedUser.Value);
     }
 
-    public static List<int> GetMinigamesIDs()
+    public List<int> GetMinigamesIDs()
     {
-        return new List<int>();
+        (bool minigamesIDsGenerated, List<int> minigamesIDs) = GetMinigamesIDsDatabase();
+        if (minigamesIDsGenerated)
+        {
+            return minigamesIDs;
+        }
+
+        // Losowanie
+        minigamesIDs = new List<int>();
+
+        while (minigamesIDs.Count < 4)
+        {
+            int id = (int)Random.Range(0, 8);
+            if (!minigamesIDs.Contains(id))
+            {
+                minigamesIDs.Add(id);
+            }
+        }
+
+        SaveMinigamesIDsDatabase(minigamesIDs);
+
+        return minigamesIDs;
     }
 
-    public static bool Logout()
+    private void SaveMinigamesIDsDatabase(List<int> ids)
+    {
+        return;
+    }
+
+    private (bool, List<int>) GetMinigamesIDsDatabase()
+    {
+        return (true, new List<int>{ 0, 7, 2, 3 });
+    }
+
+    public bool Logout()
     {
         if (LoggedUser == null)
         {
@@ -533,19 +682,19 @@ public class ServerAPI : MonoBehaviour
         }
 
         auth.SignOut();
-        loggedUser = null;
+        firebaseLoggedUser = null;
         LoggedUser = null;
         return true;
     }
 
-    public static (ServerSearchError, UserData?) GetLoggedUserDatabase()
+    public (ServerSearchError, UserData?) GetLoggedUserDatabase()
     {
         if (LoggedUser == null)
         {
             return (ServerSearchError.UserNotLogged, null);
         }
 
-        var DBTask = dbReference.Child("users").Child(loggedUser.UserId).GetValueAsync();
+        var DBTask = dbReference.Child("users").Child(firebaseLoggedUser.UserId).GetValueAsync();
 
         //yield return new WaitUntil(predicate: () => DBTask.IsCompleted);
         while (!DBTask.IsCompleted) { }
@@ -636,7 +785,7 @@ public class ServerAPI : MonoBehaviour
         }
     }
 
-    public static (ServerSearchError, UserData?) GetUserDataByNickname(string nickname)
+    public (ServerSearchError, UserData?) GetUserDataByNickname(string nickname)
     {
         if (LoggedUser == null)
         {
@@ -746,7 +895,7 @@ public class ServerAPI : MonoBehaviour
         }
     }
 
-    public static (ServerSearchError, UserData?) GetUserDataByEmail(string email)
+    public (ServerSearchError, UserData?) GetUserDataByEmail(string email)
     {
         if (LoggedUser == null)
         {
@@ -856,7 +1005,7 @@ public class ServerAPI : MonoBehaviour
         }
     }
 
-    public static (ServerSearchError, UserData?) GetUserDataByID(string id)
+    public (ServerSearchError, UserData?) GetUserDataByID(string id)
     {
         if (LoggedUser == null)
         {
