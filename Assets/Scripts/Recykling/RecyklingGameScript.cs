@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class RecyklingGameScript : MonoBehaviour
 {
@@ -26,7 +27,12 @@ public class RecyklingGameScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(gameTimer.timeLeft > 0)
+        if (Input.GetKeyUp(KeyCode.E))
+        {
+            SceneManager.LoadScene("LobbyScene");
+        }
+
+        if (gameTimer.timeLeft > 0)
         {
             currentTrash = initialNumberOfTrash - trashCollected + addedTrash;
             if(currentTrash < initialNumberOfTrash)

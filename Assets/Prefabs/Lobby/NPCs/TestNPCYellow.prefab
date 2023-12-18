@@ -47,8 +47,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   statementsFileName: NPC4
   miniGames:
-  - miniGameName: MINI
-    miniGameSceneName: TestMiniGameScene
+  - miniGameName: Recykling
+    miniGameSceneName: Recykling
 --- !u!212 &1577454549830758114
 SpriteRenderer:
   m_ObjectHideFlags: 0
