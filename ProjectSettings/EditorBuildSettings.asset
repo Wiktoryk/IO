@@ -20,4 +20,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/BioProducts.unity
     guid: d73f435adb460a24aacc34a55d3675d6
+  - enabled: 1
+    path: Assets/Scenes/PaperRecycling.unity
+    guid: 7d986aebb820e94418ac2733a7786551
   m_configObjects: {}

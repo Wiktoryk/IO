@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
@@ -91,5 +92,10 @@ public class PaperGameManager : MonoBehaviour
         spriteObject.GetComponent<PolygonCollider2D>().SetPath(0,physicsShape);
         currentStamp.scale = scale;
         stamps.Add(currentStamp);
+    }
+
+    public void ReturnToLobby()
+    {
+        SceneManager.LoadScene("LobbyScene");
     }
 }
