@@ -1,5 +1,6 @@
 {
     "Database": {
+		"todayMinigames": 101,
         "users": {
             "HXLKH4qBuka6BxmXOzXeFBTYLKr2": {
                 "email": "test@test.com",
