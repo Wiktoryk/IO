@@ -9,7 +9,7 @@ public class DataManager : MonoBehaviour, IDataManager
     public FirebaseAuth auth;
     public FirebaseUser user;
     private IDataManager dataManager;
-    private IServerAPI serverAPI;
+    private ServerAPI.ServerAPI serverAPI;
 
     private bool firebaseInitialized = false;
     private bool loggedIn = false;
