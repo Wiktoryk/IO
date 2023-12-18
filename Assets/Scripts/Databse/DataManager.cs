@@ -28,51 +28,6 @@ public class DataManager : MonoBehaviour, IDataManager
     private bool loggedIn = false;
     public DependencyStatus dependencyStatus;
 
-    /*private void Awake()
-    {
-        FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(task =>
-        {
-            dependencyStatus = task.Result;
-            if (dependencyStatus == DependencyStatus.Available)
-            {
-                InitializeFirebase();
-            }
-            else
-            {
-                UnityEngine.Debug.LogError("Could not resolve all Firebase dependencies: " + dependencyStatus);
-            }
-        });
-        dataManager = FindObjectOfType<DataManager>();
-    }*/
-
-    /*private void Update()
-    {
-        if (firebaseInitialized && !loggedIn)
-        {
-            loggedIn = true;
-            //LoginButton();
-        }
-    }*/
-
-    /*private void InitializeFirebase()
-    {
-        UnityEngine.Debug.Log("Setting up Firebase Auth");
-
-        auth = FirebaseAuth.DefaultInstance;
-
-        firebaseInitialized = true;
-    }*/
-
-    // public void LoginButton()
-    // {
-    //     StartCoroutine(serverAPI.Login("test@test.com", "123456"));
-    // }
-
-    // public void RegisterButton()
-    // {
-    //     StartCoroutine(Register("cos@email.com", "password", "password", "nickname"));
-    // }
-
     private ServerAPI serverAPI = new ServerAPI();
 
     public ServerLogInError Login(string email, string password)
@@ -101,9 +56,6 @@ public class DataManager : MonoBehaviour, IDataManager
 
         UserData currentUserData = result.Item2.Value;
 
-        // Here you can update the fields of currentUserData with the values from newUserData
-        // For example:
-        // currentUserData.Nickname = newUserData.Nickname;
 
         return serverAPI.UpdateUserData(currentUserData);
     }
@@ -259,9 +211,6 @@ public class DataManager : MonoBehaviour, IDataManager
                 return false;
             }
 
-            // 4. Dodaj u�ytkownika do listy znajomych znajomego
-            // W tym celu musisz mie� dost�p do metody podobnej do UpdateUserFriendsListDatabase(friendId), ale dla innego u�ytkownika.
-            // Przyk�ad: if (!UpdateFriendFriendsListDatabase(friendId)) { ... }
         }
         else
         {
