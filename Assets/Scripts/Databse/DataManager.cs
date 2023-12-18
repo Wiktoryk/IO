@@ -63,22 +63,22 @@ public class DataManager : MonoBehaviour, IDataManager
 
     public static ServerLogInError Login(string email, string password)
     {
-        return ServerAPI.Login(email, password);
+        return serverAPI.Login(email, password);
     }
 
     public static ServerRegisterError Register(string email, string password, string nickname)
     {
-        return ServerAPI.Register(email, password, nickname);
+        return serverAPI.Register(email, password, nickname);
     }
 
     public static bool Logout()
     {
-        return ServerAPI.Logout();
+        return serverAPI.Logout();
     }
 
     public ServerUserUpdateError updateUser(UserData newUserData)
     {
-        var result = ServerAPI.GetLoggedUserData();
+        var result = serverAPI.GetLoggedUserData();
 
         if (result.Item1 != ServerSearchError.None)
         {
@@ -91,25 +91,25 @@ public class DataManager : MonoBehaviour, IDataManager
         // For example:
         // currentUserData.Nickname = newUserData.Nickname;
 
-        return ServerAPI.UpdateUserData(currentUserData);
+        return serverAPI.UpdateUserData(currentUserData);
     }
 
     public static List<int> fetchMiniGamesList()
     {
-        return ServerAPI.GetMinigamesIDs();
+        return serverAPI.GetMinigamesIDs();
     }
 
     public ServerUserUpdateError changeNickname(string newNickname)
     {
-        if (ServerAPI.LoggedUser == null)
+        if (serverAPI.LoggedUser == null)
         {
             return ServerUserUpdateError.UserNotLoggedIn;
         }
 
-        UserData userData = ServerAPI.LoggedUser.Value;
+        UserData userData = serverAPI.LoggedUser.Value;
         userData.Nickname = newNickname;
 
-        return ServerAPI.UpdateUserData(userData);
+        return serverAPI.UpdateUserData(userData);
     }
 
     public async Task<AuthError?> changePassword(string newPassword)
@@ -135,7 +135,7 @@ public class DataManager : MonoBehaviour, IDataManager
     public static bool SendFriendRequest(string friendId)
     {
         // Wysy³amy zaproszenie do znajomych do bazy danych
-        bool sendRequestResult = SendFriendRequestDatabase(friendId, true);
+        bool sendRequestResult = serverAPI.SendFriendRequestDatabase(friendId, true);
         if (!sendRequestResult)
         {
             Debug.LogWarning("Failed to send friend request");
@@ -143,7 +143,7 @@ public class DataManager : MonoBehaviour, IDataManager
         }
 
         // Dodajemy zaproszenie do listy zaproszeñ u¿ytkownika
-        bool addUserFriendInvitesResult = AddUserFriendInvitesDatabase(friendId);
+        bool addUserFriendInvitesResult = serverAPI.AddUserFriendInvitesDatabase(friendId);
         if (!addUserFriendInvitesResult)
         {
             Debug.LogWarning("Failed to add friend invite to user's list");
@@ -156,7 +156,7 @@ public class DataManager : MonoBehaviour, IDataManager
     public static bool CancelFriendRequest(string friendId)
     {
         // Usuwamy zaproszenie z listy zaproszeñ u¿ytkownika
-        bool deleteUserFriendInvitesResult = DeleteUserFriendInvitesDatabase(friendId);
+        bool deleteUserFriendInvitesResult = serverAPI.DeleteUserFriendInvitesDatabase(friendId);
         if (!deleteUserFriendInvitesResult)
         {
             Debug.LogWarning("Failed to delete friend invite from user's list");
@@ -195,7 +195,7 @@ public class DataManager : MonoBehaviour, IDataManager
 
     public async Task<(ServerSearchError, UserData?)> fetchUserData()
     {
-        var result = ServerAPI.GetLoggedUserDatabase();
+        var result = serverAPI.GetLoggedUserDatabase();
 
         if (result.Item1 != ServerSearchError.None)
         {
@@ -207,12 +207,12 @@ public class DataManager : MonoBehaviour, IDataManager
 
     public bool sendChallenge(string friendId, ChallengeData challenge)
     {
-        return ServerAPI.SendChallangeDatabase(friendId, challenge);
+        return serverAPI.SendChallangeDatabase(friendId, challenge);
     }
 
     public bool cancelChallenge(ChallengeData challenge)
     {
-        return ServerAPI.DeleteChallangeDatabase(challenge);
+        return serverAPI.DeleteChallangeDatabase(challenge);
     }
 
     public static bool RespondFriendRequest(string friendId, bool accept)
@@ -285,16 +285,16 @@ public class DataManager : MonoBehaviour, IDataManager
 
     public static (ServerSearchError, UserData?) GetUserByNickname(string nickname)
     {
-        return ServerAPI.GetUserDataByNickname(nickname);
+        return serverAPI.GetUserDataByNickname(nickname);
     }
 
     public static (ServerSearchError, UserData?) GetUserByEmail(string email)
     {
-        return ServerAPI.GetUserDataByEmail(email);
+        return serverAPI.GetUserDataByEmail(email);
     }
 
     public static (ServerSearchError, UserData?) GetUserID(string id)
     {
-        return ServerAPI.GetUserDataByID(id);
+        return serverAPI.GetUserDataByID(id);
     }
 }
