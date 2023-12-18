@@ -61,41 +61,19 @@ public class DataManager : MonoBehaviour, IDataManager
         StartCoroutine(Register("cos@email.com", "password", "password", "nickname"));
     }
 
-    private IEnumerator Login(string _email, string _password)
+    public static ServerLogInError Login(string email, string password)
     {
-        var loginTask = auth.SignInWithEmailAndPasswordAsync(_email, _password);
-
-        yield return new WaitUntil(() => loginTask.IsCompleted);
-
-        if (loginTask.Exception != null)
-        {
-            Debug.LogWarning($"Failed to login with {loginTask.Exception}");
-            // Handle login errors here
-        }
-        else
-        {
-            user = loginTask.Result.User;
-            Debug.LogFormat("User signed in successfully: {0} ({1})", user.DisplayName, user.Email);
-            Debug.Log("Logged In");
-
-            // After successful login, fetch necessary data or perform actions
-            FetchDataFromServer();
-        }
+        return ServerAPI.Login(email, password);
     }
 
-    private IEnumerator Register(string _email, string _password, string _verifyPassword, string _username)
+    public static ServerRegisterError Register(string email, string password, string nickname)
     {
-        // Your registration logic here
-        // Similar to your existing Register method
-
-        yield return null;
+        return ServerAPI.Register(email, password, nickname);
     }
 
-    private void FetchDataFromServer()
+    public static bool Logout()
     {
-        // Implement fetching data from the server here
-        // Use Server API to get user-related data, invitations, etc.
-        // Example: StartCoroutine(GetUserData());
+        return ServerAPI.Logout();
     }
 
     public ServerUserUpdateError updateUser(UserData newUserData)
@@ -115,18 +93,12 @@ public class DataManager : MonoBehaviour, IDataManager
 
         return ServerAPI.UpdateUserData(currentUserData);
     }
-    bool login(string email, string password)
+
+    public static List<int> fetchMiniGamesList()
     {
-        return ServerAPI.login(email, password);
+        return ServerAPI.GetMinigamesIDs();
     }
-    bool register(string email, string nickname, string password)
-    {
-        return ServerAPI.register(email, nickname, password);
-    }
-    public List<int> fetchMiniGamesList()
-    {  
-        return new List<int>();
-    }
+
     public ServerUserUpdateError changeNickname(string newNickname)
     {
         if (ServerAPI.LoggedUser == null)
@@ -139,10 +111,27 @@ public class DataManager : MonoBehaviour, IDataManager
 
         return ServerAPI.UpdateUserData(userData);
     }
-    public bool changePassword(string password)
+
+    public async Task<AuthError?> changePassword(string newPassword)
     {
-        return false;
+        if (auth.CurrentUser == null)
+        {
+            return AuthError.UserNotFound;
+        }
+
+        var result = await auth.CurrentUser.UpdatePasswordAsync(newPassword).ContinueWith(task =>
+        {
+            if (task.IsFaulted)
+            {
+                return (AuthError)task.Exception.InnerException.ErrorCode;
+            }
+
+            return null;
+        });
+
+        return result;
     }
+
     public static bool SendFriendRequest(string friendId)
     {
         // Wysy³amy zaproszenie do znajomych do bazy danych
@@ -184,6 +173,7 @@ public class DataManager : MonoBehaviour, IDataManager
 
         return true;
     }
+
     public static bool SaveScore(int minigameId, float score)
     {
         // Pobieramy aktualny najlepszy wynik u¿ytkownika
@@ -202,6 +192,7 @@ public class DataManager : MonoBehaviour, IDataManager
         // Jeœli nowy wynik nie jest wy¿szy, nie robimy nic
         return true;
     }
+
     public async Task<(ServerSearchError, UserData?)> fetchUserData()
     {
         var result = ServerAPI.GetLoggedUserDatabase();
@@ -213,20 +204,97 @@ public class DataManager : MonoBehaviour, IDataManager
 
         return result;
     }
+
     public bool sendChallenge(string friendId, ChallengeData challenge)
     {
         return ServerAPI.SendChallangeDatabase(friendId, challenge);
     }
+
     public bool cancelChallenge(ChallengeData challenge)
     {
         return ServerAPI.DeleteChallangeDatabase(challenge);
     }
-    public bool respondFriendRequest(bool accepted, string nickname)
+
+    public static bool RespondFriendRequest(string friendId, bool accept)
     {
-        return false;
+        if (accept)
+        {
+            // 1. Usuñ zaproszenie do znajomych z listy zaproszeñ u¿ytkownika
+            if (!DeleteUserFriendInvitesDatabase(friendId))
+            {
+                Debug.LogWarning("Failed to delete friend invite from user's list");
+                return false;
+            }
+
+            // 2. Dodaj nowego znajomego do listy znajomych u¿ytkownika
+            if (!UpdateUserFriendsListDatabase(friendId))
+            {
+                Debug.LogWarning("Failed to add friend to user's list");
+                return false;
+            }
+
+            // 3. Usuñ wys³ane zaproszenie do znajomych z listy zaproszeñ znajomego
+            if (!DeleteFriendRequestDatabase(friendId))
+            {
+                Debug.LogWarning("Failed to delete friend request from friend's list");
+                return false;
+            }
+
+            // 4. Dodaj u¿ytkownika do listy znajomych znajomego
+            // W tym celu musisz mieæ dostêp do metody podobnej do UpdateUserFriendsListDatabase(friendId), ale dla innego u¿ytkownika.
+            // Przyk³ad: if (!UpdateFriendFriendsListDatabase(friendId)) { ... }
+        }
+        else
+        {
+            // Jeœli u¿ytkownik nie akceptuje zaproszenia, usuñ zaproszenie z listy zaproszeñ u¿ytkownika
+            if (!DeleteUserFriendInvitesDatabase(friendId))
+            {
+                Debug.LogWarning("Failed to delete friend invite from user's list");
+                return false;
+            }
+
+            // i usuñ wys³ane zaproszenie do znajomych z listy zaproszeñ znajomego
+            if (!DeleteFriendRequestDatabase(friendId))
+            {
+                Debug.LogWarning("Failed to delete friend request from friend's list");
+                return false;
+            }
+        }
+
+        return true;
     }
-    public bool respondChallenge(string miniGameName)
+
+    public static bool AcceptChallenge(string friendId, ChallengeData challengeResponse)
     {
-        return false;
+        // 1. Wyœlij odpowiedŸ na wyzwanie do bazy danych
+        if (!SendChallangeDatabase(friendId, challengeResponse))
+        {
+            Debug.LogWarning("Failed to send challenge response");
+            return false;
+        }
+
+        // 2. Usuñ otrzymane wyzwanie z listy wyzwañ u¿ytkownika
+        if (!DeleteChallangeDatabase(challengeResponse))
+        {
+            Debug.LogWarning("Failed to delete received challenge");
+            return false;
+        }
+
+        return true;
+    }
+
+    public static (ServerSearchError, UserData?) GetUserByNickname(string nickname)
+    {
+        return ServerAPI.GetUserDataByNickname(nickname);
+    }
+
+    public static (ServerSearchError, UserData?) GetUserByEmail(string email)
+    {
+        return ServerAPI.GetUserDataByEmail(email);
+    }
+
+    public static (ServerSearchError, UserData?) GetUserID(string id)
+    {
+        return ServerAPI.GetUserDataByID(id);
     }
 }
