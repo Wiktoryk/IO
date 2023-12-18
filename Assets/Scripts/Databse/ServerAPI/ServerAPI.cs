@@ -4,6 +4,7 @@ using Firebase.Database;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using System.Threading.Tasks;
 
 public class ServerAPI
 {
@@ -14,6 +15,10 @@ public class ServerAPI
 
     private FirebaseUser firebaseLoggedUser = null;
     private UserData? LoggedUser = null;
+    public UserData? GetLoggedUser()
+    {
+    return LoggedUser;
+    }
 
     private static ServerAPI _instance = null;
     public static ServerAPI Instance { 
@@ -201,13 +206,13 @@ public class ServerAPI
 
     public ServerUserUpdateError UpdateUserData(UserData userData)
     {
-        // U¿ytkownik nie zalogowany
+        // Uï¿½ytkownik nie zalogowany
         if (LoggedUser == null)
         {
             return ServerUserUpdateError.UserNotLoggedIn;
         }
 
-        // Niektóre dane mog¹ byæ aktualizowane jeœli nale¿¹ do zalogowanego u¿ytkownika
+        // Niektï¿½re dane mogï¿½ byï¿½ aktualizowane jeï¿½li naleï¿½ï¿½ do zalogowanego uï¿½ytkownika
         if (userData.ID == LoggedUser.Value.ID)
         {
             // Update Nickname
@@ -330,7 +335,7 @@ public class ServerAPI
         return ServerUserUpdateError.None;
     }
 
-    private bool UpdateUserNicknameAuth(string nickname)
+    public bool UpdateUserNicknameAuth(string nickname)
     {
         UserProfile profile = new() { DisplayName = nickname };
         var ProfileTask = firebaseLoggedUser.UpdateUserProfileAsync(profile);
@@ -347,7 +352,7 @@ public class ServerAPI
             return false;
         }
 
-        // Uda³o siê wszystko
+        // Udaï¿½o siï¿½ wszystko
         UserData user = LoggedUser.Value;
         user.Nickname = nickname;
         LoggedUser = user;
@@ -428,7 +433,7 @@ public class ServerAPI
         }
     }
 
-    private bool UpdateUserHighscoreDatabase(int minigameId, float score)
+    public bool UpdateUserHighscoreDatabase(int minigameId, float score)
     {
         var DBTask = dbReference.Child("users").Child(firebaseLoggedUser.UserId).Child("highscores").Child(minigameId.ToString()).SetValueAsync(score);
 
@@ -464,7 +469,7 @@ public class ServerAPI
         }
     }
 
-    private bool UpdateUserFriendsListDatabase(string friendId)
+    public bool UpdateUserFriendsListDatabase(string friendId)
     {
         var DBTask = dbReference.Child("users").Child(firebaseLoggedUser.UserId).Child("friends").Child(friendId).SetValueAsync(true);
 
@@ -485,7 +490,7 @@ public class ServerAPI
         }
     }
 
-    private bool AddUserFriendInvitesDatabase(string friendId)
+    public bool AddUserFriendInvitesDatabase(string friendId)
     {
         var DBTask = dbReference.Child("users").Child(firebaseLoggedUser.UserId).Child("friendInvites").Child(friendId).SetValueAsync(true);
 
@@ -506,7 +511,7 @@ public class ServerAPI
         }
     }
 
-    private bool DeleteUserFriendInvitesDatabase(string friendId)
+    public bool DeleteUserFriendInvitesDatabase(string friendId)
     {
         var DBTask = dbReference.Child("users").Child(firebaseLoggedUser.UserId).Child("friendInvites").Child(friendId).RemoveValueAsync();
 
@@ -527,7 +532,7 @@ public class ServerAPI
         }
     }
 
-    private bool SendFriendRequestDatabase(string friendId, bool accept)
+    public bool SendFriendRequestDatabase(string friendId, bool accept)
     {
         var DBTask = dbReference.Child("users").Child(friendId).Child("friendRequests").Child(firebaseLoggedUser.UserId).SetValueAsync(accept);
 
@@ -545,7 +550,7 @@ public class ServerAPI
         }
     }
 
-    private bool DeleteFriendRequestDatabase(string friendId)
+    public bool DeleteFriendRequestDatabase(string friendId)
     {
         var DBTask = dbReference.Child("users").Child(firebaseLoggedUser.UserId).Child("friendRequests").Child(friendId).RemoveValueAsync();
 
@@ -566,7 +571,7 @@ public class ServerAPI
         }
     }
 
-    private bool SendChallangeDatabase(string friendId, ChallengeData challenge)
+    public bool SendChallangeDatabase(string friendId, ChallengeData challenge)
     {
         var DBTask = dbReference.Child("users").Child(friendId).Child("challanges").Child(firebaseLoggedUser.UserId + "_" + challenge.MinigameID.ToString()).Child("userId").SetValueAsync(challenge.UserID);
 
@@ -608,7 +613,7 @@ public class ServerAPI
         }
     }
 
-    private bool DeleteChallangeDatabase(ChallengeData challenge)
+    public bool DeleteChallangeDatabase(ChallengeData challenge)
     {
         var DBTask = dbReference.Child("users").Child(firebaseLoggedUser.UserId).Child("challanges").Child(challenge.UserID + "_" + challenge.MinigameID.ToString()).RemoveValueAsync();
 

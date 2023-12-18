@@ -168,7 +168,7 @@ public class AuthManager : MonoBehaviour
                     }
                     else
                     {
-                        // Uda³o siê wszystko
+                        // Udaï¿½o siï¿½ wszystko
                     }
                 }
             }

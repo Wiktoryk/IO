@@ -1,21 +1,34 @@
 using UnityEngine;
+//using UnityEngine.Debug;
 using Firebase;
 using Firebase.Auth;
 using System.Collections;
-using System.Diagnostics;
+//using System.Diagnostics;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System;
 
 public class DataManager : MonoBehaviour, IDataManager
 {
+    public DataManager()
+    {
+        auth = FirebaseAuth.DefaultInstance;
+        user = auth.CurrentUser;
+        dataManager = new DataManager();
+        firebaseInitialized = false;
+        loggedIn = false;
+    }
+
     public FirebaseAuth auth;
     public FirebaseUser user;
     private IDataManager dataManager;
-    private ServerAPI.ServerAPI serverAPI;
+   // private ServerAPI serverAPI;
 
     private bool firebaseInitialized = false;
     private bool loggedIn = false;
     public DependencyStatus dependencyStatus;
 
-    private void Awake()
+    /*private void Awake()
     {
         FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(task =>
         {
@@ -26,52 +39,53 @@ public class DataManager : MonoBehaviour, IDataManager
             }
             else
             {
-                Debug.LogError("Could not resolve all Firebase dependencies: " + dependencyStatus);
+                UnityEngine.Debug.LogError("Could not resolve all Firebase dependencies: " + dependencyStatus);
             }
         });
         dataManager = FindObjectOfType<DataManager>();
-        serverAPI = FindObjectOfType<ServerAPI>();
-    }
+    }*/
 
-    private void Update()
+    /*private void Update()
     {
         if (firebaseInitialized && !loggedIn)
         {
             loggedIn = true;
-            LoginButton();
+            //LoginButton();
         }
-    }
+    }*/
 
-    private void InitializeFirebase()
+    /*private void InitializeFirebase()
     {
-        Debug.Log("Setting up Firebase Auth");
+        UnityEngine.Debug.Log("Setting up Firebase Auth");
 
         auth = FirebaseAuth.DefaultInstance;
 
         firebaseInitialized = true;
-    }
+    }*/
 
-    public void LoginButton()
-    {
-        StartCoroutine(Login("test@test.com", "123456"));
-    }
+    // public void LoginButton()
+    // {
+    //     StartCoroutine(serverAPI.Login("test@test.com", "123456"));
+    // }
 
-    public void RegisterButton()
-    {
-        StartCoroutine(Register("cos@email.com", "password", "password", "nickname"));
-    }
+    // public void RegisterButton()
+    // {
+    //     StartCoroutine(Register("cos@email.com", "password", "password", "nickname"));
+    // }
 
-    public static ServerLogInError Login(string email, string password)
+    private ServerAPI serverAPI = new ServerAPI();
+
+    public ServerLogInError Login(string email, string password)
     {
         return serverAPI.Login(email, password);
     }
 
-    public static ServerRegisterError Register(string email, string password, string nickname)
+    public ServerRegisterError Register(string email, string password, string nickname)
     {
         return serverAPI.Register(email, password, nickname);
     }
 
-    public static bool Logout()
+    public bool Logout()
     {
         return serverAPI.Logout();
     }
@@ -94,23 +108,20 @@ public class DataManager : MonoBehaviour, IDataManager
         return serverAPI.UpdateUserData(currentUserData);
     }
 
-    public static List<int> fetchMiniGamesList()
+    public List<int> fetchMiniGamesList()
     {
         return serverAPI.GetMinigamesIDs();
     }
 
-    public ServerUserUpdateError changeNickname(string newNickname)
-    {
-        if (serverAPI.LoggedUser == null)
-        {
-            return ServerUserUpdateError.UserNotLoggedIn;
-        }
+     public ServerUserUpdateError changeNickname(string newNickname)
+{
+    // WywoÅ‚anie metody UpdateUserNicknameAuth
+    bool result = serverAPI.UpdateUserNicknameAuth(newNickname);
 
-        UserData userData = serverAPI.LoggedUser.Value;
-        userData.Nickname = newNickname;
+    // PrzeksztaÅ‚cenie wyniku na ServerUserUpdateError
+    return result ? ServerUserUpdateError.None : ServerUserUpdateError.NicknameUpdateFailed;
+}
 
-        return serverAPI.UpdateUserData(userData);
-    }
 
     public async Task<AuthError?> changePassword(string newPassword)
     {
@@ -121,20 +132,28 @@ public class DataManager : MonoBehaviour, IDataManager
 
         var result = await auth.CurrentUser.UpdatePasswordAsync(newPassword).ContinueWith(task =>
         {
+            
+            if (task.IsCanceled)
+            {
+                UnityEngine.Debug.LogError("UpdatePasswordAsync was canceled.");
+                return AuthError.Cancelled;
+            }
             if (task.IsFaulted)
             {
-                return (AuthError)task.Exception.InnerException.ErrorCode;
+                UnityEngine.Debug.LogError("UpdatePasswordAsync encountered an error: " + task.Exception);
+                return AuthError.Cancelled;
             }
 
-            return null;
+            UnityEngine.Debug.Log("Password successfully changed.");
+            return AuthError.None;
         });
 
         return result;
     }
 
-    public static bool SendFriendRequest(string friendId)
+    public bool SendFriendRequest(string friendId)
     {
-        // Wysy³amy zaproszenie do znajomych do bazy danych
+        // Wysyï¿½amy zaproszenie do znajomych do bazy danych
         bool sendRequestResult = serverAPI.SendFriendRequestDatabase(friendId, true);
         if (!sendRequestResult)
         {
@@ -142,7 +161,7 @@ public class DataManager : MonoBehaviour, IDataManager
             return false;
         }
 
-        // Dodajemy zaproszenie do listy zaproszeñ u¿ytkownika
+        // Dodajemy zaproszenie do listy zaproszeï¿½ uï¿½ytkownika
         bool addUserFriendInvitesResult = serverAPI.AddUserFriendInvitesDatabase(friendId);
         if (!addUserFriendInvitesResult)
         {
@@ -153,9 +172,9 @@ public class DataManager : MonoBehaviour, IDataManager
         return true;
     }
 
-    public static bool CancelFriendRequest(string friendId)
+    public bool CancelFriendRequest(string friendId)
     {
-        // Usuwamy zaproszenie z listy zaproszeñ u¿ytkownika
+        // Usuwamy zaproszenie z listy zaproszeï¿½ uï¿½ytkownika
         bool deleteUserFriendInvitesResult = serverAPI.DeleteUserFriendInvitesDatabase(friendId);
         if (!deleteUserFriendInvitesResult)
         {
@@ -164,7 +183,7 @@ public class DataManager : MonoBehaviour, IDataManager
         }
 
         // Usuwamy zaproszenie z bazy danych
-        bool deleteFriendRequestResult = DeleteFriendRequestDatabase(friendId);
+        bool deleteFriendRequestResult = serverAPI.DeleteFriendRequestDatabase(friendId); 
         if (!deleteFriendRequestResult)
         {
             Debug.LogWarning("Failed to delete friend request from database");
@@ -174,22 +193,22 @@ public class DataManager : MonoBehaviour, IDataManager
         return true;
     }
 
-    public static bool SaveScore(int minigameId, float score)
+    public bool SaveScore(int minigameId, float score)
     {
-        // Pobieramy aktualny najlepszy wynik u¿ytkownika
+        // Pobieramy aktualny najlepszy wynik uï¿½ytkownika
         float currentHighscore = 0;
-        if (minigameId < LoggedUser.Value.Highscores.Count)
+        if (minigameId < serverAPI.GetLoggedUser().Value.Highscores.Count)
         {
-            currentHighscore = LoggedUser.Value.Highscores[minigameId];
+            currentHighscore = serverAPI.GetLoggedUser().Value.Highscores[minigameId];
         }
 
-        // Jeœli nowy wynik jest wy¿szy ni¿ aktualny najlepszy wynik, aktualizujemy go
+        // Jeï¿½li nowy wynik jest wyï¿½szy niï¿½ aktualny najlepszy wynik, aktualizujemy go
         if (score > currentHighscore)
         {
-            return UpdateUserHighscoreDatabase(minigameId, score);
+            return serverAPI.UpdateUserHighscoreDatabase(minigameId, score);
         }
 
-        // Jeœli nowy wynik nie jest wy¿szy, nie robimy nic
+        // Jeï¿½li nowy wynik nie jest wyï¿½szy, nie robimy nic
         return true;
     }
 
@@ -215,46 +234,46 @@ public class DataManager : MonoBehaviour, IDataManager
         return serverAPI.DeleteChallangeDatabase(challenge);
     }
 
-    public static bool RespondFriendRequest(string friendId, bool accept)
+    public bool RespondFriendRequest(string friendId, bool accept)
     {
         if (accept)
         {
-            // 1. Usuñ zaproszenie do znajomych z listy zaproszeñ u¿ytkownika
-            if (!DeleteUserFriendInvitesDatabase(friendId))
+            // 1. Usuï¿½ zaproszenie do znajomych z listy zaproszeï¿½ uï¿½ytkownika
+            if (!serverAPI.DeleteUserFriendInvitesDatabase(friendId))
             {
                 Debug.LogWarning("Failed to delete friend invite from user's list");
                 return false;
             }
 
-            // 2. Dodaj nowego znajomego do listy znajomych u¿ytkownika
-            if (!UpdateUserFriendsListDatabase(friendId))
+            // 2. Dodaj nowego znajomego do listy znajomych uï¿½ytkownika
+            if (!serverAPI.UpdateUserFriendsListDatabase(friendId))
             {
                 Debug.LogWarning("Failed to add friend to user's list");
                 return false;
             }
 
-            // 3. Usuñ wys³ane zaproszenie do znajomych z listy zaproszeñ znajomego
-            if (!DeleteFriendRequestDatabase(friendId))
+            // 3. Usuï¿½ wysï¿½ane zaproszenie do znajomych z listy zaproszeï¿½ znajomego
+            if (!serverAPI.DeleteFriendRequestDatabase(friendId))
             {
                 Debug.LogWarning("Failed to delete friend request from friend's list");
                 return false;
             }
 
-            // 4. Dodaj u¿ytkownika do listy znajomych znajomego
-            // W tym celu musisz mieæ dostêp do metody podobnej do UpdateUserFriendsListDatabase(friendId), ale dla innego u¿ytkownika.
-            // Przyk³ad: if (!UpdateFriendFriendsListDatabase(friendId)) { ... }
+            // 4. Dodaj uï¿½ytkownika do listy znajomych znajomego
+            // W tym celu musisz mieï¿½ dostï¿½p do metody podobnej do UpdateUserFriendsListDatabase(friendId), ale dla innego uï¿½ytkownika.
+            // Przykï¿½ad: if (!UpdateFriendFriendsListDatabase(friendId)) { ... }
         }
         else
         {
-            // Jeœli u¿ytkownik nie akceptuje zaproszenia, usuñ zaproszenie z listy zaproszeñ u¿ytkownika
-            if (!DeleteUserFriendInvitesDatabase(friendId))
+            // Jeï¿½li uï¿½ytkownik nie akceptuje zaproszenia, usuï¿½ zaproszenie z listy zaproszeï¿½ uï¿½ytkownika
+            if (!serverAPI.DeleteUserFriendInvitesDatabase(friendId))
             {
                 Debug.LogWarning("Failed to delete friend invite from user's list");
                 return false;
             }
 
-            // i usuñ wys³ane zaproszenie do znajomych z listy zaproszeñ znajomego
-            if (!DeleteFriendRequestDatabase(friendId))
+            // i usuï¿½ wysï¿½ane zaproszenie do znajomych z listy zaproszeï¿½ znajomego
+            if (!serverAPI.DeleteFriendRequestDatabase(friendId))
             {
                 Debug.LogWarning("Failed to delete friend request from friend's list");
                 return false;
@@ -264,17 +283,17 @@ public class DataManager : MonoBehaviour, IDataManager
         return true;
     }
 
-    public static bool AcceptChallenge(string friendId, ChallengeData challengeResponse)
+    public bool AcceptChallenge(string friendId, ChallengeData challengeResponse)
     {
-        // 1. Wyœlij odpowiedŸ na wyzwanie do bazy danych
-        if (!SendChallangeDatabase(friendId, challengeResponse))
+        // 1. Wyï¿½lij odpowiedï¿½ na wyzwanie do bazy danych
+        if (!serverAPI.SendChallangeDatabase(friendId, challengeResponse))
         {
             Debug.LogWarning("Failed to send challenge response");
             return false;
         }
 
-        // 2. Usuñ otrzymane wyzwanie z listy wyzwañ u¿ytkownika
-        if (!DeleteChallangeDatabase(challengeResponse))
+        // 2. Usuï¿½ otrzymane wyzwanie z listy wyzwaï¿½ uï¿½ytkownika
+        if (!serverAPI.DeleteChallangeDatabase(challengeResponse))
         {
             Debug.LogWarning("Failed to delete received challenge");
             return false;
@@ -283,17 +302,17 @@ public class DataManager : MonoBehaviour, IDataManager
         return true;
     }
 
-    public static (ServerSearchError, UserData?) GetUserByNickname(string nickname)
+    public (ServerSearchError, UserData?) GetUserByNickname(string nickname)
     {
         return serverAPI.GetUserDataByNickname(nickname);
     }
 
-    public static (ServerSearchError, UserData?) GetUserByEmail(string email)
+    public (ServerSearchError, UserData?) GetUserByEmail(string email)
     {
         return serverAPI.GetUserDataByEmail(email);
     }
 
-    public static (ServerSearchError, UserData?) GetUserID(string id)
+    public (ServerSearchError, UserData?) GetUserID(string id)
     {
         return serverAPI.GetUserDataByID(id);
     }

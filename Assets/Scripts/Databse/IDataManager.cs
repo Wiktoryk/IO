@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Firebase.Auth;
 public interface IDataManager
 {   
     ServerLogInError Login(string email, string password);
