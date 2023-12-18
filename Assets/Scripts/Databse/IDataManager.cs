@@ -13,7 +13,7 @@ public interface IDataManager
     bool SendFriendRequest(string friendId);
     bool CancelFriendRequest(string friendId);
     bool SaveScore(int minigameId, float score);
-    Task<(ServerSearchError, UserData?)> fetchUserData();
+    (ServerSearchError, UserData?) fetchUserData();
     bool sendChallenge(string friendId, ChallengeData challenge);
     bool cancelChallenge(ChallengeData challenge);
     bool RespondFriendRequest(string friendId, bool accept);

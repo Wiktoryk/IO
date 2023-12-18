@@ -8,8 +8,16 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
 
-public class DataManager : MonoBehaviour, IDataManager
+public class DataManager : IDataManager
 {
+
+    private static DataManager instance;
+    public static DataManager Instance { 
+        get {
+            return instance ??= new DataManager();
+        }
+    }
+
     public DataManager()
     {
         auth = FirebaseAuth.DefaultInstance;
@@ -28,7 +36,7 @@ public class DataManager : MonoBehaviour, IDataManager
     private bool loggedIn = false;
     public DependencyStatus dependencyStatus;
 
-    private ServerAPI serverAPI = new ServerAPI();
+    private ServerAPI serverAPI = new();
 
     public ServerLogInError Login(string email, string password)
     {
@@ -87,7 +95,7 @@ public class DataManager : MonoBehaviour, IDataManager
             
             if (task.IsCanceled)
             {
-                UnityEngine.Debug.LogError("UpdatePasswordAsync was canceled.");
+                Debug.LogError("UpdatePasswordAsync was canceled.");
                 return AuthError.Cancelled;
             }
             if (task.IsFaulted)
@@ -164,7 +172,7 @@ public class DataManager : MonoBehaviour, IDataManager
         return true;
     }
 
-    public async Task<(ServerSearchError, UserData?)> fetchUserData()
+    public (ServerSearchError, UserData?) fetchUserData()
     {
         var result = serverAPI.GetLoggedUserDatabase();
 
