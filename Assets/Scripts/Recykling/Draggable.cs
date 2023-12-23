@@ -44,7 +44,7 @@ public class Draggable : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         Draggable collidedDraggable = collision.GetComponent<Draggable>();
-        if(collidedDraggable != null && dragController.LastDragged.gameObject == gameObject)
+        if(collidedDraggable != null && dragController.LastDragged != null && dragController.LastDragged.gameObject == gameObject)
         {
             ColliderDistance2D colliderDistance2D = collision.Distance(collider);
             Vector3 diff = new Vector3(colliderDistance2D.normal.x, colliderDistance2D.normal.y) * colliderDistance2D.distance;
