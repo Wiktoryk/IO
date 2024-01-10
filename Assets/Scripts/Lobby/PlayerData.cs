@@ -6,19 +6,19 @@ using UnityEngine;
 public class PlayerData //: MonoBehaviour
 {
     private static PlayerData instance = null;
-    private int[] minigamesHighScores = {0, 0, 0, 0, 0, 0, 0, 0};
-    private int playerID = 0;
+    private float[] minigamesHighScores = {0, 0, 0, 0, 0, 0, 0, 0};
+    private string playerID = "";
     private string nickname = "Nickname";
     private int level = 0;
 
     public enum MinigameType:int { MG_A = 0, MG_B, MG_C, MG_D, MG_E, MG_F, MG_G, MG_H };
 
-    public int getPlayerID() 
+    public string getPlayerID() 
     {
         return playerID;
     }
 
-    public void setPlayerID(int PlayerId)
+    public void setPlayerID(string PlayerId)
     {
         playerID = PlayerId;
     }
@@ -66,24 +66,43 @@ public class PlayerData //: MonoBehaviour
 
     public bool DownloadPlayerData()
     {
+        //(ServerSearchError error, UserData udata) = ServerAPI.Instance.GetLoggedUserData();
+        var result = ServerAPI.Instance.GetLoggedUserData();
+        UserData udata = (UserData)result.Item2;
 
+        playerID = udata.ID;
+        nickname = udata.Nickname;
+        List<float> hs = udata.Highscores;
+
+        for (int i = 0; i < hs.Count; i++)
+        {
+            minigamesHighScores[i] = hs[i];
+        }
 
         return true;
     }
 
     public bool UploadPlayerData()
     {
+        var result = ServerAPI.Instance.GetLoggedUserData();
+        UserData udata = (UserData)result.Item2;
 
+        for (int i = 0; i < udata.Highscores.Count; i++)
+        {
+            udata.Highscores[i] = minigamesHighScores[i];
+        }
+
+        ServerAPI.Instance.UpdateUserData(udata);
 
         return true;
     }
 
-    public int getMinigameHighScore(MinigameType type)
+    public float getMinigameHighScore(MinigameType type)
     {
         return minigamesHighScores[(int)type];
     }
 
-    public void setMinigameHighScore(MinigameType type, int newHighScore)
+    public void setMinigameHighScore(MinigameType type, float newHighScore)
     {
         minigamesHighScores[(int)type] = newHighScore;
     }

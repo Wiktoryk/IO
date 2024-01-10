@@ -19,7 +19,22 @@ public class FriendsPanelController : MonoBehaviour
 
     void downloadFriendData()
     {
+        var result = ServerAPI.Instance.GetLoggedUserData();
+        UserData user = (UserData)result.Item2;
+        List<string> friends = user.Friends;
+        Dictionary<string, bool> friendsInvitations = user.FriendRequests;
 
+        foreach (string freindId in friends)
+        {
+            addToFriendsList(((UserData)ServerAPI.Instance.GetUserDataByID(freindId).Item2).Nickname);
+        }
+
+        //for (int i = 0; i < friendsInvitations.Count; i++)
+        int i = 1;
+        foreach (string friendInvt in friendsInvitations.Keys)
+        {
+            addToInvitationsList(i++, friendInvt, ((UserData)ServerAPI.Instance.GetUserDataByID(friendInvt).Item2).Nickname);
+        }
     }
 
     void addToFriendsList(string nickname)
@@ -30,7 +45,7 @@ public class FriendsPanelController : MonoBehaviour
         itemFriend.transform.parent = FriendContent.transform;
     }
 
-    void addToInvitationsList(int InvitationID, int InvitingPlayerID, string InvitingPlayerNickname)
+    void addToInvitationsList(int InvitationID, string InvitingPlayerID, string InvitingPlayerNickname)
     {
         ItemInvitation itemInvitation = Instantiate(ItemInvitationPrefab);
         itemInvitation.setInvitationData(InvitationID, InvitingPlayerID, InvitingPlayerNickname);
@@ -43,7 +58,7 @@ public class FriendsPanelController : MonoBehaviour
     {
         try
         {
-            int invitedPlayerId = Int32.Parse(inputField.text);
+            string invitedPlayerId = inputField.text;
 
             if (invitedPlayerId != PlayerData.GetInstance().getPlayerID())
             {
@@ -63,6 +78,19 @@ public class FriendsPanelController : MonoBehaviour
         if (v)
         {
             downloadFriendData();
+        }
+        else
+        {
+            ItemFriend[] friends = FriendContent.GetComponentsInChildren<ItemFriend>();
+            ItemInvitation[] invitations = FriendContent.GetComponentsInChildren<ItemInvitation>();
+            foreach (ItemFriend f in friends)
+            {
+                Destroy(f.gameObject);
+            }
+            foreach (ItemInvitation f in invitations)
+            {
+                Destroy(f.gameObject);
+            }
         }
 
         gameObject.SetActive(v);

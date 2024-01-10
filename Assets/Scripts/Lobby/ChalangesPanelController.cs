@@ -10,13 +10,21 @@ public class ChalangesPanelController : MonoBehaviour
 
     void downloadChalangesData()
     {
+        var result = ServerAPI.Instance.GetLoggedUserData();
+        UserData user = (UserData)result.Item2;
+        List<ChallengeData> challenges = user.ChallengeData;
 
+        for (int i = 0; i < challenges.Count; i++)
+        {
+            addToChalangeList(i, challenges[i].UserID, challenges[i].MinigameID, 
+                challenges[i].Score, ((UserData)ServerAPI.Instance.GetUserDataByID(challenges[i].UserID).Item2).Nickname, challenges[i]);
+        }
     }
 
-    void addToChalangeList(int ChalangeId, int ChalangingPlayerId, int MinigameTypeIndex, int ChalangingPlayerScore, string ChalangingPlayerNickname)
+    void addToChalangeList(int ChalangeId, string ChalangingPlayerId, int MinigameTypeIndex, float ChalangingPlayerScore, string ChalangingPlayerNickname, ChallengeData challengeData)
     {
         ItemChalange itemChalange = Instantiate(ItemChalangePrefab);
-        itemChalange.setChalangeData(ChalangeId, ChalangingPlayerId, MinigameTypeIndex, ChalangingPlayerScore, ChalangingPlayerNickname);
+        itemChalange.setChalangeData(ChalangeId, ChalangingPlayerId, MinigameTypeIndex, ChalangingPlayerScore, ChalangingPlayerNickname, challengeData);
 
         itemChalange.transform.parent = ChalangeListContent.transform;
     }
@@ -26,6 +34,13 @@ public class ChalangesPanelController : MonoBehaviour
         if (v)
         {
             downloadChalangesData();
+
+            ItemChalange[] chalanges = ChalangeListContent.GetComponentsInChildren<ItemChalange>();
+
+            foreach (ItemChalange ch in chalanges)
+            {
+                Destroy(ch.gameObject);
+            }
         }
 
         gameObject.SetActive(v);

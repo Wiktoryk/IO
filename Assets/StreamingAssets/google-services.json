@@ -1,0 +1,31 @@
+{
+  "project_info": {
+    "project_number": "529461434276",
+    "project_id": "io-database-6f26a",
+    "firebase_url": "https://io-database-6f26a-default-rtdb.europe-west1.firebasedatabase.app",
+
+    "storage_bucket": "io-database-6f26a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:529461434276:android:b4ad08d1931038647c9331",
+        "android_client_info": {
+          "package_name": "com.IO.TGSK1.GreenGame"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDw0RlI1HUPi2WTvUgKbHrXayjo5yfpSGI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -7,8 +7,8 @@ public class ChalangeController : MonoBehaviour
     private static ChalangeController instance = null;
 
     private int chalangeId = 0;
-    private int chalangingPlayerId = 0;
-    private int chalangingPlayerScore = 0;
+    private string chalangingPlayerId = "";
+    private float chalangingPlayerScore = 0;
 
 
     void Awake()
@@ -29,7 +29,7 @@ public class ChalangeController : MonoBehaviour
         return instance;
     }
 
-    public void setChalangeData(int ChalangeId, int ChalangingPlayerId, int ChalangingPlayerScore)
+    public void setChalangeData(int ChalangeId, string ChalangingPlayerId, float ChalangingPlayerScore)
     {
         chalangeId = ChalangeId;
         chalangingPlayerId = ChalangingPlayerId;

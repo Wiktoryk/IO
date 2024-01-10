@@ -76,6 +76,12 @@ public class LobbyManager : MonoBehaviour
         
     }
 
+    public void Fun()
+    {
+        ServerAPI.Instance.Register("l@gmail.com", "Luk", "1234");
+        Debug.Log("Register");
+    }
+
 
     private void QuerryServerForNPCs()
     {

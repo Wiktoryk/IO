@@ -32,10 +32,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1445431242884672377}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -189, y: -0.0000052452}
-  m_SizeDelta: {x: 644, y: 111.2}
+  m_AnchorMin: {x: 0.022118533, y: 0.1296016}
+  m_AnchorMax: {x: 0.6242963, y: 0.8706156}
+  m_AnchoredPosition: {x: -1.0000305, y: -0.0000038146973}
+  m_SizeDelta: {x: 4, y: -0.80000305}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8887391679368630869
 CanvasRenderer:
@@ -112,10 +112,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1445431242884672377}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 422, y: -0.0000091791}
-  m_SizeDelta: {x: 125.9, y: 119.7}
+  m_AnchorMin: {x: 0.8417037, y: 0.1296016}
+  m_AnchorMax: {x: 0.9564741, y: 0.8706156}
+  m_AnchoredPosition: {x: -2, y: -0.000011444092}
+  m_SizeDelta: {x: 3.899994, y: 7.699997}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7659311205203924396
 CanvasRenderer:
@@ -244,10 +244,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1445431242884672377}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 233, y: -1.35}
-  m_SizeDelta: {x: 125.9, y: 119.7}
+  m_AnchorMin: {x: 0.67240745, y: 0.1296016}
+  m_AnchorMax: {x: 0.77488154, y: 0.8706156}
+  m_AnchoredPosition: {x: -4.5, y: -1.3500023}
+  m_SizeDelta: {x: 16.899994, y: 7.699997}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5740312905342139414
 CanvasRenderer:
@@ -403,10 +403,10 @@ RectTransform:
   - {fileID: 8876818908525012382}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1063, y: 151.1}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 1, y: 0.5}
+  m_AnchoredPosition: {x: -600, y: -1320}
+  m_SizeDelta: {x: -137, y: 151.09998}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7682235010718003298
 CanvasRenderer:
@@ -458,5 +458,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3500bac36b4768a4381a75f117ecf5ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ChalangeControllerPrefab: {fileID: 0}
   ChalangingPlayerNicknameText: {fileID: 2698945392718703033}
   lobbyActionController: {fileID: 0}
