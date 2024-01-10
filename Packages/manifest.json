@@ -1,10 +1,15 @@
 {
   "dependencies": {
+    "com.unity.inputsystem": "1.7.0",
+    "com.google.external-dependency-manager": "file:../Assets/Packages/com.google.external-dependency-manager-1.2.177.tgz",
+    "com.google.firebase.analytics": "file:../Assets/Packages/com.google.firebase.analytics-11.6.0.tgz",
+    "com.google.firebase.app": "file:../Assets/Packages/com.google.firebase.app-11.6.0.tgz",
+    "com.google.firebase.auth": "file:../Assets/Packages/com.google.firebase.auth-11.6.0.tgz",
+    "com.google.firebase.database": "file:../Assets/Packages/com.google.firebase.database-11.6.0.tgz",
     "com.unity.collab-proxy": "2.2.0",
     "com.unity.feature.2d": "2.0.0",
     "com.unity.ide.rider": "3.0.25",
     "com.unity.ide.visualstudio": "2.0.21",
-    "com.unity.inputsystem": "1.7.0",
     "com.unity.render-pipelines.universal": "14.0.9",
     "com.unity.test-framework": "1.1.33",
     "com.unity.textmeshpro": "3.0.6",
@@ -42,5 +47,6 @@
     "com.unity.modules.vr": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
     "com.unity.modules.xr": "1.0.0"
-  }
+  },
+  "scopedRegistries": []
 }

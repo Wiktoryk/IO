@@ -72,9 +72,6 @@ public class ServerAPI
     {
         var LoginTask = auth.SignInWithEmailAndPasswordAsync(email, password);
 
-        /*while (!LoginTask.IsCompleted)
-        {
-        }*/
         //yield return new WaitUntil(predicate: () => LoginTask.IsCompleted);
 
         if (LoginTask.Exception != null)
@@ -134,7 +131,6 @@ public class ServerAPI
 
     public ServerRegisterError Register(string email, string password, string nickname)
     {
-        Debug.Log(auth);
         var RegisterTask = auth.CreateUserWithEmailAndPasswordAsync(email, password);
 
         //yield return new WaitUntil(() => RegisterTask.IsCompleted);

@@ -636,8 +636,6 @@ MonoBehaviour:
     m_AtlasIndex: 0
     m_ClassDefinitionType: 0
   - m_Index: 38
-    m_Metrics:
-      m_Width: 55
       m_Height: 61
       m_HorizontalBearingX: 4
       m_HorizontalBearingY: 60
@@ -1056,8 +1054,6 @@ MonoBehaviour:
     m_AtlasIndex: 0
     m_ClassDefinitionType: 0
   - m_Index: 66
-    m_Metrics:
-      m_Width: 51
       m_Height: 6
       m_HorizontalBearingX: -2
       m_HorizontalBearingY: -12
@@ -1581,8 +1577,6 @@ MonoBehaviour:
     m_AtlasIndex: 0
     m_ClassDefinitionType: 0
   - m_Index: 101
-    m_Metrics:
-      m_Width: 45
       m_Height: 60
       m_HorizontalBearingX: 2
       m_HorizontalBearingY: 60
@@ -3066,8 +3060,6 @@ MonoBehaviour:
     m_AtlasIndex: 0
     m_ClassDefinitionType: 0
   - m_Index: 2003
-    m_Metrics:
-      m_Width: 0
       m_Height: 0
       m_HorizontalBearingX: 0
       m_HorizontalBearingY: 0
@@ -3666,8 +3658,6 @@ MonoBehaviour:
     m_AtlasIndex: 0
     m_ClassDefinitionType: 0
   - m_Index: 2043
-    m_Metrics:
-      m_Width: 28
       m_Height: 59
       m_HorizontalBearingX: 9
       m_HorizontalBearingY: 59

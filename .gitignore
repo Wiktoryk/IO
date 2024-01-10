@@ -72,3 +72,18 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
 .idea/
+
+# Firebase package downloaded
+Assets/Editor Default Resources/Firebase/
+Assets/Editor Default Resources/Firebase.meta
+Assets/ExternalDependencyManager/Editor/
+Assets/ExternalDependencyManager/Editor.meta
+Assets/Firebase/
+Assets/Firebase.meta
+Assets/Editor Default Resources.meta
+Assets/ExternalDependencyManager.meta
+
+# Firebase Packages
+!Assets/Packages/FirebaseAuth.unitypackage
+!Assets/Packages/FirebaseAnalytics.unitypackage
+!Assets/Packages/FirebaseDatabase.unitypackage
