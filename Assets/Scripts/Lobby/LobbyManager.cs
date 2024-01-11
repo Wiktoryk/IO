@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public struct NPCData
@@ -25,8 +26,6 @@ public class LobbyManager : MonoBehaviour
     private List<GameObject> instantiatedNPCs = new List<GameObject>();
     private List<int> todaysNPCsIndexes = new List<int>();
     private Vector3[] npcsPositions;
-
-
 
     // Start is called before the first frame update
     void Awake()
@@ -70,15 +69,26 @@ public class LobbyManager : MonoBehaviour
         instantiatedNPCs.Add(Instantiate(NPCs[todaysNPCsIndexes.First<int>()], npcsPositions[posIndex++], Quaternion.identity));
     }
 
+    async void Start()
+    {
+        ServerAPI sApi = ServerAPI.Instance;
+        await sApi.Init();
+        // To jest gotowy u¿ytkownik którego stworzyliœmy w ramach testów
+        ServerLogInError error = await ServerAPI.Instance.Login("test@test.com", "123456");
+    }
+
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
-    public void Fun()
+    public async void Fun()
     {
-        ServerAPI.Instance.Register("l@gmail.com", "Luk", "1234");
+        Debug.Log("Start Register");
+        // has³o musi byæ d³u¿sze jak coœ (wiêc to na razie mo¿e nie dzia³aæ
+        ServerRegisterError error =  await ServerAPI.Instance.Register("l@gmail.com", "Luk", "1234");
+        Debug.Log(error);
         Debug.Log("Register");
     }
 

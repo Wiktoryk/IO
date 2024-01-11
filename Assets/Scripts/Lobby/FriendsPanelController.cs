@@ -26,14 +26,14 @@ public class FriendsPanelController : MonoBehaviour
 
         foreach (string freindId in friends)
         {
-            addToFriendsList(((UserData)ServerAPI.Instance.GetUserDataByID(freindId).Item2).Nickname);
+            addToFriendsList(((UserData)ServerAPI.Instance.GetUserDataByID(freindId).Result.Item2).Nickname);
         }
 
         //for (int i = 0; i < friendsInvitations.Count; i++)
         int i = 1;
         foreach (string friendInvt in friendsInvitations.Keys)
         {
-            addToInvitationsList(i++, friendInvt, ((UserData)ServerAPI.Instance.GetUserDataByID(friendInvt).Item2).Nickname);
+            addToInvitationsList(i++, friendInvt, ((UserData)ServerAPI.Instance.GetUserDataByID(friendInvt).Result.Item2).Nickname);
         }
     }
 

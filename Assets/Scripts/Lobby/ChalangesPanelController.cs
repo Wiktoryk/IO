@@ -17,7 +17,7 @@ public class ChalangesPanelController : MonoBehaviour
         for (int i = 0; i < challenges.Count; i++)
         {
             addToChalangeList(i, challenges[i].UserID, challenges[i].MinigameID, 
-                challenges[i].Score, ((UserData)ServerAPI.Instance.GetUserDataByID(challenges[i].UserID).Item2).Nickname, challenges[i]);
+                challenges[i].Score, ((UserData)ServerAPI.Instance.GetUserDataByID(challenges[i].UserID).Result.Item2).Nickname, challenges[i]);
         }
     }
 

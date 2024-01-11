@@ -22,7 +22,7 @@ public class ItemInvitation : MonoBehaviour
     public void AcceptInvitation()
     {
         UserData user = (UserData)ServerAPI.Instance.GetLoggedUserData().Item2;
-        UserData otherUser = (UserData)ServerAPI.Instance.GetUserDataByID(invitingPlayerId).Item2;
+        UserData otherUser = (UserData)ServerAPI.Instance.GetUserDataByID(invitingPlayerId).Result.Item2;
 
         user.Friends.Add(invitingPlayerId);
         otherUser.Friends.Add(user.ID);
