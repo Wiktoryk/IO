@@ -46,6 +46,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   statementsFileName: NPC1
+  statements:
+  - "Wa\u017Cne jest aby stosowa\u0107 produkty dobre dla \u015Brodowiska."
   miniGames:
   - miniGameName: BioProducts
     miniGameSceneName: BioProducts

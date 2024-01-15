@@ -26,7 +26,7 @@ public class MiniGameTestingScript : MonoBehaviour
         if (Input.GetKeyUp(KeyCode.KeypadEnter))
         {
             Debug.Log("MiniGameScoreExit: " + score);
-            MiniGameStatus.Instance.SetStatus("MINI", score);
+            MiniGameStatus.Instance.SetStatus("MINI", score, true);
             SceneManager.LoadScene("LobbyScene");
         }
     }

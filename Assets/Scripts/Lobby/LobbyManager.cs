@@ -16,7 +16,6 @@ public class LobbyManager : MonoBehaviour
     static public LobbyManager Instance { get => instance; }
 
     public GameObject miniGameStatusPrefab;
-    public string miniGameStatusName;
 
     public GameObject[] NPCs;
 
@@ -26,6 +25,8 @@ public class LobbyManager : MonoBehaviour
     private List<int> todaysNPCsIndexes = new List<int>();
     private Vector3[] npcsPositions;
 
+    [SerializeField]
+    private EndLevelPanelController endLevelPanelController;
 
 
     // Start is called before the first frame update
@@ -41,7 +42,6 @@ public class LobbyManager : MonoBehaviour
         if (MiniGameStatus.Instance == null)
         {
             GameObject miniGameStatus = Instantiate(miniGameStatusPrefab);
-            miniGameStatus.name = miniGameStatusName;
 
         }
 
@@ -70,12 +70,6 @@ public class LobbyManager : MonoBehaviour
         instantiatedNPCs.Add(Instantiate(NPCs[todaysNPCsIndexes.First<int>()], npcsPositions[posIndex++], Quaternion.identity));
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
 
     private void QuerryServerForNPCs()
     {
@@ -86,8 +80,10 @@ public class LobbyManager : MonoBehaviour
     private void ProcessMiniGameResults()
     {
         Debug.Log("Processing Mini Game Results");
+
         Debug.Log("MiniGame Name: " + MiniGameStatus.Instance.MiniGameName);
         Debug.Log("MiniGame Score: " + MiniGameStatus.Instance.Score);
+        endLevelPanelController.OpenPanel(MiniGameStatus.Instance);
     }
 
     public float[] GetNPCsPositions()

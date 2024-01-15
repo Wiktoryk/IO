@@ -8,7 +8,7 @@ public class NPCScript : MonoBehaviour
 {
     public string statementsFileName = string.Empty;
 
-
+    [SerializeField, TextArea]
     private string[] statements = null;
 
     static private readonly string npcsStatementsFolderPath = "Lobby/NPCStatements/";
@@ -31,12 +31,12 @@ public class NPCScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if (!string.IsNullOrEmpty(statementsFileName))
-        {
-            TextAsset textFile = Resources.Load<TextAsset>(npcsStatementsFolderPath + statementsFileName);
-            statements = textFile.text.Split('|', System.StringSplitOptions.RemoveEmptyEntries).Select(p => p.Trim()).ToArray();
-            Resources.UnloadAsset(textFile);
-        }
+        //if (!string.IsNullOrEmpty(statementsFileName))
+        //{
+        //    TextAsset textFile = Resources.Load<TextAsset>(npcsStatementsFolderPath + statementsFileName);
+        //    statements = textFile.text.Split('|', System.StringSplitOptions.RemoveEmptyEntries).Select(p => p.Trim()).ToArray();
+        //    Resources.UnloadAsset(textFile);
+        //}
     }
 
     // Update is called once per frame

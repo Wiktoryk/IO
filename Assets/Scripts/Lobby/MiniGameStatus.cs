@@ -11,9 +11,11 @@ public class MiniGameStatus : MonoBehaviour
     private string miniGameName;
     private int score;
     private bool ended = false;
+    private bool success = true;
 
     public string MiniGameName { get => miniGameName; } //set => miniGameName = value;
     public int Score { get => score; }
+    public bool Success { get => success; }
 
     /**
      * Reading Ended property automaticly resets its value after end of this operation
@@ -40,19 +42,15 @@ public class MiniGameStatus : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     /**
      * Method used for setting state of MiniGameStatus. It also automaticly sets value of property Ended to true.
      */
-    public void SetStatus(string miniGameName, int score)
+    public void SetStatus(string miniGameName, int score, bool success = true)
     {
         this.miniGameName = miniGameName;
         this.score = score;
+        this.success = success;
         ended = true;
     }
 

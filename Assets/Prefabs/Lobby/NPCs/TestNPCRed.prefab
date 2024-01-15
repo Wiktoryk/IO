@@ -46,6 +46,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   statementsFileName: NPC3
+  statements:
+  - "Pami\u0119taj aby oszcz\u0119dza\u0107 wod\u0119."
   miniGames:
   - miniGameName: MinigameWaterSaving
     miniGameSceneName: MinigameWaterSaving

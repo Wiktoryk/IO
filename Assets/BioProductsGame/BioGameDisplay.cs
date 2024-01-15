@@ -70,6 +70,7 @@ Debug.Log("d");
 
     public void ReturnToLobby()
     {
+        MiniGameStatus.Instance.SetStatus("MINI", previousScore);
         SceneManager.LoadScene("LobbyScene");
     }
 

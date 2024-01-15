@@ -19,7 +19,7 @@ public class NPCDialogWindowController : MonoBehaviour
 
 
     // Start is called before the first frame update
-    void Awake()
+    void Start()
     {
         NPCDialogWindow = GetComponent<UIDocument>();
 
@@ -48,8 +48,8 @@ public class NPCDialogWindowController : MonoBehaviour
 
     public void ActivateNPCDialogWindow(int npcIndex)
     {
-        Debug.Log("Activating Window");
         NPCData npcData = LobbyManager.Instance.GetNPCData(npcIndex);
+
         npcStatementLabel.text = npcData.statement;
 
         //Dodawanie minigame slotó do listy

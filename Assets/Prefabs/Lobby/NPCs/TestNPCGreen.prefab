@@ -46,6 +46,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   statementsFileName: NPC2
+  statements:
+  - "Wa\u017Cne jest aby nie maenowa\u0107 miejsca."
   miniGames:
   - miniGameName: PaperRecycling
     miniGameSceneName: PaperRecycling
