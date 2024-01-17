@@ -14,7 +14,7 @@ public class Station : MonoBehaviour
         if(!powerOn && employee.GetComponent<Worker>().GetIsWorking())
         {
             powerOn = true;
-            GetComponent<UnityEngine.UI.Image>().sprite = Resources.Load<Sprite>("EnergySaving/deskOn");
+            GetComponent<UnityEngine.UI.Image>().sprite = Resources.Load<Sprite>("EnergySaving/desk-on");
         }
     }
 
@@ -33,7 +33,7 @@ public class Station : MonoBehaviour
         if (IsEnergyWasted())
         {
             powerOn = false;
-            GetComponent<UnityEngine.UI.Image>().sprite = Resources.Load<Sprite>("EnergySaving/deskOff");
+            GetComponent<UnityEngine.UI.Image>().sprite = Resources.Load<Sprite>("EnergySaving/desk");
         }
     }
 

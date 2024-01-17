@@ -16,6 +16,8 @@ public class EnergySavingDisplay : MonoBehaviour
     [SerializeField]
     GameObject timeDisplay;
     int previousScore;
+    bool result;
+    float previousScale = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -26,6 +28,9 @@ public class EnergySavingDisplay : MonoBehaviour
         //endGameDisplay = GameObject.Find("EndGameDisplay");
         //timeDisplay = GameObject.Find("TimeDisplay");
         previousScore = 0;
+
+
+
     }
 
     public void StartGame()
@@ -51,12 +56,37 @@ public class EnergySavingDisplay : MonoBehaviour
 
     void Update()
     {
+        //Changing cell sizes according to the device resolution GRID LAYOUT: 5x6
+        GridLayoutGroup glg = GameObject.Find("GridLayout").GetComponent<GridLayoutGroup>();
+        GameObject scrollView = GameObject.Find("Stations");
+        GameObject viewport = GameObject.Find("StationsViewport");
+        int x = Screen.currentResolution.width - 100;
+        int y = Screen.currentResolution.height;
+        int spacing = 55;
+
+        //Vector2 newCellSize = new Vector2((x - 4 * spacing - 200) / 5, (y - 5 * spacing - 600) / 6);
+        //glg.cellSize = newCellSize;
+        float stationsX = Mathf.Abs(scrollView.GetComponent<RectTransform>().sizeDelta.x) ;
+        float stationsY = Mathf.Abs(scrollView.GetComponent<RectTransform>().sizeDelta.y);
+
+        float tmp = (float)x / stationsX;
+        if ( tmp != previousScale && tmp != 1)
+        {
+            previousScale = (float)x / stationsX;
+            Vector3 scale = new Vector3((float)x / stationsX, (float)x / stationsX, 1);
+
+            scrollView.transform.localScale = scale;
+            //Vector2 scale2 = new Vector2(glg.cellSize.x * (float)x / stationsX, glg.cellSize.y * (float)x / stationsX);
+            //viewport.GetComponent<RectTransform>().sizeDelta = scale2;
+            //glg.cellSize = scale2;
+        }
+        
     }
 
     public void ReturnToLobby()
     {
         Debug.Log("MiniGameScoreExit: ");
-        MiniGameStatus.Instance.SetStatus("MINI", previousScore);
+        MiniGameStatus.Instance.SetStatus("Energy Saving Mini Game", previousScore, result);
         SceneManager.LoadScene("LobbyScene");
     }
 
@@ -75,8 +105,15 @@ public class EnergySavingDisplay : MonoBehaviour
         int time = (int)timeLeft;
         timeField.text = "Time left: " + time.ToString();
 
+        if (previousScore <= 0) 
+        {
+            result = false;
+            EndGame();
+        }
         if (time <= 0)
         {
+            
+            result = true;
             EndGame();
         }
         if (Input.GetKeyUp(KeyCode.E))

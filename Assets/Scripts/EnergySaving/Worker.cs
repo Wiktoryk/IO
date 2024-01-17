@@ -44,8 +44,8 @@ public class Worker : MonoBehaviour
         isRunning = true;
         isWorking = true;
         GetComponent<UnityEngine.UI.Image>().color = new Color(1, 1, 1, 1);
-        workTime = Random.Range(10.0f, 30.0f);
-        breakTime = Random.Range(10.0f, 25.0f);
+        workTime = Random.Range(5.0f, 40.0f);
+        breakTime = Random.Range(5.0f, 35.0f);
     }
 
     public bool GetIsWorking()

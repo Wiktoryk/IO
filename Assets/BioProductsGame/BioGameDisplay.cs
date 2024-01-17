@@ -63,14 +63,14 @@ Debug.Log("d");
         if (Input.GetKeyUp(KeyCode.E))
         {
             Debug.Log("MiniGameScoreExit: " );
-            MiniGameStatus.Instance.SetStatus("MINI", previousScore);
+            MiniGameStatus.Instance.SetStatus("Bio Products Mini Game", previousScore);
             SceneManager.LoadScene("LobbyScene");
         }
     }
 
     public void ReturnToLobby()
     {
-        MiniGameStatus.Instance.SetStatus("MINI", previousScore);
+        MiniGameStatus.Instance.SetStatus("Bio Products Mini Game", previousScore);
         SceneManager.LoadScene("LobbyScene");
     }
 
