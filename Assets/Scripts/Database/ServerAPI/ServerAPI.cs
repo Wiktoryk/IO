@@ -20,10 +20,6 @@ public class ServerAPI
 
     private FirebaseUser firebaseLoggedUser = null;
     private UserData? LoggedUser = null;
-    public UserData? GetLoggedUser()
-    {
-        return LoggedUser;
-    }
 
     private static ServerAPI _instance = null;
     public static ServerAPI Instance { 
@@ -708,13 +704,13 @@ public class ServerAPI
         });        
     }
 
-    public (ServerSearchError, UserData?) GetLoggedUserData()
+    public Tuple<ServerSearchError, UserData?> GetLoggedUserData()
     {
         if (LoggedUser == null)
         {
-            return (ServerSearchError.UserNotLogged, null);
+            return new(ServerSearchError.UserNotLogged, null);
         }
-        return (ServerSearchError.None, LoggedUser.Value);
+        return new(ServerSearchError.None, LoggedUser.Value);
     }
 
     public async Task<List<int>> GetMinigamesIDs()
@@ -752,7 +748,7 @@ public class ServerAPI
             }
 
             // Wybranie pierwszych 4 liczb
-            allNumbers = allNumbers.GetRange(0, 4);
+            minigamesIDs = allNumbers.GetRange(0, 4);
 
             // Data wylosowania w Stringu
             // 2024.01.18
@@ -855,7 +851,7 @@ public class ServerAPI
         return true;
     }
 
-    public async Task<Tuple<ServerSearchError, UserData?>> GetLoggedUserDatabase()
+    private async Task<Tuple<ServerSearchError, UserData?>> GetLoggedUserDatabase()
     {
         return await Task.Run(async () =>
         {

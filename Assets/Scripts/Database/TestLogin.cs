@@ -25,9 +25,9 @@ public class TestLogin : MonoBehaviour
     public Text score6;
     public Text score7;
 
-    public void login()
+    public async void login()
     {   
-        if (DataManager.Instance.Login(email.text, password.text) == ServerLogInError.None)
+        if (await DataManager.Instance.Login(email.text, password.text) == ServerLogInError.None)
         {
             loginCanvas.enabled = false;
             infoCanvas.enabled = true;

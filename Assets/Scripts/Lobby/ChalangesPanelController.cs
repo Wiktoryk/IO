@@ -8,16 +8,16 @@ public class ChalangesPanelController : MonoBehaviour
     public GameObject ChalangeListContent;
 
 
-    void downloadChalangesData()
+    async void downloadChalangesData()
     {
-        var result = ServerAPI.Instance.GetLoggedUserData();
+        var result = DataManager.Instance.GetLoggedUser();
         UserData user = (UserData)result.Item2;
         List<ChallengeData> challenges = user.ChallengeData;
 
         for (int i = 0; i < challenges.Count; i++)
         {
             addToChalangeList(i, challenges[i].UserID, challenges[i].MinigameID, 
-                challenges[i].Score, ((UserData)ServerAPI.Instance.GetUserDataByID(challenges[i].UserID).Result.Item2).Nickname, challenges[i]);
+                challenges[i].Score, (await DataManager.Instance.GetUserByID(challenges[i].UserID)).Item2.Value.Nickname, challenges[i]);
         }
     }
 

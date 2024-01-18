@@ -19,24 +19,28 @@ public class ItemInvitation : MonoBehaviour
         InvitingPlayerNicknameText.text = InvitingPlayerNickname;
     }
 
-    public void AcceptInvitation()
+    public async void AcceptInvitation()
     {
-        UserData user = (UserData)ServerAPI.Instance.GetLoggedUserData().Item2;
+        /*UserData user = (UserData)ServerAPI.Instance.GetLoggedUserData().Item2;
         UserData otherUser = (UserData)ServerAPI.Instance.GetUserDataByID(invitingPlayerId).Result.Item2;
 
         user.Friends.Add(invitingPlayerId);
         otherUser.Friends.Add(user.ID);
 
-        user.FriendRequests.Remove(invitingPlayerId);
+        user.FriendRequests.Remove(invitingPlayerId);*/
+
+        await DataManager.Instance.RespondFriendRequest(invitingPlayerId, true);
 
         Destroy(gameObject);
     }
 
-    public void DeclineInvitation()
+    public async void DeclineInvitation()
     {
-        UserData user = (UserData)ServerAPI.Instance.GetLoggedUserData().Item2;
+        /*UserData user = (UserData)ServerAPI.Instance.GetLoggedUserData().Item2;
 
-        user.FriendRequests.Remove(invitingPlayerId);
+        user.FriendRequests.Remove(invitingPlayerId);*/
+
+        await DataManager.Instance.RespondFriendRequest(invitingPlayerId, false);
 
         Destroy(gameObject);
     }

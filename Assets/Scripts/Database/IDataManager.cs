@@ -4,22 +4,22 @@ using System.Threading.Tasks;
 using Firebase.Auth;
 public interface IDataManager
 {   
-    ServerLogInError Login(string email, string password);
-    ServerRegisterError Register(string email, string password, string nickname);
+    Task<ServerLogInError> Login(string email, string password);
+    Task<ServerRegisterError> Register(string email, string password, string nickname);
 	bool Logout();
-	ServerUserUpdateError updateUser(UserData newUserData);
-    List<int> fetchMiniGamesList();
-    ServerUserUpdateError changeNickname(string newNickname);
-    Task<AuthError?> changePassword(string newPassword);
-    bool SendFriendRequest(string friendId);
-    bool CancelFriendRequest(string friendId);
-    bool SaveScore(int minigameId, float score);
+	Task<ServerUserUpdateError> updateUser(UserData newUserData);
+    Task<List<int>> fetchMiniGamesList();
+    Task<ServerUserUpdateError> changeNickname(string newNickname);
+    Task<bool> changePassword(string newPassword);
+    Task<bool> SendFriendRequest(string friendId);
+    Task<bool> CancelFriendRequest(string friendId);
+    Task<bool> SaveScore(int minigameId, float score);
     Tuple<ServerSearchError, UserData?> fetchUserData();
-    bool sendChallenge(string friendId, ChallengeData challenge);
-    bool cancelChallenge(ChallengeData challenge);
-    bool RespondFriendRequest(string friendId, bool accept);
-    bool AcceptChallenge(string friendId, ChallengeData challengeResponse);
-    Tuple<ServerSearchError, UserData?> GetUserByNickname(string nickname);
-    Tuple<ServerSearchError, UserData?> GetUserByEmail(string email);
-    Tuple<ServerSearchError, UserData?> GetUserID(string id);
+    Task<bool> sendChallenge(string friendId, ChallengeData challenge);
+    Task<bool> cancelChallenge(ChallengeData challenge);
+    Task<bool> RespondFriendRequest(string friendId, bool accept);
+    Task<bool> AcceptChallenge(string friendId, ChallengeData challengeResponse);
+    Task<Tuple<ServerSearchError, UserData?>> GetUserByNickname(string nickname);
+    Task<Tuple<ServerSearchError, UserData?>> GetUserByEmail(string email);
+    Task<Tuple<ServerSearchError, UserData?>> GetUserByID(string id);
 }

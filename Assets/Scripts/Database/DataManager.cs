@@ -7,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
+using Firebase.Database;
 
 public class DataManager : IDataManager
 {
@@ -36,26 +37,29 @@ public class DataManager : IDataManager
     private bool loggedIn = false;
     public DependencyStatus dependencyStatus;
 
-    private ServerAPI serverAPI = new();
-
-    public ServerLogInError Login(string email, string password)
+    public async Task Init()
     {
-        return serverAPI.Login(email, password).Result;
+        await ServerAPI.Instance.Init();
     }
 
-    public ServerRegisterError Register(string email, string password, string nickname)
+    public async Task<ServerLogInError> Login(string email, string password)
     {
-        return serverAPI.Register(email, password, nickname).Result;
+        return await ServerAPI.Instance.Login(email, password);
+    }
+
+    public async Task<ServerRegisterError> Register(string email, string password, string nickname)
+    {
+        return await ServerAPI.Instance.Register(email, password, nickname);
     }
 
     public bool Logout()
     {
-        return serverAPI.Logout();
+        return ServerAPI.Instance.Logout();
     }
 
-    public ServerUserUpdateError updateUser(UserData newUserData)
+    public async Task<ServerUserUpdateError> updateUser(UserData newUserData)
     {
-        var result = serverAPI.GetLoggedUserData();
+        var result = ServerAPI.Instance.GetLoggedUserData();
 
         if (result.Item1 != ServerSearchError.None)
         {
@@ -65,57 +69,33 @@ public class DataManager : IDataManager
         UserData currentUserData = result.Item2.Value;
 
 
-        return serverAPI.UpdateUserData(currentUserData).Result;
+        return await ServerAPI.Instance.UpdateUserData(currentUserData);
     }
 
-    public List<int> fetchMiniGamesList()
+    public async Task<List<int>> fetchMiniGamesList()
     {
-        return serverAPI.GetMinigamesIDs().Result;
+        return await ServerAPI.Instance.GetMinigamesIDs();
     }
 
-     public ServerUserUpdateError changeNickname(string newNickname)
-{
-        // Wywołanie metody UpdateUserNicknameAuth
-        bool result = serverAPI.UpdateUserNicknameAuth(newNickname).Result;
+    public async Task<ServerUserUpdateError> changeNickname(string newNickname)
+     {
+         // Wywołanie metody UpdateUserNicknameAuth
+         bool result = await ServerAPI.Instance.UpdateUserNicknameAuth(newNickname);
 
-    // Przekształcenie wyniku na ServerUserUpdateError
-    return result ? ServerUserUpdateError.None : ServerUserUpdateError.NicknameUpdateFailed;
-}
-
+         // Przekształcenie wyniku na ServerUserUpdateError
+         return result ? ServerUserUpdateError.None : ServerUserUpdateError.NicknameUpdateFailed;
+     }
 
     // Trzeba podmienic
-    public async Task<AuthError?> changePassword(string newPassword)
+    public async Task<bool> changePassword(string newPassword)
     {
-        if (auth.CurrentUser == null)
-        {
-            return AuthError.UserNotFound;
-        }
-
-        var result = await auth.CurrentUser.UpdatePasswordAsync(newPassword).ContinueWith(task =>
-        {
-            
-            if (task.IsCanceled)
-            {
-                Debug.LogError("UpdatePasswordAsync was canceled.");
-                return AuthError.Cancelled;
-            }
-            if (task.IsFaulted)
-            {
-                UnityEngine.Debug.LogError("UpdatePasswordAsync encountered an error: " + task.Exception);
-                return AuthError.Cancelled;
-            }
-
-            UnityEngine.Debug.Log("Password successfully changed.");
-            return AuthError.None;
-        });
-
-        return result;
+        return await ServerAPI.Instance.UpdateUserPasswordAuth(newPassword);
     }
 
-    public bool SendFriendRequest(string friendId)
+    public async Task<bool> SendFriendRequest(string friendId)
     {
         // Wysy�amy zaproszenie do znajomych do bazy danych
-        bool sendRequestResult = serverAPI.SendFriendRequestDatabase(friendId, true).Result;
+        bool sendRequestResult = await ServerAPI.Instance.SendFriendRequestDatabase(friendId, true);
         if (!sendRequestResult)
         {
             Debug.LogWarning("Failed to send friend request");
@@ -123,7 +103,7 @@ public class DataManager : IDataManager
         }
 
         // Dodajemy zaproszenie do listy zaprosze� u�ytkownika
-        bool addUserFriendInvitesResult = serverAPI.AddUserFriendInvitesDatabase(friendId).Result;
+        bool addUserFriendInvitesResult = await ServerAPI.Instance.AddUserFriendInvitesDatabase(friendId);
         if (!addUserFriendInvitesResult)
         {
             Debug.LogWarning("Failed to add friend invite to user's list");
@@ -133,10 +113,10 @@ public class DataManager : IDataManager
         return true;
     }
 
-    public bool CancelFriendRequest(string friendId)
+    public async Task<bool> CancelFriendRequest(string friendId)
     {
         // Usuwamy zaproszenie z listy zaprosze� u�ytkownika
-        bool deleteUserFriendInvitesResult = serverAPI.DeleteUserFriendInvitesDatabase(friendId).Result;
+        bool deleteUserFriendInvitesResult = await ServerAPI.Instance.DeleteUserFriendInvitesDatabase(friendId);
         if (!deleteUserFriendInvitesResult)
         {
             Debug.LogWarning("Failed to delete friend invite from user's list");
@@ -144,7 +124,7 @@ public class DataManager : IDataManager
         }
 
         // Usuwamy zaproszenie z bazy danych
-        bool deleteFriendRequestResult = serverAPI.DeleteFriendRequestDatabase(friendId).Result;
+        bool deleteFriendRequestResult = await ServerAPI.Instance.DeleteFriendRequestDatabase(friendId);
         if (!deleteFriendRequestResult)
         {
             Debug.LogWarning("Failed to delete friend request from database");
@@ -154,19 +134,19 @@ public class DataManager : IDataManager
         return true;
     }
 
-    public bool SaveScore(int minigameId, float score)
+    public async Task<bool> SaveScore(int minigameId, float score)
     {
         // Pobieramy aktualny najlepszy wynik u�ytkownika
         float currentHighscore = 0;
-        if (minigameId < serverAPI.GetLoggedUser().Value.Highscores.Count)
+        if (minigameId < ServerAPI.Instance.GetLoggedUserData().Item2.Value.Highscores.Count)
         {
-            currentHighscore = serverAPI.GetLoggedUser().Value.Highscores[minigameId];
+            currentHighscore = ServerAPI.Instance.GetLoggedUserData().Item2.Value.Highscores[minigameId];
         }
 
         // Je�li nowy wynik jest wy�szy ni� aktualny najlepszy wynik, aktualizujemy go
         if (score > currentHighscore)
         {
-            return serverAPI.UpdateUserHighscoreDatabase(minigameId, score).Result;
+            return await ServerAPI.Instance.UpdateUserHighscoreDatabase(minigameId, score);
         }
 
         // Je�li nowy wynik nie jest wy�szy, nie robimy nic
@@ -175,7 +155,7 @@ public class DataManager : IDataManager
 
     public Tuple<ServerSearchError, UserData?> fetchUserData()
     {
-        var result = serverAPI.GetLoggedUserDatabase().Result;
+        var result = ServerAPI.Instance.GetLoggedUserData();
 
         if (result.Item1 != ServerSearchError.None)
         {
@@ -185,36 +165,36 @@ public class DataManager : IDataManager
         return result;
     }
 
-    public bool sendChallenge(string friendId, ChallengeData challenge)
+    public async Task<bool> sendChallenge(string friendId, ChallengeData challenge)
     {
-        return serverAPI.SendChallangeDatabase(friendId, challenge).Result;
+        return await ServerAPI.Instance.SendChallangeDatabase(friendId, challenge);
     }
 
-    public bool cancelChallenge(ChallengeData challenge)
+    public async Task<bool> cancelChallenge(ChallengeData challenge)
     {
-        return serverAPI.DeleteChallangeDatabase(challenge).Result;
+        return await ServerAPI.Instance.DeleteChallangeDatabase(challenge);
     }
 
-    public bool RespondFriendRequest(string friendId, bool accept)
+    public async Task<bool> RespondFriendRequest(string friendId, bool accept)
     {
         if (accept)
         {
             // 1. Usu� zaproszenie do znajomych z listy zaprosze� u�ytkownika
-            if (!serverAPI.DeleteUserFriendInvitesDatabase(friendId).Result)
+            if (!(await ServerAPI.Instance.DeleteUserFriendInvitesDatabase(friendId)))
             {
                 Debug.LogWarning("Failed to delete friend invite from user's list");
                 return false;
             }
 
             // 2. Dodaj nowego znajomego do listy znajomych u�ytkownika
-            if (!serverAPI.UpdateUserFriendsListDatabase(friendId).Result)
+            if (!(await ServerAPI.Instance.UpdateUserFriendsListDatabase(friendId)))
             {
                 Debug.LogWarning("Failed to add friend to user's list");
                 return false;
             }
 
             // 3. Usu� wys�ane zaproszenie do znajomych z listy zaprosze� znajomego
-            if (!serverAPI.DeleteFriendRequestDatabase(friendId).Result)
+            if (!(await ServerAPI.Instance.DeleteFriendRequestDatabase(friendId)))
             {
                 Debug.LogWarning("Failed to delete friend request from friend's list");
                 return false;
@@ -224,14 +204,14 @@ public class DataManager : IDataManager
         else
         {
             // Je�li u�ytkownik nie akceptuje zaproszenia, usu� zaproszenie z listy zaprosze� u�ytkownika
-            if (!serverAPI.DeleteUserFriendInvitesDatabase(friendId).Result)
+            if (!(await ServerAPI.Instance.DeleteUserFriendInvitesDatabase(friendId)))
             {
                 Debug.LogWarning("Failed to delete friend invite from user's list");
                 return false;
             }
 
             // i usu� wys�ane zaproszenie do znajomych z listy zaprosze� znajomego
-            if (!serverAPI.DeleteFriendRequestDatabase(friendId).Result)
+            if (!(await ServerAPI.Instance.DeleteFriendRequestDatabase(friendId)))
             {
                 Debug.LogWarning("Failed to delete friend request from friend's list");
                 return false;
@@ -241,17 +221,17 @@ public class DataManager : IDataManager
         return true;
     }
 
-    public bool AcceptChallenge(string friendId, ChallengeData challengeResponse)
+    public async Task<bool> AcceptChallenge(string friendId, ChallengeData challengeResponse)
     {
         // 1. Wy�lij odpowied� na wyzwanie do bazy danych
-        if (!serverAPI.SendChallangeDatabase(friendId, challengeResponse).Result)
+        if (!(await ServerAPI.Instance.SendChallangeDatabase(friendId, challengeResponse)))
         {
             Debug.LogWarning("Failed to send challenge response");
             return false;
         }
 
         // 2. Usu� otrzymane wyzwanie z listy wyzwa� u�ytkownika
-        if (!serverAPI.DeleteChallangeDatabase(challengeResponse).Result)
+        if (!(await ServerAPI.Instance.DeleteChallangeDatabase(challengeResponse)))
         {
             Debug.LogWarning("Failed to delete received challenge");
             return false;
@@ -260,18 +240,28 @@ public class DataManager : IDataManager
         return true;
     }
 
-    public Tuple<ServerSearchError, UserData?> GetUserByNickname(string nickname)
+    public async Task<Tuple<ServerSearchError, UserData?>> GetUserByNickname(string nickname)
     {
-        return serverAPI.GetUserDataByNickname(nickname).Result;
+        return await ServerAPI.Instance.GetUserDataByNickname(nickname);
     }
 
-    public Tuple<ServerSearchError, UserData?> GetUserByEmail(string email)
+    public async Task<Tuple<ServerSearchError, UserData?>> GetUserByEmail(string email)
     {
-        return serverAPI.GetUserDataByEmail(email).Result;
+        return await ServerAPI.Instance.GetUserDataByEmail(email);
     }
 
-    public Tuple<ServerSearchError, UserData?> GetUserID(string id)
+    public async Task<Tuple<ServerSearchError, UserData?>> GetUserByID(string id)
     {
-        return serverAPI.GetUserDataByID(id).Result;
+        return await ServerAPI.Instance.GetUserDataByID(id);
+    }
+
+    public Tuple<ServerSearchError, UserData?> GetLoggedUser()
+    {
+        return ServerAPI.Instance.GetLoggedUserData();
+    }
+
+    public async Task<List<int>> GetMinigamesIDs()
+    {
+        return await ServerAPI.Instance.GetMinigamesIDs();
     }
 }

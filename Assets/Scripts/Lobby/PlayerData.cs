@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class PlayerData //: MonoBehaviour
@@ -66,8 +67,7 @@ public class PlayerData //: MonoBehaviour
 
     public bool DownloadPlayerData()
     {
-        //(ServerSearchError error, UserData udata) = ServerAPI.Instance.GetLoggedUserData();
-        var result = ServerAPI.Instance.GetLoggedUserData();
+        var result = DataManager.Instance.GetLoggedUser();
         UserData udata = (UserData)result.Item2;
 
         playerID = udata.ID;
@@ -82,9 +82,9 @@ public class PlayerData //: MonoBehaviour
         return true;
     }
 
-    public bool UploadPlayerData()
+    public async Task<bool> UploadPlayerData()
     {
-        var result = ServerAPI.Instance.GetLoggedUserData();
+        var result = DataManager.Instance.GetLoggedUser();
         UserData udata = (UserData)result.Item2;
 
         for (int i = 0; i < udata.Highscores.Count; i++)
@@ -92,7 +92,7 @@ public class PlayerData //: MonoBehaviour
             udata.Highscores[i] = minigamesHighScores[i];
         }
 
-        ServerAPI.Instance.UpdateUserData(udata);
+        await DataManager.Instance.updateUser(udata);
 
         return true;
     }

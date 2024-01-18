@@ -28,8 +28,12 @@ public class LobbyManager : MonoBehaviour
     private Vector3[] npcsPositions;
 
     // Start is called before the first frame update
-    void Awake()
+    async void Awake()
     {
+        await DataManager.Instance.Init();
+        // To jest gotowy u¿ytkownik którego stworzyliœmy w ramach testów
+        ServerLogInError error = await DataManager.Instance.Login("test@test.com", "123456");
+
         if (instance != null)
         {
             Destroy(gameObject);
@@ -49,7 +53,7 @@ public class LobbyManager : MonoBehaviour
             ProcessMiniGameResults();
         }
 
-        QuerryServerForNPCs();
+        await QuerryServerForNPCs();
 
         //Generowanie pozycji dla NPC-ów
         npcsPositions = new Vector3[todaysNPCsIndexes.Count + 2];
@@ -71,10 +75,7 @@ public class LobbyManager : MonoBehaviour
 
     async void Start()
     {
-        ServerAPI sApi = ServerAPI.Instance;
-        await sApi.Init();
-        // To jest gotowy u¿ytkownik którego stworzyliœmy w ramach testów
-        ServerLogInError error = await ServerAPI.Instance.Login("test@test.com", "123456");
+        
     }
 
     // Update is called once per frame
@@ -86,17 +87,16 @@ public class LobbyManager : MonoBehaviour
     public async void Fun()
     {
         Debug.Log("Start Register");
-        // has³o musi byæ d³u¿sze jak coœ (wiêc to na razie mo¿e nie dzia³aæ
-        ServerRegisterError error =  await ServerAPI.Instance.Register("l@gmail.com", "Luk", "1234");
+        // has³o musi byæ d³u¿sze jak coœ (wiêc to na razie mo¿e nie dzia³aæ)
+        ServerRegisterError error = await DataManager.Instance.Register("l@gmail.com", "12345678", "Luk");
         Debug.Log(error);
         Debug.Log("Register");
     }
 
 
-    private void QuerryServerForNPCs()
+    private async Task QuerryServerForNPCs()
     {
-        todaysNPCsIndexes = new List<int>() { 0, 1, 2, 3 };
-        //todaysNPCsIndexes = new List<int>() { 0, 1, 2 };
+        todaysNPCsIndexes = await DataManager.Instance.GetMinigamesIDs();
     }
 
     private void ProcessMiniGameResults()
