@@ -7,6 +7,7 @@ using UnityEngine;
 using System.Threading.Tasks;
 using System.Threading;
 using System;
+using System.Text;
 
 public class ServerAPI
 {
@@ -39,9 +40,7 @@ public class ServerAPI
         }
     }
 
-    public ServerAPI()
-    {
-    }
+    public ServerAPI() {}
 
     public async Task Init()
     {
@@ -715,19 +714,87 @@ public class ServerAPI
             }
         }
 
-        SaveMinigamesIDsDatabase(minigamesIDs);
+        SaveMinigamesIDsDatabase("2024.01.18", minigamesIDs);
 
         return minigamesIDs;
     }
 
-    private void SaveMinigamesIDsDatabase(List<int> ids)
+    private async Task<bool> SaveMinigamesIDsDatabase(string data, List<int> ids)
     {
-        return;
+        return await Task.Run(async () =>
+        {
+            var DBTask = dbReference.Child("todayMinigames").Child("value").SetValueAsync(string.Join(";", ids));
+            await DBTask;
+
+            if (DBTask.Exception != null)
+            {
+                Debug.LogWarning(message: $"Failed to register task with {DBTask.Exception}");
+                return false;
+            }
+            else
+            {
+                DBTask = dbReference.Child("todayMinigames").Child("data").SetValueAsync(data);
+                await DBTask;
+
+                if (DBTask.Exception != null)
+                {
+                    Debug.LogWarning(message: $"Failed to register task with {DBTask.Exception}");
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+        });
     }
 
-    private (bool, List<int>) GetMinigamesIDsDatabase()
+    private async Task<Tuple<bool, List<int>>> GetMinigamesIDsDatabase()
     {
-        return (true, new List<int>{ 0, 7, 2, 3 });
+        return await Task.Run(async () =>
+        {
+            var DBTask = dbReference.Child("todayMinigames").Child("data").GetValueAsync();
+            await DBTask;
+
+            if (DBTask.Exception != null)
+            {
+                Debug.LogWarning(message: $"Failed to register task with {DBTask.Exception}");
+
+                return new Tuple<bool, List<int>>(false, null);
+            }
+            else
+            {
+                DateTime time = DateTime.Now;
+
+                if (DBTask.Result.Value.ToString().Equals("") || 
+                    !DBTask.Result.Value.ToString().Equals(
+                        new StringBuilder(time.Year.ToString())
+                        .Append(".")
+                        .Append(time.Month.ToString())
+                        .Append(".")
+                        .Append(time.Day.ToString())
+                        .ToString()
+                    )
+                )
+                {
+                    return new Tuple<bool, List<int>>(false, null);
+                }
+
+                DBTask = dbReference.Child("todayMinigames").Child("value").GetValueAsync();
+                await DBTask;
+
+                if (DBTask.Exception != null)
+                {
+                    Debug.LogWarning(message: $"Failed to register task with {DBTask.Exception}");
+
+                    return new Tuple<bool, List<int>>(false, null);
+                }
+                else
+                {
+                    return new Tuple<bool, List<int>>(true, DBTask.Result.Value.ToString().Split(';').ToList().Select(int.Parse).ToList());
+                }
+            }
+        });
     }
 
     public bool Logout()
