@@ -261,11 +261,13 @@ public class ServerAPI
                 }
 
                 // Update Score
-                for (int i = 0; i < userData.Highscores.Count; i++)
+                List<float> high = userData.Highscores.ToList();
+
+                for (int i = 0; i < high.Count; i++)
                 {
-                    if (userData.Highscores[i] != LoggedUser.Value.Highscores[i])
+                    if (high[i] != LoggedUser.Value.Highscores[i])
                     {
-                        if (!await UpdateUserHighscoreDatabase(i, userData.Highscores[i]))
+                        if (!await UpdateUserHighscoreDatabase(i, high[i]))
                         {
                             return ServerUserUpdateError.HighscoresUpdateFailed;
                         }
@@ -440,14 +442,15 @@ public class ServerAPI
                 return false;
             }
 
-            int i = 0;
-            foreach (float score in user.Highscores)
+            // Update Score
+            List<float> high = user.Highscores.ToList();
+
+            for (int i = 0; i < high.Count; i++)
             {
-                if (!await UpdateUserHighscoreDatabase(i, score))
+                if (!await UpdateUserHighscoreDatabase(i, high[i]))
                 {
                     return false;
                 }
-                i++;
             }
 
             return true;

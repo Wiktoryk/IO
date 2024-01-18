@@ -86,7 +86,6 @@ public class DataManager : IDataManager
          return result ? ServerUserUpdateError.None : ServerUserUpdateError.NicknameUpdateFailed;
      }
 
-    // Trzeba podmienic
     public async Task<bool> changePassword(string newPassword)
     {
         return await ServerAPI.Instance.UpdateUserPasswordAuth(newPassword);
