@@ -59,6 +59,10 @@ public class BioProductsManager : MonoBehaviour
         numberOfProducts = products.Length;
 
         int index = Random.Range(1, numberOfProducts + 1);
+        while (Resources.Load<Product>("Products/product" + index.ToString()) == currentProduct)
+        {
+            index = Random.Range(1, numberOfProducts + 1);
+        }
 
         currentProduct = Resources.Load<Product>("Products/product" + index.ToString());
         //currentProduct = Resources.Load<Product>("Products/product1");

@@ -51,7 +51,7 @@ public class BioGameDisplay : MonoBehaviour
         endGameDisplay.SetActive(true);
 Debug.Log("d");
         GameObject endText = GameObject.Find("FinishText");
-        endText.GetComponent<Text>().text = "Congratulations!           Your final score:                   " + previousScore.ToString();
+        endText.GetComponent<Text>().text = "Gratulacje!           Uzyskany wynik:                   " + previousScore.ToString();
         
     }
 
@@ -87,13 +87,13 @@ Debug.Log("d");
         if (score != previousScore)
         {
             UnityEngine.UI.Text textField = scoreDisplay.GetComponent<UnityEngine.UI.Text>();
-            textField.text = "Score: " + score.ToString();
+            textField.text = "Wynik: " + score.ToString();
             previousScore = score;
         }
 
         UnityEngine.UI.Text timeField = timeDisplay.GetComponent<UnityEngine.UI.Text>();
         int time = (int)timeLeft;
-        timeField.text = "Time left: " + time.ToString();
+        timeField.text = "Czas: " + time.ToString();
 
         if(time <= 0)
         {

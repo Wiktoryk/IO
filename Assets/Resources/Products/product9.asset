@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ec8bbff1f5c537346b4592525875e955, type: 3}
-  m_Name: product3
+  m_Name: product9
   m_EditorClassIdentifier: 
-  ecological: 1
-  image: {fileID: 21300000, guid: 58d033afde7c8194ba497a069e907c71, type: 3}
+  ecological: 0
+  image: {fileID: 21300000, guid: 3a8f5e568c13bd04296699aa1b0f4f2d, type: 3}
