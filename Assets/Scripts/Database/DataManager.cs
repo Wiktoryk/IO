@@ -21,21 +21,10 @@ public class DataManager : IDataManager
 
     public DataManager()
     {
-        auth = FirebaseAuth.DefaultInstance;
-        user = auth.CurrentUser;
-        //dataManager = new DataManager();
-        firebaseInitialized = false;
-        loggedIn = false;
     }
 
-    public FirebaseAuth auth;
-    public FirebaseUser user;
     //private IDataManager dataManager;
    // private ServerAPI serverAPI;
-
-    private bool firebaseInitialized = false;
-    private bool loggedIn = false;
-    public DependencyStatus dependencyStatus;
 
     public async Task Init()
     {
