@@ -83,6 +83,7 @@ public class DataManager : IDataManager
 }
 
 
+    // Trzeba podmienic
     public async Task<AuthError?> changePassword(string newPassword)
     {
         if (auth.CurrentUser == null)

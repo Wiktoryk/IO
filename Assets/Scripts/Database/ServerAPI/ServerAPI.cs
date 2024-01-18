@@ -401,6 +401,28 @@ public class ServerAPI
         });
     }
 
+    public async Task<bool> UpdateUserPasswordAuth(string password) 
+    {
+        return await Task.Run(async () =>
+        {
+            var PasswordTask = auth.CurrentUser.UpdatePasswordAsync(password);
+            await PasswordTask;
+
+            if (PasswordTask.Exception != null)
+            {
+                Debug.LogWarning($"Failed to register task with {PasswordTask.Exception}");
+                FirebaseException firebaseEx = PasswordTask.Exception.GetBaseException() as FirebaseException;
+                AuthError errorCode = (AuthError)firebaseEx.ErrorCode;
+                Debug.LogWarning($"Password Set Failed! Error: {errorCode}");
+                return false;
+            }
+
+            // Uda�o sie wszystko
+            Debug.Log("Password successfully changed.");
+            return true;
+        });
+    }
+
     private async Task<bool> RegisterUserDatabase()
     {
         return await Task.Run(async () =>
