@@ -22,14 +22,14 @@ public class DataManager : IDataManager
     {
         auth = FirebaseAuth.DefaultInstance;
         user = auth.CurrentUser;
-        dataManager = new DataManager();
+        //dataManager = new DataManager();
         firebaseInitialized = false;
         loggedIn = false;
     }
 
     public FirebaseAuth auth;
     public FirebaseUser user;
-    private IDataManager dataManager;
+    //private IDataManager dataManager;
    // private ServerAPI serverAPI;
 
     private bool firebaseInitialized = false;
