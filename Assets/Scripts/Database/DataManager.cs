@@ -70,7 +70,7 @@ public class DataManager : IDataManager
 
     public List<int> fetchMiniGamesList()
     {
-        return serverAPI.GetMinigamesIDs();
+        return serverAPI.GetMinigamesIDs().Result;
     }
 
      public ServerUserUpdateError changeNickname(string newNickname)
