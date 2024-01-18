@@ -1,13 +1,14 @@
+using System;
+using System.Text;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+
+using UnityEngine;
+
 using Firebase;
 using Firebase.Auth;
 using Firebase.Database;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
-using System.Threading.Tasks;
-using System.Threading;
-using System;
-using System.Text;
 
 public class ServerAPI
 {
@@ -694,29 +695,51 @@ public class ServerAPI
         return (ServerSearchError.None, LoggedUser.Value);
     }
 
-    public List<int> GetMinigamesIDs()
+    public async Task<List<int>> GetMinigamesIDs()
     {
-        (bool minigamesIDsGenerated, List<int> minigamesIDs) = GetMinigamesIDsDatabase();
-        if (minigamesIDsGenerated)
+        return await Task.Run(async () =>
         {
-            return minigamesIDs;
-        }
-
-        // Losowanie
-        minigamesIDs = new List<int>();
-
-        while (minigamesIDs.Count < 4)
-        {
-            int id = (int)UnityEngine.Random.Range(0, 8);
-            if (!minigamesIDs.Contains(id))
+            (bool minigamesIDsGenerated, List<int> minigamesIDs) = await GetMinigamesIDsDatabase();
+            if (minigamesIDsGenerated)
             {
-                minigamesIDs.Add(id);
+                return minigamesIDs;
             }
-        }
 
-        SaveMinigamesIDsDatabase("2024.01.18", minigamesIDs);
+            // Losowanie
+            // Pozyskanie daty
+            DateTime timeNow = DateTime.Now;
+            int currentDay = timeNow.Year * 10000 + timeNow.Month * 100 + timeNow.Day;
 
-        return minigamesIDs;
+            // hashowanie daty
+            int seed = currentDay.GetHashCode();
+
+            // stworzenie objektu random
+            System.Random rng = new(seed);
+
+            // stworzenie losowo pomieszaniej listy
+            List<int> allNumbers = new() { 0, 1, 2, 3, 4, 5, 6, 7 };
+
+            int n = allNumbers.Count;
+            while (n > 1)
+            {
+                n--;
+                int k = rng.Next(n + 1);
+                int value = allNumbers[k];
+                allNumbers[k] = allNumbers[n];
+                allNumbers[n] = value;
+            }
+
+            // Wybranie pierwszych 4 liczb
+            allNumbers = allNumbers.GetRange(0, 4);
+
+            // Data wylosowania w Stringu
+            // 2024.01.18
+            string data = new StringBuilder(timeNow.Year).Append(".").Append(timeNow.Month).Append(".").Append(timeNow.Day).ToString();
+
+            await SaveMinigamesIDsDatabase(data, minigamesIDs);
+
+            return minigamesIDs;
+        });
     }
 
     private async Task<bool> SaveMinigamesIDsDatabase(string data, List<int> ids)
