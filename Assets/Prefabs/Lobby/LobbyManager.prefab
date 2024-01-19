@@ -45,10 +45,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   miniGameStatusPrefab: {fileID: 8348589430618971709, guid: a8a97650d95fe6044b2bdff261598ea0, type: 3}
-  miniGameStatusName: MiniGameStatus
   NPCs:
-  - {fileID: 3953065113157707297, guid: bc98656ca7cd79146b10fe878242f425, type: 3}
-  - {fileID: 3953065113157707297, guid: 8067f4d2243ed0442a5cc4c0a53b359d, type: 3}
-  - {fileID: 3953065113157707297, guid: 925c43cc30fdbee45bc44d289888740e, type: 3}
-  - {fileID: 3953065113157707297, guid: 9b1aa4721a5c2704c882af9b734641a7, type: 3}
-  NPCsDistance: 4
+  - {fileID: 3953065113157707297, guid: 08d49d52418a49049b3bd63bb943ce65, type: 3}
+  - {fileID: 3953065113157707297, guid: 2963411856879de4abce124383e9fa56, type: 3}
+  - {fileID: 3953065113157707297, guid: 3eca8b4ec5157464389784f20de5320f, type: 3}
+  - {fileID: 3953065113157707297, guid: 1490a7a9f157b8f439a6bcfc89a361a8, type: 3}
+  - {fileID: 3953065113157707297, guid: 4ed309f2836a0ae488fc81a2a004944d, type: 3}
+  - {fileID: 3953065113157707297, guid: b6a89ee9c2753de409bf15da2f134e8e, type: 3}
+  - {fileID: 3953065113157707297, guid: 748c2dd949f5ffc48acc9589fffb99a1, type: 3}
+  NPCsDistance: 3
+  endLevelPanelController: {fileID: 0}

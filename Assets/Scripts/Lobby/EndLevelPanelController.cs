@@ -13,7 +13,8 @@ public class EndLevelPanelController : MonoBehaviour
     private TextMeshProUGUI miniGameName;
     [SerializeField]
     private TextMeshProUGUI resultScore;
-
+    [SerializeField]
+    private SendChallengePanelController sendChallengePanel;
 
     public void OpenPanel(MiniGameStatus miniGameStatus)
     {
@@ -37,5 +38,11 @@ public class EndLevelPanelController : MonoBehaviour
     public void ToLobby()
     {
         gameObject.SetActive(false);
+    }
+
+    public void Challenge()
+    {
+        gameObject.SetActive(false);
+        sendChallengePanel.OpenPanel();
     }
 }

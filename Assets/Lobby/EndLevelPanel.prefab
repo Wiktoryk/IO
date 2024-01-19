@@ -152,7 +152,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &957544345374729811
 RectTransform:
   m_ObjectHideFlags: 0
@@ -232,6 +232,7 @@ MonoBehaviour:
   defeatLabel: {fileID: 1623880396427637265}
   miniGameName: {fileID: 5067688291391637628}
   resultScore: {fileID: 4763678281551460836}
+  sendChallengePanel: {fileID: 0}
 --- !u!1 &3145245681965208089
 GameObject:
   m_ObjectHideFlags: 0
@@ -806,9 +807,9 @@ RectTransform:
   - {fileID: 8229488473698864443}
   m_Father: {fileID: 957544345374729811}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -1.3, y: -38}
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 0.5, y: 0}
+  m_AnchoredPosition: {x: 0, y: 16.099976}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6484686820091849663
