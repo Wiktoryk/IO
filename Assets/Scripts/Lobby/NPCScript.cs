@@ -9,7 +9,7 @@ public class NPCScript : MonoBehaviour
     public string statementsFileName = string.Empty;
 
     [SerializeField, TextArea]
-    private string[] statements = null;
+    private string[] statements;
 
     static private readonly string npcsStatementsFolderPath = "Lobby/NPCStatements/";
 

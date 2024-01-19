@@ -49,8 +49,8 @@ MonoBehaviour:
   statements:
   - "Recykling jest wa\u017Cny."
   miniGames:
-  - miniGameName: Recykling
-    miniGameSceneName: Recykling
+  - miniGameName: EnergySaving
+    miniGameSceneName: EnergySaving
 --- !u!212 &1577454549830758114
 SpriteRenderer:
   m_ObjectHideFlags: 0

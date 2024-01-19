@@ -49,7 +49,7 @@ public class NPCDialogWindowController : MonoBehaviour
     public void ActivateNPCDialogWindow(int npcIndex)
     {
         NPCData npcData = LobbyManager.Instance.GetNPCData(npcIndex);
-
+        Debug.Log("NPCData: " +  npcData.statement);
         npcStatementLabel.text = npcData.statement;
 
         //Dodawanie minigame slotó do listy

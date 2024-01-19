@@ -1,13 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class ScrollListChoosableItem : MonoBehaviour
 {
     private SendChallengePanelController parentController;
-    private string friendName;
-    private int id;
+    public string friendName;
+    public int id;
 
     public void Init(string friendName, int id, SendChallengePanelController parentController)
     {
@@ -15,7 +16,7 @@ public class ScrollListChoosableItem : MonoBehaviour
         this.id = id;
         this.parentController = parentController;
 
-        GetComponentInChildren<Text>().text = friendName;
+        GetComponentInChildren<TextMeshProUGUI>().text = friendName;
     }
 
     public void Choose()
