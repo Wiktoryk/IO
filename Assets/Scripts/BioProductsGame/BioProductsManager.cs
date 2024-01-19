@@ -16,7 +16,7 @@ public class BioProductsManager : MonoBehaviour
     void Start()
     {
         score = 100;
-        timeLeft = 30;
+        timeLeft = 60;
         GenerateProduct();
     }
 
