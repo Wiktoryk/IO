@@ -754,8 +754,14 @@ public class ServerAPI
             minigamesIDs = allNumbers.GetRange(0, 4);
 
             // Data wylosowania w Stringu
-            // 2024.01.18
-            string data = new StringBuilder(timeNow.Year).Append(".").Append(timeNow.Month).Append(".").Append(timeNow.Day).ToString();
+            // 2024.1.18
+            string data = new StringBuilder("")
+                            .Append(timeNow.Year.ToString())
+                            .Append(".")
+                            .Append(timeNow.Month.ToString())
+                            .Append(".")
+                            .Append(timeNow.Day.ToString())
+                            .ToString();
 
             await SaveMinigamesIDsDatabase(data, minigamesIDs);
 
@@ -812,7 +818,8 @@ public class ServerAPI
 
                 if (DBTask.Result.Value.ToString().Equals("") || 
                     !DBTask.Result.Value.ToString().Equals(
-                        new StringBuilder(time.Year.ToString())
+                        new StringBuilder("")
+                        .Append(time.Year.ToString())
                         .Append(".")
                         .Append(time.Month.ToString())
                         .Append(".")
