@@ -49,7 +49,7 @@ public class EnergySavingDisplay : MonoBehaviour
         endGameDisplay.SetActive(true);
         Debug.Log("d");
         GameObject endText = GameObject.Find("FinishText");
-        endText.GetComponent<Text>().text = "Congratulations!           Your final score:                   " + previousScore.ToString();
+        endText.GetComponent<Text>().text = "Gratulacje!           Twój wynik koñcowy:                   " + previousScore.ToString();
 
     }
 
@@ -86,10 +86,15 @@ public class EnergySavingDisplay : MonoBehaviour
     public void ReturnToLobby()
     {
         Debug.Log("MiniGameScoreExit: ");
-        MiniGameStatus.Instance.SetStatus("Energy Saving Mini Game", previousScore, result);
+        MiniGameStatus.Instance.SetStatus("Gra o oszczêdzaniu energii", previousScore, result);
         SceneManager.LoadScene("LobbyScene");
     }
 
+    public void QuitToLobby()
+    {
+        MiniGameStatus.Instance.SetStatus("Gra o oszczêdzaniu energii", 0, false);
+        SceneManager.LoadScene("LobbyScene");
+    }
 
     public void UpdateDisplay(int score, float timeLeft)
     {
@@ -97,16 +102,17 @@ public class EnergySavingDisplay : MonoBehaviour
         if (score != previousScore)
         {
             UnityEngine.UI.Text textField = scoreDisplay.GetComponent<UnityEngine.UI.Text>();
-            textField.text = "Score: " + score.ToString();
+            textField.text = "Wynik: " + score.ToString();
             previousScore = score;
         }
 
         UnityEngine.UI.Text timeField = timeDisplay.GetComponent<UnityEngine.UI.Text>();
         int time = (int)timeLeft;
-        timeField.text = "Time left: " + time.ToString();
+        timeField.text = "Czas: " + time.ToString();
 
         if (previousScore <= 0) 
         {
+            previousScore = 0;
             result = false;
             EndGame();
         }
@@ -119,7 +125,7 @@ public class EnergySavingDisplay : MonoBehaviour
         if (Input.GetKeyUp(KeyCode.E))
         {
             Debug.Log("MiniGameScoreExit: ");
-            MiniGameStatus.Instance.SetStatus("MINI", previousScore);
+            MiniGameStatus.Instance.SetStatus("Gra o oszczêdzaniu energii", previousScore);
             SceneManager.LoadScene("LobbyScene");
         }
     }

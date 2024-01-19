@@ -19,6 +19,7 @@ public class BioGameDisplay : MonoBehaviour
     [SerializeField]
     GameObject timeDisplay;
     int previousScore;
+    bool result;
 
     // Start is called before the first frame update
     void Start()
@@ -63,17 +64,23 @@ Debug.Log("d");
         if (Input.GetKeyUp(KeyCode.E))
         {
             Debug.Log("MiniGameScoreExit: " );
-            MiniGameStatus.Instance.SetStatus("Bio Products Mini Game", previousScore);
+            MiniGameStatus.Instance.SetStatus("Gra o produktach ekologicznych", previousScore, result);
             SceneManager.LoadScene("LobbyScene");
         }
     }
 
     public void ReturnToLobby()
     {
-        MiniGameStatus.Instance.SetStatus("Bio Products Mini Game", previousScore);
+        MiniGameStatus.Instance.SetStatus("Gra o produktach ekologicznych", previousScore, result);
         SceneManager.LoadScene("LobbyScene");
     }
 
+    public void QuitToLobby()
+    {
+        MiniGameStatus.Instance.SetStatus("Gra o produktach ekologicznych", 0, false);
+        SceneManager.LoadScene("LobbyScene");
+    }
+    
 
     public void UpdateDisplay(Product currentProduct, int score, float timeLeft)
     {
@@ -95,8 +102,18 @@ Debug.Log("d");
         int time = (int)timeLeft;
         timeField.text = "Czas: " + time.ToString();
 
-        if(time <= 0)
+
+
+        if (previousScore <= 0)
         {
+            previousScore = 0;
+            result = false;
+            EndGame();
+        }
+        if (time <= 0)
+        {
+
+            result = true;
             EndGame();
         }
     }
