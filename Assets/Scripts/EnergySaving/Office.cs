@@ -20,13 +20,9 @@ public class Office : MonoBehaviour
         }
     }
 
-    void Awake()
-    {
-        stations = FindObjectsOfType<Station>();
-    }
-
     private void Start()
     {
+        stations = FindObjectsOfType<Station>();
         energyWasted = 0;
         timeLeft = 60;
         for (int i = 0;i < stations.Length;i++)
