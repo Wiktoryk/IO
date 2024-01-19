@@ -29,7 +29,10 @@ public class AnimalStampComponent :  MonoBehaviour, IPointerDownHandler, IPointe
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        // Calculate the offset between the pointer position and the sprite position
+        if (!paperGameManager.gameIsFinished && paperGameManager.timer < 60f)
+        {
+            // Calculate the offset between the pointer position and the sprite position
+            Debug.Log(!paperGameManager.gameIsFinished);
         pointerOffset = eventData.position - spriteRectTransform.anchoredPosition;
         isDragging = true;
         if (!collides && !inPaper)
@@ -40,6 +43,9 @@ public class AnimalStampComponent :  MonoBehaviour, IPointerDownHandler, IPointe
         {
             //TODO throw it pack to animal zone
         }
+        
+            
+        }
     }
 
     public void OnPointerUp(PointerEventData eventData)
@@ -49,7 +55,7 @@ public class AnimalStampComponent :  MonoBehaviour, IPointerDownHandler, IPointe
 
     public void OnDrag(PointerEventData eventData)
     {
-        if (isDragging)
+        if (isDragging && !paperGameManager.gameIsFinished && paperGameManager.timer < 60f)
         {
             // Update the sprite position based on the pointer position and offset
             spriteRectTransform.anchoredPosition = eventData.position - pointerOffset;
@@ -107,8 +113,8 @@ public class AnimalStampComponent :  MonoBehaviour, IPointerDownHandler, IPointe
     {
         RectTransform rt = this.GetComponent<RectTransform>();
         PolygonCollider2D polygonCollider = this.GetComponent<PolygonCollider2D>();
-        Debug.Log("Sprite pos:" + rt.position.ToString());
-        Debug.Log("Border pos:" + corners[0].ToString() + corners[1].ToString());
+        //Debug.Log("Sprite pos:" + rt.position.ToString());
+        //Debug.Log("Border pos:" + corners[0].ToString() + corners[1].ToString());
         
         bool isIside = true;
         foreach (var corner in polygonCollider.GetPath(0))
