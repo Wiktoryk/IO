@@ -37,7 +37,7 @@ public class ServerAPI
         }
     }
 
-    public ServerAPI() {}
+    private ServerAPI() {}
 
     public async Task Init()
     {
