@@ -13,18 +13,14 @@ public class DataManager : IDataManager
 {
 
    private static DataManager instance;
-    private ServerAPI serverAPI; // Dodajemy pole dla instancji ServerAPI
-
+   
     public static DataManager Instance { 
         get {
             return instance ??= new DataManager();
         }
     }
 
-    public DataManager()
-    {
-        serverAPI = ServerAPI.Instance; // Pobieramy instancję ServerAPI
-    }
+    private DataManager() {}
 
     //private IDataManager dataManager;
    // private ServerAPI serverAPI;
