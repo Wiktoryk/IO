@@ -32,6 +32,8 @@ public class LobbyManager : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
+        // To jest gotowy u¿ytkownik którego stworzyliœmy w ramach testów
+
         if (instance != null)
         {
             Destroy(gameObject);
@@ -67,10 +69,38 @@ public class LobbyManager : MonoBehaviour
         {
             instantiatedNPCs.Add(Instantiate(NPCs[index], npcsPositions[posIndex++], Quaternion.identity));
         }
-        instantiatedNPCs.Add(Instantiate(NPCs[todaysNPCsIndexes.First<int>()], npcsPositions[posIndex++], Quaternion.identity));
+        instantiatedNPCs.Add(Instantiate(NPCs[todaysNPCsIndexes.First<int>()], npcsPositions[posIndex++], Quaternion.identity));/* */
+    }
+
+    async void Start()
+    {
+        await DataManager.Instance.Init();
+        ServerLogInError error = await DataManager.Instance.Login("test@test.com", "123456");
+
+        /*todaysNPCsIndexes = new List<int>() { 0, 1, 2, 3 };
+        //todaysNPCsIndexes = await DataManager.Instance.fetchMiniGamesList();
+        Debug.LogFormat("{0}\t{1}\t{2}\t{3}", todaysNPCsIndexes[0], todaysNPCsIndexes[1], todaysNPCsIndexes[2], todaysNPCsIndexes[3]);
+
+        //Generowanie pozycji dla NPC-ów
+        npcsPositions = new Vector3[todaysNPCsIndexes.Count + 2];
+
+        for (int i = 0; i < (todaysNPCsIndexes.Count + 2); i++)
+        {
+            npcsPositions[i] = new Vector3(i * NPCsDistance, 0.0f, 0.0f);
+        }
+
+        //Instancjonowanie NPC-ów
+        int posIndex = 0;
+        instantiatedNPCs.Add(Instantiate(NPCs[todaysNPCsIndexes.Last<int>()], npcsPositions[posIndex++], Quaternion.identity));
+        foreach (int index in todaysNPCsIndexes)
+        {
+            instantiatedNPCs.Add(Instantiate(NPCs[index], npcsPositions[posIndex++], Quaternion.identity));
+        }
+        instantiatedNPCs.Add(Instantiate(NPCs[todaysNPCsIndexes.First<int>()], npcsPositions[posIndex++], Quaternion.identity));/**/
     }
 
 
+    //private async void QuerryServerForNPCs()
     private void QuerryServerForNPCs()
     {
         todaysNPCsIndexes = new List<int>() { 0, 1, 2, 3 };

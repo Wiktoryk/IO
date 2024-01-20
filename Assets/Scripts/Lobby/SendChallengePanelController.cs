@@ -31,7 +31,7 @@ public class SendChallengePanelController : MonoBehaviour
         foreach (Object obj in friendList)
         {
             GameObject friend = Instantiate(listItemPrefab, content.transform);
-            friend.GetComponent<ScrollListChoosableItem>().Init("Player1", 0, this);
+            friend.GetComponent<ScrollListChoosableItem>().Init("Player1", "0", this);
         }
 
     }
@@ -54,7 +54,12 @@ public class SendChallengePanelController : MonoBehaviour
 
     public void ChooseFriend()
     {
-        Debug.Log("SendingChallenge");
+        ChallengeData challengeData = new ChallengeData();
+        challengeData.MinigameID = 0;
+        challengeData.UserID = PlayerData.GetInstance().getPlayerID();
+        challengeData.Score = 0;
+
+        DataManager.Instance.sendChallenge(selectedItem.id, challengeData);
 
         Clear();
         gameObject.SetActive(false);

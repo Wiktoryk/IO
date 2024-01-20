@@ -34,14 +34,14 @@ public class ProfilePanelController : MonoBehaviour
             NicknameText.text = playerData.getNickname();
             LevelText.text = playerData.getLevel().ToString();
 
-            setMinigameHighScoreText(PlayerData.MinigameType.MG_A);
-            setMinigameHighScoreText(PlayerData.MinigameType.MG_B);
-            setMinigameHighScoreText(PlayerData.MinigameType.MG_C);
-            setMinigameHighScoreText(PlayerData.MinigameType.MG_D);
-            setMinigameHighScoreText(PlayerData.MinigameType.MG_E);
-            setMinigameHighScoreText(PlayerData.MinigameType.MG_F);
-            setMinigameHighScoreText(PlayerData.MinigameType.MG_G);
-            setMinigameHighScoreText(PlayerData.MinigameType.MG_H);
+            setMinigameHighScoreText(PlayerData.MinigameType.RECYCLING);
+            setMinigameHighScoreText(PlayerData.MinigameType.WATER_SAVING);
+            setMinigameHighScoreText(PlayerData.MinigameType.ECO_PRODS);
+            setMinigameHighScoreText(PlayerData.MinigameType.ENERGY_SAVING);
+            setMinigameHighScoreText(PlayerData.MinigameType.REUSING);
+            setMinigameHighScoreText(PlayerData.MinigameType.PUBLIC_TRANSP);
+            setMinigameHighScoreText(PlayerData.MinigameType.WASTES);
+            setMinigameHighScoreText(PlayerData.MinigameType.PAPPER_SAVING);
         }
     }
 
@@ -66,13 +66,19 @@ public class ProfilePanelController : MonoBehaviour
     {
         string newPassword = ChangingPasswordPanel.GetComponentInChildren<TMP_InputField>().text;
 
+        DataManager.Instance.changePassword(newPassword);
+
         ChangingPasswordPanel.SetActive(false);
         BlindingPanel.SetActive(false);
     }
 
-    public void ChangeNickname()
+    public async void ChangeNickname()
     {
         string newNickname = ChangingNicknamePanel.GetComponentInChildren<TMP_InputField>().text;
+
+        await DataManager.Instance.changeNickname(newNickname);
+        playerData.setNickname(newNickname);
+        playerData.UploadPlayerData();
 
         ChangingNicknamePanel.SetActive(false);
         BlindingPanel.SetActive(false);

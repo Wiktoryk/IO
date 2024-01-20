@@ -1,0 +1,16 @@
+{
+    "name": "Database",
+    "rootNamespace": "",
+    "references": [
+        "ServerAPI"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

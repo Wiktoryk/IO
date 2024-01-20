@@ -31,6 +31,25 @@ public class EndLevelPanelController : MonoBehaviour
             successLabel.SetActive(false);
         }
 
+        //jeœli rozpoczêt¹ minigrê wyzwanie to zakoñczy siê ono tutaj
+        /*if (ChalangeController.Instance() != null)
+        {
+            ChallengeData challengeData = new ChallengeData();
+
+            challengeData.Score = miniGameStatus.Score;
+            challengeData.UserID = PlayerData.GetInstance().getPlayerID();
+            challengeData.MinigameID = ChalangeController.Instance().minigameTypeId;
+
+            DataManager.Instance.AcceptChallenge(ChalangeController.Instance().chalangingPlayerId, challengeData);
+        }*/
+
+        //Sprawdzanie nowego najlepszego wyniku      //typ minigry
+        /*if (miniGameStatus.Score > PlayerData.GetInstance().getMinigameHighScore(PlayerData.MinigameType.MG_A))
+        {
+            PlayerData.GetInstance().setMinigameHighScore(PlayerData.MinigameType.MG_A, miniGameStatus.Score);
+            PlayerData.GetInstance().UploadPlayerData();
+        }*/
+
         miniGameName.text = miniGameStatus.MiniGameName;
         resultScore.text = miniGameStatus.Score.ToString();
     }

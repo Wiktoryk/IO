@@ -8,9 +8,9 @@ public class ScrollListChoosableItem : MonoBehaviour
 {
     private SendChallengePanelController parentController;
     public string friendName;
-    public int id;
+    public string id;
 
-    public void Init(string friendName, int id, SendChallengePanelController parentController)
+    public void Init(string friendName, string id, SendChallengePanelController parentController)
     {
         this.friendName = friendName;
         this.id = id;

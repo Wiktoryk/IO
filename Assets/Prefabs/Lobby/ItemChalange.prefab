@@ -32,10 +32,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1445431242884672377}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -189, y: -0.0000052452}
-  m_SizeDelta: {x: 644, y: 111.2}
+  m_AnchorMin: {x: 0.02488147, y: 0.16918135}
+  m_AnchorMax: {x: 0.6222964, y: 0.8477638}
+  m_AnchoredPosition: {x: -1.5, y: -1.5000038}
+  m_SizeDelta: {x: 9, y: 8.199997}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8887391679368630869
 CanvasRenderer:
@@ -112,10 +112,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1445431242884672377}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 422, y: -0.0000091791}
-  m_SizeDelta: {x: 125.9, y: 119.7}
+  m_AnchorMin: {x: 0.84065944, y: 0.08976374}
+  m_AnchorMax: {x: 0.95911855, y: 0.90070885}
+  m_AnchoredPosition: {x: -3, y: 0.49999237}
+  m_SizeDelta: {x: -0.1000061, y: -3.300003}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7659311205203924396
 CanvasRenderer:
@@ -145,7 +145,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 1cc0c54e874f01a408f89968ca1d478e, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ee4681ce82bed9449a76dd09a0064b49, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -244,10 +244,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1445431242884672377}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 233, y: -1.35}
-  m_SizeDelta: {x: 125.9, y: 119.7}
+  m_AnchorMin: {x: 0.66, y: 0.08976374}
+  m_AnchorMax: {x: 0.78134817, y: 0.90070885}
+  m_AnchoredPosition: {x: -1.5, y: -0.8499985}
+  m_SizeDelta: {x: -3.100006, y: -3.300003}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5740312905342139414
 CanvasRenderer:
@@ -277,7 +277,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: c83cbc6426516954b97133d797c3e2eb, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 63159d17ab41a7e4bb66454fe876d3f5, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -458,5 +458,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3500bac36b4768a4381a75f117ecf5ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ChalangeControllerPrefab: {fileID: 0}
   ChalangingPlayerNicknameText: {fileID: 2698945392718703033}
   lobbyActionController: {fileID: 0}

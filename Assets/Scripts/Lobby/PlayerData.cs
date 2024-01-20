@@ -1,31 +1,38 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class PlayerData //: MonoBehaviour
 {
     private static PlayerData instance = null;
-    private int[] minigamesHighScores = {0, 0, 0, 0, 0, 0, 0, 0};
-    private int playerID = 0;
+    private float[] minigamesHighScores = { 0, 0, 0, 0, 0, 0, 0, 0 };
+    private string playerID = "";
     private string nickname = "Nickname";
     private int level = 0;
 
-    public enum MinigameType:int { MG_A = 0, MG_B, MG_C, MG_D, MG_E, MG_F, MG_G, MG_H };
+    public enum MinigameType : int { RECYCLING = 0, WATER_SAVING, ECO_PRODS, ENERGY_SAVING, REUSING, PUBLIC_TRANSP, WASTES, PAPPER_SAVING };
+    //{ RECYCLING = 0, WATER_SAVING, ECO_PRODS, ENERGY_SAVING, REUSING, PUBLIC_TRANSP, WASTES, PAPPER_SAVING };
 
-    public int getPlayerID() 
+public string getPlayerID()
     {
         return playerID;
     }
 
-    public void setPlayerID(int PlayerId)
+    public void setPlayerID(string PlayerId)
     {
         playerID = PlayerId;
     }
 
-    public string getNickname() 
+    public string getNickname()
     {
         return nickname;
+    }
+
+    public void setNickname(string newNickname)
+    {
+        nickname = newNickname;
     }
 
     public int getLevel()
@@ -66,25 +73,44 @@ public class PlayerData //: MonoBehaviour
 
     public bool DownloadPlayerData()
     {
+        var result = DataManager.Instance.GetLoggedUser();
+        UserData udata = (UserData)result.Item2;
 
+        playerID = udata.ID;
+        nickname = udata.Nickname;
+        List<float> hs = udata.Highscores;
+
+        for (int i = 0; i < hs.Count; i++)
+        {
+            minigamesHighScores[i] = hs[i];
+        }
 
         return true;
     }
 
-    public bool UploadPlayerData()
+    public async Task<bool> UploadPlayerData()
     {
+        var result = DataManager.Instance.GetLoggedUser();
+        UserData udata = (UserData)result.Item2;
 
+        for (int i = 0; i < udata.Highscores.Count; i++)
+        {
+            udata.Highscores[i] = minigamesHighScores[i];
+        }
+
+        await DataManager.Instance.updateUser(udata);
 
         return true;
     }
 
-    public int getMinigameHighScore(MinigameType type)
+    public float getMinigameHighScore(MinigameType type)
     {
         return minigamesHighScores[(int)type];
     }
 
-    public void setMinigameHighScore(MinigameType type, int newHighScore)
+    public void setMinigameHighScore(MinigameType type, float newHighScore)
     {
         minigamesHighScores[(int)type] = newHighScore;
+        UploadPlayerData();
     }
 }
