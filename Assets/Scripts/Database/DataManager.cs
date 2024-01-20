@@ -12,7 +12,9 @@ using Firebase.Database;
 public class DataManager : IDataManager
 {
 
-    private static DataManager instance;
+   private static DataManager instance;
+    private ServerAPI serverAPI; // Dodajemy pole dla instancji ServerAPI
+
     public static DataManager Instance { 
         get {
             return instance ??= new DataManager();
@@ -21,6 +23,7 @@ public class DataManager : IDataManager
 
     public DataManager()
     {
+        serverAPI = ServerAPI.Instance; // Pobieramy instancję ServerAPI
     }
 
     //private IDataManager dataManager;
