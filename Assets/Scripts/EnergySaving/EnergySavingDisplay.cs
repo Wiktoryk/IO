@@ -49,7 +49,7 @@ public class EnergySavingDisplay : MonoBehaviour
         endGameDisplay.SetActive(true);
         Debug.Log("d");
         GameObject endText = GameObject.Find("FinishText");
-        endText.GetComponent<Text>().text = "Gratulacje!           Twój wynik koñcowy:                   " + previousScore.ToString();
+        endText.GetComponent<Text>().text = "Koniec gry!           Twój wynik koñcowy:                   " + previousScore.ToString();
 
     }
 
