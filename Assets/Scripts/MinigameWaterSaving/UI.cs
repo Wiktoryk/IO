@@ -50,7 +50,5 @@ namespace MinigameWaterSaving
             SceneManager.LoadScene(0);
             Time.timeScale = 1;
         }
-
-        public Timer Timer => _timer;
     }
 }
