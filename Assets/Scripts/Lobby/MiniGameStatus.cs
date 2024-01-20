@@ -10,12 +10,14 @@ public class MiniGameStatus : MonoBehaviour
 
     private string miniGameName;
     private int score;
+    private int minigameId = -1;
     private bool ended = false;
     private bool success = true;
 
     public string MiniGameName { get => miniGameName; } //set => miniGameName = value;
     public int Score { get => score; }
     public bool Success { get => success; }
+    public int MinigameId { set => minigameId = value; get => minigameId; }
 
     /**
      * Reading Ended property automaticly resets its value after end of this operation

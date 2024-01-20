@@ -55,9 +55,9 @@ public class SendChallengePanelController : MonoBehaviour
     public void ChooseFriend()
     {
         ChallengeData challengeData = new ChallengeData();
-        challengeData.MinigameID = 0;
+        challengeData.MinigameID = MiniGameStatus.Instance.MinigameId;
         challengeData.UserID = PlayerData.GetInstance().getPlayerID();
-        challengeData.Score = 0;
+        challengeData.Score = MiniGameStatus.Instance.Score;
 
         DataManager.Instance.sendChallenge(selectedItem.id, challengeData);
 

@@ -49,7 +49,8 @@ MonoBehaviour:
   statements:
   - "Wa\u017Cne jest aby korzysta\u0107 z produkt\xF3w przyjaznych \u015Brodowisku."
   miniGames:
-  - miniGameName: BioProducts
+  - minigameId: 0
+    miniGameName: BioProducts
     miniGameSceneName: BioProducts
 --- !u!212 &1577454549830758114
 SpriteRenderer:

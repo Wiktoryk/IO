@@ -32,7 +32,7 @@ public class EndLevelPanelController : MonoBehaviour
         }
 
         //jeœli rozpoczêt¹ minigrê wyzwanie to zakoñczy siê ono tutaj
-        /*if (ChalangeController.Instance() != null)
+        if (ChalangeController.Instance() != null)
         {
             ChallengeData challengeData = new ChallengeData();
 
@@ -41,14 +41,15 @@ public class EndLevelPanelController : MonoBehaviour
             challengeData.MinigameID = ChalangeController.Instance().minigameTypeId;
 
             DataManager.Instance.AcceptChallenge(ChalangeController.Instance().chalangingPlayerId, challengeData);
-        }*/
+            Destroy(ChalangeController.Instance().gameObject);
+        }/**/
 
         //Sprawdzanie nowego najlepszego wyniku      //typ minigry
-        /*if (miniGameStatus.Score > PlayerData.GetInstance().getMinigameHighScore(PlayerData.MinigameType.MG_A))
+        if (miniGameStatus.Score > PlayerData.GetInstance().getMinigameHighScore((PlayerData.MinigameType)MiniGameStatus.Instance.MinigameId))
         {
-            PlayerData.GetInstance().setMinigameHighScore(PlayerData.MinigameType.MG_A, miniGameStatus.Score);
+            PlayerData.GetInstance().setMinigameHighScore((PlayerData.MinigameType)MiniGameStatus.Instance.MinigameId, miniGameStatus.Score);
             PlayerData.GetInstance().UploadPlayerData();
-        }*/
+        }/**/
 
         miniGameName.text = miniGameStatus.MiniGameName;
         resultScore.text = miniGameStatus.Score.ToString();

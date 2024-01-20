@@ -16,11 +16,13 @@ public class NPCScript : MonoBehaviour
     [System.Serializable]
     public class MiniGame
     {
+        public int minigameId;
         public string miniGameName;
         public string miniGameSceneName;
 
-        public MiniGame(string miniGameName, string miniGameSceneName)
+        public MiniGame(int minigameId, string miniGameName, string miniGameSceneName)
         {
+            this.minigameId = minigameId;
             this.miniGameName = miniGameName;
             this.miniGameSceneName = miniGameSceneName;
         }
@@ -71,6 +73,7 @@ public class NPCScript : MonoBehaviour
         { 
             if (miniGame.miniGameName == miniGameName)
             {
+                MiniGameStatus.Instance.MinigameId = miniGame.minigameId;
                 SceneManager.LoadScene(miniGame.miniGameSceneName);     
                 break;
             }

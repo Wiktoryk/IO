@@ -49,7 +49,8 @@ MonoBehaviour:
   statements:
   - "Recykling jest wa\u017Cny."
   miniGames:
-  - miniGameName: PaperRecycling
+  - minigameId: 5
+    miniGameName: PaperRecycling
     miniGameSceneName: PaperRecycling
 --- !u!212 &1577454549830758114
 SpriteRenderer:
