@@ -32,12 +32,12 @@ namespace MinigameWaterSaving
             StartCoroutine(Spawn());
         }
 
-        public Vector2 GetFreePosition()
+        private Vector2 GetFreePosition()
         {
             return new Vector2(Random.Range(_xRange.x, _xRange.y), Random.Range(_yRange.x, _yRange.y));
         }
         
-        public IEnumerator Spawn()
+        private IEnumerator Spawn()
         {
             DropPool.Get(GetFreePosition());
             yield return new WaitForSeconds(_interval);

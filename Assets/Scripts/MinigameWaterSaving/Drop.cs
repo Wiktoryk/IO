@@ -7,11 +7,6 @@ namespace MinigameWaterSaving
     {
         [SerializeField] private float _fallingSpeed = 5;
 
-        private void Start()
-        {
-            
-        }
-
         private void Update()
         {
             Vector2 v = transform.position;
