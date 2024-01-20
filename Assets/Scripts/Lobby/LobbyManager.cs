@@ -59,7 +59,7 @@ public class LobbyManager : MonoBehaviour
 
         for (int i = 0; i < (todaysNPCsIndexes.Count + 2); i++)
         {
-            npcsPositions[i] = new Vector3(i * NPCsDistance, 0.0f, 0.0f);
+            npcsPositions[i] = new Vector3(i * NPCsDistance, -2.0f, 0.0f);
         }
 
         //Instancjonowanie NPC-ów
