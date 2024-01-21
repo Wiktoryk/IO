@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class RecyklingGameScript : MonoBehaviour
 {
@@ -11,6 +12,8 @@ public class RecyklingGameScript : MonoBehaviour
     public int currentTrash;
     public int addedTrash = 0;
     public GameObject trashPrefab;
+
+    public static (bool, int) result = (false, 0);
     void Start()
     {
         currentTrash = initialNumberOfTrash;
@@ -43,7 +46,7 @@ public class RecyklingGameScript : MonoBehaviour
             Debug.Log("Points: " + pointsCounter.GetPoints());
             
 
-            //tutaj bedzie GetResult(pointsCounter.GetPoints())
+            result = (true, (int)pointsCounter.GetPoints());
         }
     }
 
