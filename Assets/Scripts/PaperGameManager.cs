@@ -105,6 +105,7 @@ public class PaperGameManager : MonoBehaviour
         {
             finishedGamePanel.SetActive(true);
             scoreTextGameFinished.text = math.round(score).ToString();
+            MiniGameStatus.Instance.SetStatus("paper", (int) score, true);
         }
     }
 
