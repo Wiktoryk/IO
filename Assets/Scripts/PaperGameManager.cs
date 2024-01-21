@@ -39,6 +39,7 @@ public class PaperGameManager : MonoBehaviour
 
     void Start()
     {
+        Screen.orientation = ScreenOrientation.LandscapeLeft;
         prefabZone.GetWorldCorners(animalZoneCorners);
         paperZone.GetComponent<RectTransform>().GetWorldCorners(paperCorners);
         finishedGamePanel.SetActive(false);
@@ -114,7 +115,7 @@ public class PaperGameManager : MonoBehaviour
 
     public void ReturnToLobby()
     {
-        
+        //TODO tutaj wstawić wynik żeby się zwracał do lobby
     }
     
     public void SpawnInsideTheZone()
