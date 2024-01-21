@@ -593,6 +593,7 @@ public class ServerAPI
                 LoggedUser = user;
                 return true;
             }
+
         });
     }
 
