@@ -53,24 +53,24 @@ public class LobbyManager : MonoBehaviour
             ProcessMiniGameResults();
         }
 
-        QuerryServerForNPCs();
-
-        //Generowanie pozycji dla NPC-ów
-        npcsPositions = new Vector3[todaysNPCsIndexes.Count + 2];
-
-        for (int i = 0; i < (todaysNPCsIndexes.Count + 2); i++)
-        {
-            npcsPositions[i] = new Vector3(i * NPCsDistance, -2.0f, 0.0f);
-        }
-
-        //Instancjonowanie NPC-ów
-        int posIndex = 0;
-        instantiatedNPCs.Add(Instantiate(NPCs[todaysNPCsIndexes.Last<int>()], npcsPositions[posIndex++], Quaternion.identity));
-        foreach (int index in todaysNPCsIndexes)
-        {
-            instantiatedNPCs.Add(Instantiate(NPCs[index], npcsPositions[posIndex++], Quaternion.identity));
-        }
-        instantiatedNPCs.Add(Instantiate(NPCs[todaysNPCsIndexes.First<int>()], npcsPositions[posIndex++], Quaternion.identity));/* */
+        //QuerryServerForNPCs();
+        //
+        ////Generowanie pozycji dla NPC-ów
+        //npcsPositions = new Vector3[todaysNPCsIndexes.Count + 2];
+        //
+        //for (int i = 0; i < (todaysNPCsIndexes.Count + 2); i++)
+        //{
+        //    npcsPositions[i] = new Vector3(i * NPCsDistance, -2.0f, 0.0f);
+        //}
+        //
+        ////Instancjonowanie NPC-ów
+        //int posIndex = 0;
+        //instantiatedNPCs.Add(Instantiate(NPCs[todaysNPCsIndexes.Last<int>()], npcsPositions[posIndex++], Quaternion.identity));
+        //foreach (int index in todaysNPCsIndexes)
+        //{
+        //    instantiatedNPCs.Add(Instantiate(NPCs[index], npcsPositions[posIndex++], Quaternion.identity));
+        //}
+        //instantiatedNPCs.Add(Instantiate(NPCs[todaysNPCsIndexes.First<int>()], npcsPositions[posIndex++], Quaternion.identity));/* */
     }
 
     async void Start()
@@ -80,7 +80,7 @@ public class LobbyManager : MonoBehaviour
         //{
         //    await DataManager.Instance.Login("test@test.com", "123456");
         //}
-        await Init();
+        //await Init();
     }
 
     public async Task<bool> Init()
