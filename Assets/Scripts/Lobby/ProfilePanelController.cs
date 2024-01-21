@@ -32,7 +32,7 @@ public class ProfilePanelController : MonoBehaviour
         {
             ID.text = playerData.getPlayerID().ToString();
             NicknameText.text = playerData.getNickname();
-            LevelText.text = playerData.getLevel().ToString();
+            LevelText.text = (playerData.getXp() / 1000 + 1).ToString();
 
             setMinigameHighScoreText(PlayerData.MinigameType.RECYCLING);
             setMinigameHighScoreText(PlayerData.MinigameType.WATER_SAVING);
