@@ -92,11 +92,12 @@ public class PaperGameManager : MonoBehaviour
                 }
             }
 
+            /*
             if (inAnimalZone < 50)
             {
                 SpawnInsideTheZone();
             }
-
+            */
             scoreText.text = "Score: " + math.round(score).ToString();
         }
         else
