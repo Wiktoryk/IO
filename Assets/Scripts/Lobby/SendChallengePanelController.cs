@@ -24,14 +24,17 @@ public class SendChallengePanelController : MonoBehaviour
         chooseButton.enabled = false;
     }
 
-    private void GenerateFriendList()
+    private async void GenerateFriendList()
     {
         Object[] friendList = new Object[3];// = GetFriendList();
 
-        foreach (Object obj in friendList)
+        List<string> friends = ((UserData)DataManager.Instance.GetLoggedUser().Item2).Friends;
+
+        foreach (string friendID in friends)
         {
+            UserData data = (UserData)(await DataManager.Instance.GetUserByID(friendID)).Item2;
             GameObject friend = Instantiate(listItemPrefab, content.transform);
-            friend.GetComponent<ScrollListChoosableItem>().Init("Player1", "0", this);
+            friend.GetComponent<ScrollListChoosableItem>().Init(data.Nickname, friendID, this);
         }
 
     }

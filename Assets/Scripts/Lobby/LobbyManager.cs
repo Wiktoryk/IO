@@ -140,6 +140,10 @@ public class LobbyManager : MonoBehaviour
 
         return npcData;
     }
+    public NPCScript GetNPC(int index)
+    {
+        return NPCs[index].GetComponent<NPCScript>();
+    }
 
     public void LoadMiniGame(int npcIndex, string miniGameName)
     {

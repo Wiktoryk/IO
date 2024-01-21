@@ -16,7 +16,14 @@ public class EndLevelPanelController : MonoBehaviour
     [SerializeField]
     private SendChallengePanelController sendChallengePanel;
 
-    public void OpenPanel(MiniGameStatus miniGameStatus)
+    [SerializeField]
+    private GameObject challengePart;
+    [SerializeField]
+    private TextMeshProUGUI challengedPlayername;
+    [SerializeField]
+    private TextMeshProUGUI challengedPlayerScore;
+
+    public async void OpenPanel(MiniGameStatus miniGameStatus)
     {
         gameObject.SetActive(true);
 
@@ -40,6 +47,22 @@ public class EndLevelPanelController : MonoBehaviour
             challengeData.UserID = PlayerData.GetInstance().getPlayerID();
             challengeData.MinigameID = ChalangeController.Instance().minigameTypeId;
 
+            challengePart.SetActive(true);
+            if (miniGameStatus.Score >= ChalangeController.Instance().chalangingPlayerScore)
+            {
+                successLabel.SetActive(true);
+                defeatLabel.SetActive(false);
+            }
+            else
+            {
+                defeatLabel.SetActive(true);
+                successLabel.SetActive(false);
+            }
+
+            UserData data = (UserData) (await DataManager.Instance.GetUserByID(ChalangeController.Instance().chalangingPlayerId)).Item2;
+            challengedPlayername.text = data.Nickname;
+            challengedPlayerScore.text = ChalangeController.Instance().chalangingPlayerScore.ToString();
+
             DataManager.Instance.AcceptChallenge(ChalangeController.Instance().chalangingPlayerId, challengeData);
             Destroy(ChalangeController.Instance().gameObject);
         }/**/
@@ -57,11 +80,13 @@ public class EndLevelPanelController : MonoBehaviour
 
     public void ToLobby()
     {
+        challengePart.SetActive(false);
         gameObject.SetActive(false);
     }
 
     public void Challenge()
     {
+        challengePart.SetActive(false);
         gameObject.SetActive(false);
         sendChallengePanel.OpenPanel();
     }

@@ -13,6 +13,7 @@ public class MiniGameStatus : MonoBehaviour
     private int minigameId = -1;
     private bool ended = false;
     private bool success = true;
+    private bool isChallenge = true;
 
     public string MiniGameName { get => miniGameName; } //set => miniGameName = value;
     public int Score { get => score; }
