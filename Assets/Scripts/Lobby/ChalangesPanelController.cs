@@ -23,10 +23,10 @@ public class ChalangesPanelController : MonoBehaviour
 
     void addToChalangeList(int ChalangeId, string ChalangingPlayerId, int MinigameTypeIndex, float ChalangingPlayerScore, string ChalangingPlayerNickname, ChallengeData challengeData)
     {
-        ItemChalange itemChalange = Instantiate(ItemChalangePrefab);
+        ItemChalange itemChalange = Instantiate(ItemChalangePrefab, ChalangeListContent.transform);
         itemChalange.setChalangeData(ChalangeId, ChalangingPlayerId, MinigameTypeIndex, ChalangingPlayerScore, ChalangingPlayerNickname, challengeData);
 
-        itemChalange.transform.parent = ChalangeListContent.transform;
+        //itemChalange.transform.parent = ChalangeListContent.transform;
     }
 
     public void show(bool v)

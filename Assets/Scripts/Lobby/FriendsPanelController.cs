@@ -23,6 +23,7 @@ public class FriendsPanelController : MonoBehaviour
         UserData user = (UserData)result.Item2;
         List<string> friends = user.Friends;
         Dictionary<string, bool> friendsInvitations = user.FriendRequests;
+        Debug.Log("NZ" + friends.Count);
 
         foreach (string freindId in friends)
         {
@@ -41,36 +42,38 @@ public class FriendsPanelController : MonoBehaviour
 
     void addToFriendsList(string nickname)
     {
-        ItemFriend itemFriend = Instantiate(ItemFriendPrefab);
+        ItemFriend itemFriend = Instantiate(ItemFriendPrefab, FriendContent.transform);
         itemFriend.setPlayerNickname(nickname);
 
-        itemFriend.transform.parent = FriendContent.transform;
+        //itemFriend.transform.parent = FriendContent.transform;
     }
 
     void addToInvitationsList(int InvitationID, string InvitingPlayerID, string InvitingPlayerNickname)
     {
-        ItemInvitation itemInvitation = Instantiate(ItemInvitationPrefab);
+        ItemInvitation itemInvitation = Instantiate(ItemInvitationPrefab, InvitationContent.transform);
         itemInvitation.setInvitationData(InvitationID, InvitingPlayerID, InvitingPlayerNickname);
 
-        itemInvitation.transform.parent = InvitationContent.transform;
+        //itemInvitation.transform.parent = InvitationContent.transform;
     }
 
 
-    public void SendInvitation()
+    public async void SendInvitation()
     {
-        try
-        {
-            string invitedPlayerId = inputField.text;
+        string invitedPlayerId = inputField.text;
 
-            if (invitedPlayerId != PlayerData.GetInstance().getPlayerID())
-            {
-                Debug.Log(string.Format("Wys³ano zaproszenie do {0}", invitedPlayerId));
-            }
+        if (invitedPlayerId != PlayerData.GetInstance().getPlayerID())
+        {
+            Debug.Log("Inviting " + invitedPlayerId);
+            await DataManager.Instance.SendFriendRequest(invitedPlayerId);
+        }
+
+        /*try
+        {
         }
         catch (FormatException)
         {
             Debug.Log("Wyst¹pi³ b³¹d parsowania!");
-        }
+        }*/
 
         inputField.text = "";
     }
