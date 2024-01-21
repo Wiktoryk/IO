@@ -34,7 +34,7 @@ namespace Reuse_Scripts {
         }
 
         public void End() {
-            //MiniGameStatus.Instance.SetStatus("Ponowne wykorzystanie", 0, false);
+            MiniGameStatus.Instance.SetStatus("Ponowne wykorzystanie", 0, false);
             SceneManager.LoadScene("LobbyScene");
 
         }

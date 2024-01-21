@@ -33,7 +33,7 @@ namespace Reuse_Scripts {
                 {
                     Debug.Log(statistics.getScore());
 
-                    //MiniGameStatus.Instance.SetStatus("Ponowne wykorzystanie", statistics.getScore(), true);
+                    MiniGameStatus.Instance.SetStatus("Ponowne wykorzystanie", statistics.getScore(), true);
                     SceneManager.LoadScene("LobbyScene");
                 }
             }
