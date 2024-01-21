@@ -1,59 +1,59 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-public enum ContainerType
-{
-    Paper,
-    PlasticAndMetal,
-    Glass,
-    Bio,
-    Other
-}
-public class ContainerInstance : MonoBehaviour
-{
-    [Header("ContainerType")]
-    public ContainerType containerType;
 
-    [Header("Sprites")]
-    public SpriteRenderer spriteRenderer;
-    public Sprite paperSprite;
-    public Sprite plasticAndMetalSprite;
-    public Sprite glassSprite;
-    public Sprite bioSprite;
-    public Sprite otherSprite;
-
-    public RecyklingGameScript rgs;
-
-    void Start()
+namespace Recykling {
+    public enum ContainerType
     {
-        spriteRenderer = GetComponent<SpriteRenderer>();
+        Paper,
+        PlasticAndMetal,
+        Glass,
+        Bio,
+        Other
+    }
+    public class ContainerInstance : MonoBehaviour
+    {
+        [Header("ContainerType")]
+        public ContainerType containerType;
 
-        switch (containerType)
+        [Header("Sprites")]
+        public SpriteRenderer spriteRenderer;
+        public Sprite paperSprite;
+        public Sprite plasticAndMetalSprite;
+        public Sprite glassSprite;
+        public Sprite bioSprite;
+        public Sprite otherSprite;
+
+        public RecyklingGameScript rgs;
+
+        void Start()
         {
-            case ContainerType.Paper:
-                spriteRenderer.sprite = paperSprite;
-                break;
-            case ContainerType.PlasticAndMetal:
-                spriteRenderer.sprite = plasticAndMetalSprite;
-                break;
-            case ContainerType.Glass:
-                spriteRenderer.sprite = glassSprite;
-                break;
-            case ContainerType.Bio:
-                spriteRenderer.sprite = bioSprite;
-                break;
-            case ContainerType.Other:
-                spriteRenderer.sprite = otherSprite;
-                break;
-            default:
-                break;
+            spriteRenderer = GetComponent<SpriteRenderer>();
+
+            switch (containerType)
+            {
+                case ContainerType.Paper:
+                    spriteRenderer.sprite = paperSprite;
+                    break;
+                case ContainerType.PlasticAndMetal:
+                    spriteRenderer.sprite = plasticAndMetalSprite;
+                    break;
+                case ContainerType.Glass:
+                    spriteRenderer.sprite = glassSprite;
+                    break;
+                case ContainerType.Bio:
+                    spriteRenderer.sprite = bioSprite;
+                    break;
+                case ContainerType.Other:
+                    spriteRenderer.sprite = otherSprite;
+                    break;
+                default:
+                    break;
+            }
         }
-    }
 
-    void Update()
-    {
-        
-    }
+        void Update()
+        {
 
+        }
+
+    }
 }

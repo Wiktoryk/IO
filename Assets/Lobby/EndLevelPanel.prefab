@@ -502,6 +502,9 @@ MonoBehaviour:
   miniGameName: {fileID: 5067688291391637628}
   resultScore: {fileID: 4763678281551460836}
   sendChallengePanel: {fileID: 0}
+  challengePart: {fileID: 0}
+  challengedPlayername: {fileID: 0}
+  challengedPlayerScore: {fileID: 0}
 --- !u!1 &3145245681965208089
 GameObject:
   m_ObjectHideFlags: 0
@@ -537,7 +540,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: -1.2999878, y: 9.4001465}
-  m_SizeDelta: {x: 60, y: -70}
+  m_SizeDelta: {x: 165.967, y: -70}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4841123805542067413
 CanvasRenderer:
@@ -1057,7 +1060,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &6035347499303185762
 RectTransform:
   m_ObjectHideFlags: 0
