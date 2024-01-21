@@ -80,7 +80,7 @@ public class PaperGameManager : MonoBehaviour
             {
                 if (stamp.inPaper && !stamp.collides)
                 {
-                    score += (50 * stamp.scale);
+                    score += (1);
                 }
                 else if (stamp.inAnimalZone)
                 {

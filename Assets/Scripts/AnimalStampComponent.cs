@@ -18,7 +18,8 @@ public class AnimalStampComponent : MonoBehaviour, IPointerDownHandler, IPointer
     public bool collides = false;
     public bool inAnimalZone = true;
 
-
+    private Vector2 startPos;
+    
     void Start()
     {
         inPaper = false;
@@ -30,6 +31,7 @@ public class AnimalStampComponent : MonoBehaviour, IPointerDownHandler, IPointer
 
     public void OnPointerDown(PointerEventData eventData)
     {
+        startPos = this.GetComponent<RectTransform>().position;
         if (!paperGameManager.gameIsFinished && paperGameManager.timer < 60f)
         {
             // Calculate the offset between the pointer position and the sprite position
@@ -49,6 +51,11 @@ public class AnimalStampComponent : MonoBehaviour, IPointerDownHandler, IPointer
     public void OnPointerUp(PointerEventData eventData)
     {
         isDragging = false;
+        if (!inPaper || collides)
+        {
+            this.GetComponent<RectTransform>().position = startPos;
+            this.GetComponent<Image>().color = new Color(255, 255, 255, 255);
+        }
     }
 
     public void OnDrag(PointerEventData eventData)
