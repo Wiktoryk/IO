@@ -34,7 +34,7 @@ namespace TransportScript {
         }
 
         public void End() {
-            //MiniGameStatus.Instance.SetStatus("Ponowne wykorzystanie", 0, false);
+            MiniGameStatus.Instance.SetStatus("Transport", 0, false);
             SceneManager.LoadScene("LobbyScene");
 
         }

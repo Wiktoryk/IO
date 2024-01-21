@@ -12,7 +12,7 @@ namespace NonRecycleScripts {
         {
             Destroy(destroyObject);
             Destroy(destroyObject2);
-            //MiniGameStatus.Instance.SetStatus("Nie nadajace sie do recyklingu", statistics.getScore(), true);
+            MiniGameStatus.Instance.SetStatus("non-recycle", statistics.getScore(), true);
             SceneManager.LoadScene("LobbyScene");
         }
     }

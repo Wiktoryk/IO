@@ -33,7 +33,7 @@ namespace TransportScript {
                 {
                     Debug.Log(statistics.getScore());
 
-                    //MiniGameStatus.Instance.SetStatus("Transport", statistics.getScore(), true);
+                    MiniGameStatus.Instance.SetStatus("Transport", statistics.getScore(), true);
                     SceneManager.LoadScene("LobbyScene");
                 }
             }
