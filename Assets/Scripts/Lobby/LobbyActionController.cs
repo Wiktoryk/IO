@@ -264,5 +264,7 @@ public class LobbyActionController : MonoBehaviour
     public void GoToMinigame(int MinigameIndex)
     {
         Debug.Log("Przejœcie do minigry!");
+        NPCScript npc = LobbyManager.Instance.GetNPC(MinigameIndex);
+        npc.LoadMiniGame(npc.GetMiniGamesNames()[0]);
     }
 }

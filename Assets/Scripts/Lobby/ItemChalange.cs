@@ -36,7 +36,7 @@ public class ItemChalange : MonoBehaviour
 
     public void DeclineChalange()
     {
-        DataManager.Instance.cancelChallenge(challengeData);
+        DataManager.Instance.CancelChallenge(challengeData);
 
         Destroy(gameObject);
     }

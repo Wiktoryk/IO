@@ -47,7 +47,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   statementsFileName: NPC4
   statements:
-  - "Recykling jest wa\u017Cny."
+  - "Pami\u0119taj o oszcz\u0119dzaniu wody."
   miniGames:
   - minigameId: 2
     miniGameName: WaterSaving

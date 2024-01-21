@@ -47,7 +47,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   statementsFileName: NPC4
   statements:
-  - "Recykling jest wa\u017Cny."
+  - "Oszcz\u0119dzanie enrgii jest wa\u017Cne."
   miniGames:
   - minigameId: 3
     miniGameName: EnergySaving

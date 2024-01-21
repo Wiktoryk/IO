@@ -34,7 +34,8 @@ public enum ServerUserUpdateError
     FriendsRequestsRemoveFailed = 8,
     ChallangesSendFailed = 9,
     ChallangesRemoveFailed = 10,
-    GetCurrentUserData = 11
+    GetCurrentUserData = 11,
+    XPUpdateFailed = 12
 }
 
 public enum ServerSearchError
