@@ -19,9 +19,7 @@ public class DataManager : IDataManager
         }
     }
 
-    public DataManager()
-    {
-    }
+    private DataManager() {}
 
     //private IDataManager dataManager;
    // private ServerAPI serverAPI;
@@ -46,7 +44,7 @@ public class DataManager : IDataManager
         return ServerAPI.Instance.Logout();
     }
 
-    public async Task<ServerUserUpdateError> updateUser(UserData newUserData)
+    public async Task<ServerUserUpdateError> UpdateUser(UserData newUserData)
     {
         var result = ServerAPI.Instance.GetLoggedUserData();
 
@@ -61,12 +59,12 @@ public class DataManager : IDataManager
         return await ServerAPI.Instance.UpdateUserData(currentUserData);
     }
 
-    public async Task<List<int>> fetchMiniGamesList()
+    public async Task<List<int>> FetchMiniGamesList()
     {
         return await ServerAPI.Instance.GetMinigamesIDs();
     }
 
-    public async Task<ServerUserUpdateError> changeNickname(string newNickname)
+    public async Task<ServerUserUpdateError> ChangeNickname(string newNickname)
      {
          // Wywołanie metody UpdateUserNicknameAuth
          bool result = await ServerAPI.Instance.UpdateUserNicknameAuth(newNickname);
@@ -75,7 +73,7 @@ public class DataManager : IDataManager
          return result ? ServerUserUpdateError.None : ServerUserUpdateError.NicknameUpdateFailed;
      }
 
-    public async Task<bool> changePassword(string newPassword)
+    public async Task<bool> ChangePassword(string newPassword)
     {
         return await ServerAPI.Instance.UpdateUserPasswordAuth(newPassword);
     }
@@ -141,7 +139,12 @@ public class DataManager : IDataManager
         return true;
     }
 
-    public Tuple<ServerSearchError, UserData?> fetchUserData()
+    public async Task<bool> UpdateUserXP(uint xp)
+    {
+        return await ServerAPI.Instance.UpdateUserXPDatabase(xp);
+    }
+
+    public Tuple<ServerSearchError, UserData?> FetchUserData()
     {
         var result = ServerAPI.Instance.GetLoggedUserData();
 
@@ -153,12 +156,12 @@ public class DataManager : IDataManager
         return result;
     }
 
-    public async Task<bool> sendChallenge(string friendId, ChallengeData challenge)
+    public async Task<bool> SendChallenge(string friendId, ChallengeData challenge)
     {
         return await ServerAPI.Instance.SendChallangeDatabase(friendId, challenge);
     }
 
-    public async Task<bool> cancelChallenge(ChallengeData challenge)
+    public async Task<bool> CancelChallenge(ChallengeData challenge)
     {
         return await ServerAPI.Instance.DeleteChallangeDatabase(challenge);
     }

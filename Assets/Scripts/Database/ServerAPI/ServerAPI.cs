@@ -37,7 +37,7 @@ public class ServerAPI
         }
     }
 
-    public ServerAPI() {}
+    private ServerAPI() {}
 
     public async Task Init()
     {
@@ -156,7 +156,7 @@ public class ServerAPI
             }
 
             firebaseLoggedUser = LoginTask.Result.User;
-            LoggedUser = new UserData(firebaseLoggedUser, new List<string>(), new List<float>(), new Dictionary<string, bool>(), new List<string>(), new List<ChallengeData>());
+            LoggedUser = new UserData(firebaseLoggedUser, 0, new List<string>(), new List<float>(), new Dictionary<string, bool>(), new List<string>(), new List<ChallengeData>());
             Tuple<ServerSearchError, UserData?> user = await GetLoggedUserDatabase();
             if (user.Item1 == ServerSearchError.None)
             {
@@ -222,7 +222,7 @@ public class ServerAPI
                 return ServerRegisterError.Other;
             }
 
-            LoggedUser = new UserData(firebaseLoggedUser, new List<string>(), new List<float> { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f }, new Dictionary<string, bool>(), new List<string>(), new List<ChallengeData>());
+            LoggedUser = new UserData(firebaseLoggedUser, 0, new List<string>(), new List<float> { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f }, new Dictionary<string, bool>(), new List<string>(), new List<ChallengeData>());
 
             if (!await UpdateUserNicknameAuth(nickname))
             {
@@ -257,6 +257,15 @@ public class ServerAPI
                     if (!await UpdateUserNicknameAuth(userData.Nickname))
                     {
                         return ServerUserUpdateError.NicknameUpdateFailed;
+                    }
+                }
+
+                // Update XP
+                if (userData.XP != LoggedUser.Value.XP)
+                {
+                    if (!await UpdateUserXPDatabase(userData.XP))
+                    {
+                        return ServerUserUpdateError.XPUpdateFailed;
                     }
                 }
 
@@ -442,6 +451,11 @@ public class ServerAPI
                 return false;
             }
 
+            if (!await UpdateUserXPDatabase(user.XP))
+            {
+                return false;
+            }
+
             // Update Score
             List<float> high = user.Highscores.ToList();
 
@@ -495,6 +509,28 @@ public class ServerAPI
             {
                 UserData user = LoggedUser.Value;
                 user.Email = email;
+                LoggedUser = user;
+                return true;
+            }
+        });
+    }
+
+    public async Task<bool> UpdateUserXPDatabase(uint xp)
+    {
+        return await Task.Run(async () =>
+        {
+            var DBTask = dbReference.Child("users").Child(firebaseLoggedUser.UserId).Child("xp").SetValueAsync(xp);
+            await DBTask;
+
+            if (DBTask.Exception != null)
+            {
+                Debug.LogWarning(message: $"Failed to register task with {DBTask.Exception}");
+                return false;
+            }
+            else
+            {
+                UserData user = LoggedUser.Value;
+                user.XP = xp;
                 LoggedUser = user;
                 return true;
             }
@@ -882,6 +918,7 @@ public class ServerAPI
             else if (DBTask.Result.Value == null)
             {
                 UserData tempUser = LoggedUser.Value;
+                tempUser.XP = 0;
                 tempUser.ChallengeData = new();
                 tempUser.FriendRequests = new();
                 tempUser.Friends = new();
@@ -893,6 +930,8 @@ public class ServerAPI
             DataSnapshot snapshot = DBTask.Result;
 
             UserData user = LoggedUser.Value;
+
+            user.XP = uint.Parse(snapshot.Child("xp").Value.ToString());
 
             List<ChallengeData> challengesData = new();
 
@@ -991,6 +1030,7 @@ public class ServerAPI
                         user.ID = childSnapshot.Key;
                         user.Email = childSnapshot.Child("email").Value.ToString();
                         user.Nickname = childSnapshot.Child("nickname").Value.ToString();
+                        user.XP = uint.Parse(snapshot.Child("xp").Value.ToString());
 
                         List<ChallengeData> challengesData = new();
 
@@ -1102,6 +1142,7 @@ public class ServerAPI
                         user.ID = childSnapshot.Key;
                         user.Email = childSnapshot.Child("email").Value.ToString();
                         user.Nickname = childSnapshot.Child("nickname").Value.ToString();
+                        user.XP = uint.Parse(snapshot.Child("xp").Value.ToString());
 
                         List<ChallengeData> challengesData = new();
 
@@ -1206,11 +1247,12 @@ public class ServerAPI
             {
                 DataSnapshot snapshot = DBTask.Result;
 
-                UserData user;
+                UserData user = new();
 
                 user.ID = snapshot.Key.ToString();
                 user.Nickname = snapshot.Child("nickname").Value.ToString();
                 user.Email = snapshot.Child("email").Value.ToString();
+                user.XP = uint.Parse(snapshot.Child("xp").Value.ToString());
 
                 List<ChallengeData> challengesData = new();
 

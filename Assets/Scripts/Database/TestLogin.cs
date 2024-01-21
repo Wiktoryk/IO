@@ -32,7 +32,7 @@ public class TestLogin : MonoBehaviour
             loginCanvas.enabled = false;
             infoCanvas.enabled = true;
 
-            var userData = DataManager.Instance.fetchUserData();
+            var userData = DataManager.Instance.FetchUserData();
 
             if (userData.Item1 == ServerSearchError.None) 
             {

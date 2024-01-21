@@ -62,7 +62,7 @@ public class SendChallengePanelController : MonoBehaviour
         challengeData.UserID = PlayerData.GetInstance().getPlayerID();
         challengeData.Score = MiniGameStatus.Instance.Score;
 
-        DataManager.Instance.sendChallenge(selectedItem.id, challengeData);
+        DataManager.Instance.SendChallenge(selectedItem.id, challengeData);
 
         Clear();
         gameObject.SetActive(false);

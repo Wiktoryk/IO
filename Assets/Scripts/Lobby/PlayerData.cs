@@ -98,7 +98,7 @@ public string getPlayerID()
             udata.Highscores[i] = minigamesHighScores[i];
         }
 
-        await DataManager.Instance.updateUser(udata);
+        await DataManager.Instance.UpdateUser(udata);
 
         return true;
     }
