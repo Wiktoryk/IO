@@ -5,25 +5,10 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
-    path: Assets/Scenes/Lobby/LobbyScene.unity
-    guid: 3fc8acdd13e6c734bafef6554d6fdbcd
-  - enabled: 1
-    path: Assets/Scenes/Lobby/TestMiniGameScene.unity
-    guid: cff337ea1a4a7754394a5cd22edfe299
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/SampleScene.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
-  - enabled: 0
-    path: Assets/Scenes/Lobby/test.unity
-    guid: 1b7f7138cf84de04b84625ed22c3c271
-  - enabled: 1
-    path: Assets/Scenes/BioProducts.unity
-    guid: d73f435adb460a24aacc34a55d3675d6
   - enabled: 1
     path: Assets/Scenes/PaperRecycling.unity
     guid: 7d986aebb820e94418ac2733a7786551
-  - enabled: 1
-    path: Assets/Scenes/MinigameWaterSaving.unity
-    guid: 862bef7b447ab374c953bb026310840a
   m_configObjects: {}
