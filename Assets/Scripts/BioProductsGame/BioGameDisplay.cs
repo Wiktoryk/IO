@@ -1,9 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
 using UnityEngine.SceneManagement;
-using UnityEngine.SocialPlatforms.Impl;
 using UnityEngine.UI;
 
 public class BioGameDisplay : MonoBehaviour
@@ -19,7 +17,6 @@ public class BioGameDisplay : MonoBehaviour
     [SerializeField]
     GameObject timeDisplay;
     int previousScore;
-    bool result;
 
     // Start is called before the first frame update
     void Start()
@@ -44,43 +41,22 @@ public class BioGameDisplay : MonoBehaviour
         gameDisplay.SetActive(true);
     }
 
+    public void ReturnToLobby()
+    {
+        SceneManager.LoadScene(0);
+    }
     private void EndGame()
     {
         gameObject.GetComponent<BioProductsManager>().enabled = false;
         currentProductDisplay.GetComponent<UnityEngine.UI.Image>().sprite = null;
         gameDisplay.SetActive(false);
         endGameDisplay.SetActive(true);
-Debug.Log("d");
+
         GameObject endText = GameObject.Find("FinishText");
-        endText.GetComponent<Text>().text = "Koniec gry!           Uzyskany wynik:                   " + previousScore.ToString();
-        
+        endText.GetComponent<Text>().text = "Congratulations!           Your final score:                   " + previousScore.ToString();
     }
 
 
-    void Update()
-    {
-        
-
-        if (Input.GetKeyUp(KeyCode.E))
-        {
-            Debug.Log("MiniGameScoreExit: " );
-            MiniGameStatus.Instance.SetStatus("Gra o produktach ekologicznych", previousScore, result);
-            SceneManager.LoadScene("LobbyScene");
-        }
-    }
-
-    public void ReturnToLobby()
-    {
-        MiniGameStatus.Instance.SetStatus("Gra o produktach ekologicznych", previousScore, result);
-        SceneManager.LoadScene("LobbyScene");
-    }
-
-    public void QuitToLobby()
-    {
-        MiniGameStatus.Instance.SetStatus("Gra o produktach ekologicznych", 0, false);
-        SceneManager.LoadScene("LobbyScene");
-    }
-    
 
     public void UpdateDisplay(Product currentProduct, int score, float timeLeft)
     {
@@ -94,26 +70,16 @@ Debug.Log("d");
         if (score != previousScore)
         {
             UnityEngine.UI.Text textField = scoreDisplay.GetComponent<UnityEngine.UI.Text>();
-            textField.text = "Wynik: " + score.ToString();
+            textField.text = "Score: " + score.ToString();
             previousScore = score;
         }
 
         UnityEngine.UI.Text timeField = timeDisplay.GetComponent<UnityEngine.UI.Text>();
         int time = (int)timeLeft;
-        timeField.text = "Czas: " + time.ToString();
+        timeField.text = "Time left: " + time.ToString();
 
-
-
-        if (previousScore <= 0)
+        if(time <= 0)
         {
-            previousScore = 0;
-            result = false;
-            EndGame();
-        }
-        if (time <= 0)
-        {
-
-            result = true;
             EndGame();
         }
     }
