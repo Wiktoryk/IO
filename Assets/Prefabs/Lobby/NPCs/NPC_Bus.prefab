@@ -50,8 +50,8 @@ MonoBehaviour:
   - Korzystaj z komunikacji miejskiej.
   miniGames:
   - minigameId: 2
-    miniGameName: Recykling
-    miniGameSceneName: Recykling
+    miniGameName: Transport
+    miniGameSceneName: SampleScene
 --- !u!212 &1577454549830758114
 SpriteRenderer:
   m_ObjectHideFlags: 0
