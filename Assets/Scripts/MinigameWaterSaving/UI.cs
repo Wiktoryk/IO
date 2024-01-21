@@ -48,7 +48,7 @@ namespace MinigameWaterSaving
         public void ToLobby()
         {
             MiniGameStatus.Instance.SetStatus("Oszczedzanie wody", Bucket.GetResult().Item2, Bucket.GetResult().Item1);
-            SceneManager.LoadScene(0);
+            SceneManager.LoadScene("LobbyScene");
             Time.timeScale = 1;
         }
     }

@@ -52,7 +52,7 @@ public class NPCDialogWindowController : MonoBehaviour
         Debug.Log("NPCData: " +  npcData.statement);
         npcStatementLabel.text = npcData.statement;
 
-        //Dodawanie minigame slotó do listy
+        //Dodawanie minigame slotÃ³ do listy
         foreach (string miniGameName in npcData.miniGamesNames)
         {
             MiniGameSlot slot = new MiniGameSlot();

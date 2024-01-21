@@ -47,8 +47,9 @@ public class RecyklingGameScript : MonoBehaviour
             gameTimer.timeLeft = 0;
             gameTimer.timerOn = false;
             Debug.Log("Points: " + pointsCounter.GetPoints());
-            
 
+            MiniGameStatus.Instance.SetStatus("Recykling", (int) pointsCounter.GetPoints(), true);
+            SceneManager.LoadScene("LobbyScene");
             //tutaj bedzie GetResult(pointsCounter.GetPoints())
         }
     }

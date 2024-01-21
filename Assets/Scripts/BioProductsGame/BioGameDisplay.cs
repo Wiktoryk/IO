@@ -41,9 +41,8 @@ public class BioGameDisplay : MonoBehaviour
         gameDisplay.SetActive(true);
     }
 
-    public void ReturnToLobby()
-    {
-        SceneManager.LoadScene(0);
+    public void ReturnToLobby() {
+        SceneManager.LoadScene("LobbyScene");
     }
     private void EndGame()
     {
@@ -54,6 +53,7 @@ public class BioGameDisplay : MonoBehaviour
 
         GameObject endText = GameObject.Find("FinishText");
         endText.GetComponent<Text>().text = "Congratulations!           Your final score:                   " + previousScore.ToString();
+        MiniGameStatus.Instance.SetStatus("BioProducts", previousScore, true);
     }
 
 

@@ -32,7 +32,7 @@ public class LobbyManager : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        // To jest gotowy u縴tkownik kt髍ego stworzyli渕y w ramach test體
+        // To jest gotowy u偶ytkownik kt贸rego stworzyli艣my w ramach test贸w
 
         if (instance != null)
         {
@@ -54,7 +54,7 @@ public class LobbyManager : MonoBehaviour
 
         QuerryServerForNPCs();
 
-        //Generowanie pozycji dla NPC-體
+        //Generowanie pozycji dla NPC-贸w
         npcsPositions = new Vector3[todaysNPCsIndexes.Count + 2];
 
         for (int i = 0; i < (todaysNPCsIndexes.Count + 2); i++)
@@ -62,7 +62,7 @@ public class LobbyManager : MonoBehaviour
             npcsPositions[i] = new Vector3(i * NPCsDistance, -2.0f, 0.0f);
         }
 
-        //Instancjonowanie NPC-體
+        //Instancjonowanie NPC-贸w
         int posIndex = 0;
         instantiatedNPCs.Add(Instantiate(NPCs[todaysNPCsIndexes.Last<int>()], npcsPositions[posIndex++], Quaternion.identity));
         foreach (int index in todaysNPCsIndexes)
@@ -81,7 +81,7 @@ public class LobbyManager : MonoBehaviour
         //todaysNPCsIndexes = await DataManager.Instance.fetchMiniGamesList();
         Debug.LogFormat("{0}\t{1}\t{2}\t{3}", todaysNPCsIndexes[0], todaysNPCsIndexes[1], todaysNPCsIndexes[2], todaysNPCsIndexes[3]);
 
-        //Generowanie pozycji dla NPC-體
+        //Generowanie pozycji dla NPC-贸w
         npcsPositions = new Vector3[todaysNPCsIndexes.Count + 2];
 
         for (int i = 0; i < (todaysNPCsIndexes.Count + 2); i++)
@@ -89,7 +89,7 @@ public class LobbyManager : MonoBehaviour
             npcsPositions[i] = new Vector3(i * NPCsDistance, 0.0f, 0.0f);
         }
 
-        //Instancjonowanie NPC-體
+        //Instancjonowanie NPC-贸w
         int posIndex = 0;
         instantiatedNPCs.Add(Instantiate(NPCs[todaysNPCsIndexes.Last<int>()], npcsPositions[posIndex++], Quaternion.identity));
         foreach (int index in todaysNPCsIndexes)

@@ -2,12 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 
 public class MenuScript : MonoBehaviour
 {
     public GameObject menu;
     public GameObject menuButton;
-    public Timer timer;
+    [FormerlySerializedAs("timer")] public Timer customTimer;
     public Statistics statistics;
     // Start is called before the first frame update
     void Start()
@@ -20,13 +21,13 @@ public class MenuScript : MonoBehaviour
     {
         menu.SetActive(false);
         menuButton.SetActive(true);
-        timer.timerOn = true;
+        customTimer.timerOn = true;
     }
     public void MenuOn()
     {
         menu.SetActive(true);
         menuButton.SetActive(false);
-       timer.timerOn = false;
+       customTimer.timerOn = false;
     }
 
     public void Repeat() {
