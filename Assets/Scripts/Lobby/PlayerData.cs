@@ -10,12 +10,12 @@ public class PlayerData //: MonoBehaviour
     private float[] minigamesHighScores = { 0, 0, 0, 0, 0, 0, 0, 0 };
     private string playerID = "";
     private string nickname = "Nickname";
-    private int level = 0;
+    private uint xp = 0;
 
     public enum MinigameType : int { RECYCLING = 0, WATER_SAVING, ECO_PRODS, ENERGY_SAVING, REUSING, PUBLIC_TRANSP, WASTES, PAPPER_SAVING };
     //{ RECYCLING = 0, WATER_SAVING, ECO_PRODS, ENERGY_SAVING, REUSING, PUBLIC_TRANSP, WASTES, PAPPER_SAVING };
 
-public string getPlayerID()
+    public string getPlayerID()
     {
         return playerID;
     }
@@ -23,6 +23,17 @@ public string getPlayerID()
     public void setPlayerID(string PlayerId)
     {
         playerID = PlayerId;
+        UploadPlayerData();
+    }
+
+    public uint getXp()
+    {
+        return xp;
+    }
+
+    public void setXp(uint newXp)
+    {
+        xp = newXp;
     }
 
     public string getNickname()
@@ -35,10 +46,6 @@ public string getPlayerID()
         nickname = newNickname;
     }
 
-    public int getLevel()
-    {
-        return level;
-    }
     private PlayerData() { }
 
     /*private void Awake()
@@ -78,6 +85,7 @@ public string getPlayerID()
 
         playerID = udata.ID;
         nickname = udata.Nickname;
+        xp = udata.XP;
         List<float> hs = udata.Highscores;
 
         for (int i = 0; i < hs.Count; i++)
@@ -93,6 +101,8 @@ public string getPlayerID()
         var result = DataManager.Instance.GetLoggedUser();
         UserData udata = (UserData)result.Item2;
 
+        udata.Nickname = nickname;
+        udata.XP = xp;
         for (int i = 0; i < udata.Highscores.Count; i++)
         {
             udata.Highscores[i] = minigamesHighScores[i];
