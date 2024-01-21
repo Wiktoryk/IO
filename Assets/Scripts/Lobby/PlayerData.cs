@@ -34,6 +34,7 @@ public class PlayerData //: MonoBehaviour
     public void setXp(uint newXp)
     {
         xp = newXp;
+        UploadPlayerData();
     }
 
     public string getNickname()
@@ -109,6 +110,12 @@ public class PlayerData //: MonoBehaviour
         }
 
         await DataManager.Instance.UpdateUser(udata);
+
+        await DataManager.Instance.UpdateUserXP(xp);
+        for (int i = 0; i < udata.Highscores.Count; i++)
+        {
+            await DataManager.Instance.SaveScore(i, minigamesHighScores[i]);
+        }
 
         return true;
     }

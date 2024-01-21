@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class ProfilePanelController : MonoBehaviour
@@ -19,6 +20,13 @@ public class ProfilePanelController : MonoBehaviour
     public GameObject ChangingNicknamePanel;
     public GameObject ChangingPasswordPanel;
 
+
+    public void Logout()
+    {
+        DataManager.Instance.Logout();
+
+        SceneManager.LoadScene("LoginRegistration");
+    }
 
     void setMinigameHighScoreText(PlayerData.MinigameType minigameType)
     {

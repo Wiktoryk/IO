@@ -23,10 +23,13 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/MinigameWaterSaving.unity
     guid: 862bef7b447ab374c953bb026310840a
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Ponowne wykorzystanie.unity
     guid: 7a25c616e331a404e95ffbc9cb09552f
   - enabled: 1
     path: Assets/Scenes/Recykling.unity
     guid: 7191f00f5ab2b194484a19570429ae58
+  - enabled: 1
+    path: Assets/Scenes/LoginRegistration.unity
+    guid: e1d4e9626203bba46933de87a777cd43
   m_configObjects: {}
