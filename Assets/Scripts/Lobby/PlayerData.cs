@@ -87,7 +87,6 @@ public class PlayerData //: MonoBehaviour
         playerID = udata.ID;
         nickname = udata.Nickname;
         xp = udata.XP;
-        Debug.Log("xp" + xp);
         List<float> hs = udata.Highscores;
 
         for (int i = 0; i < hs.Count; i++)

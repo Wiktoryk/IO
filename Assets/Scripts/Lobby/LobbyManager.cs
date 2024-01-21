@@ -74,7 +74,11 @@ public class LobbyManager : MonoBehaviour
 
     async void Start()
     {
-
+        await DataManager.Instance.Init();
+        if (DataManager.Instance.GetLoggedUser().Item2 == null)
+        {
+            await DataManager.Instance.Login("test@test.com", "123456");
+        }
     }
 
 
