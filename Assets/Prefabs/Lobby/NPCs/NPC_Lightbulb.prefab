@@ -49,7 +49,7 @@ MonoBehaviour:
   statements:
   - "Oszcz\u0119dzanie enrgii jest wa\u017Cne."
   miniGames:
-  - minigameId: 3
+  - minigameId: 4
     miniGameName: EnergySaving
     miniGameSceneName: EnergySaving
 --- !u!212 &1577454549830758114

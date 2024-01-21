@@ -3829,7 +3829,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.093, y: 0.19600001}
   m_AnchorMax: {x: 0.9276937, y: 0.5}
-  m_AnchoredPosition: {x: -5, y: -1}
+  m_AnchoredPosition: {x: -5, y: -1.0000005}
   m_SizeDelta: {x: 1.7999878, y: -1.199997}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &891493037
@@ -5721,7 +5721,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.079135165, y: 0.20223375}
   m_AnchorMax: {x: 0.9227388, y: 0.5}
-  m_AnchoredPosition: {x: 0.5, y: -2}
+  m_AnchoredPosition: {x: 0.5, y: -1.9999995}
   m_SizeDelta: {x: -3.2000122, y: 0.80000305}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1253404758
@@ -10629,6 +10629,42 @@ PrefabInstance:
       propertyPath: NPCsDistance
       value: 2.5
       objectReference: {fileID: 0}
+    - target: {fileID: 6007422896801500120, guid: 8a276d39072b4ae4cb26662cffe44717, type: 3}
+      propertyPath: NPCs.Array.size
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 6007422896801500120, guid: 8a276d39072b4ae4cb26662cffe44717, type: 3}
+      propertyPath: NPCs.Array.data[0]
+      value: 
+      objectReference: {fileID: 3953065113157707297, guid: 08d49d52418a49049b3bd63bb943ce65, type: 3}
+    - target: {fileID: 6007422896801500120, guid: 8a276d39072b4ae4cb26662cffe44717, type: 3}
+      propertyPath: NPCs.Array.data[1]
+      value: 
+      objectReference: {fileID: 3953065113157707297, guid: 31cdc22d6cb9b4648964e3527db08155, type: 3}
+    - target: {fileID: 6007422896801500120, guid: 8a276d39072b4ae4cb26662cffe44717, type: 3}
+      propertyPath: NPCs.Array.data[2]
+      value: 
+      objectReference: {fileID: 3953065113157707297, guid: 2963411856879de4abce124383e9fa56, type: 3}
+    - target: {fileID: 6007422896801500120, guid: 8a276d39072b4ae4cb26662cffe44717, type: 3}
+      propertyPath: NPCs.Array.data[3]
+      value: 
+      objectReference: {fileID: 3953065113157707297, guid: 3eca8b4ec5157464389784f20de5320f, type: 3}
+    - target: {fileID: 6007422896801500120, guid: 8a276d39072b4ae4cb26662cffe44717, type: 3}
+      propertyPath: NPCs.Array.data[4]
+      value: 
+      objectReference: {fileID: 3953065113157707297, guid: 1490a7a9f157b8f439a6bcfc89a361a8, type: 3}
+    - target: {fileID: 6007422896801500120, guid: 8a276d39072b4ae4cb26662cffe44717, type: 3}
+      propertyPath: NPCs.Array.data[5]
+      value: 
+      objectReference: {fileID: 3953065113157707297, guid: 4ed309f2836a0ae488fc81a2a004944d, type: 3}
+    - target: {fileID: 6007422896801500120, guid: 8a276d39072b4ae4cb26662cffe44717, type: 3}
+      propertyPath: NPCs.Array.data[6]
+      value: 
+      objectReference: {fileID: 3953065113157707297, guid: b6a89ee9c2753de409bf15da2f134e8e, type: 3}
+    - target: {fileID: 6007422896801500120, guid: 8a276d39072b4ae4cb26662cffe44717, type: 3}
+      propertyPath: NPCs.Array.data[7]
+      value: 
+      objectReference: {fileID: 3953065113157707297, guid: 748c2dd949f5ffc48acc9589fffb99a1, type: 3}
     - target: {fileID: 6007422896801500120, guid: 8a276d39072b4ae4cb26662cffe44717, type: 3}
       propertyPath: endLevelPanelController
       value: 

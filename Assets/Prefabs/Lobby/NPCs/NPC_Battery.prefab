@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5968251685437028636}
   - component: {fileID: 1577454549830758114}
   m_Layer: 0
-  m_Name: NPC_Drop
+  m_Name: NPC_Battery
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -47,11 +47,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   statementsFileName: NPC4
   statements:
-  - "Pami\u0119taj o oszcz\u0119dzaniu wody."
+  - "Oszcz\u0119dzanie enrgii jest wa\u017Cne."
   miniGames:
-  - minigameId: 3
-    miniGameName: WaterSaving
-    miniGameSceneName: MinigameWaterSaving
+  - minigameId: 1
+    miniGameName: EnergySaving
+    miniGameSceneName: EnergySaving
 --- !u!212 &1577454549830758114
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -93,7 +93,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 5f96d54df9b64ee4c9da0e02fd6be693, type: 3}
+  m_Sprite: {fileID: 21300000, guid: feacdc8062cedd24f9a9d0304cdd37a3, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

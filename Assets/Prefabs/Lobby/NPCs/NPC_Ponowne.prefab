@@ -50,8 +50,8 @@ MonoBehaviour:
   - "Recykling jest wa\u017Cny."
   miniGames:
   - minigameId: 6
-    miniGameName: "Re-u\u017Cycie"
-    miniGameSceneName: Ponowne wykorzystanie
+    miniGameName: Recykling
+    miniGameSceneName: Recykling
 --- !u!212 &1577454549830758114
 SpriteRenderer:
   m_ObjectHideFlags: 0

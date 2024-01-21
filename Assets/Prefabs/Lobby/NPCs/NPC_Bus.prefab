@@ -49,9 +49,9 @@ MonoBehaviour:
   statements:
   - Korzystaj z komunikacji miejskiej.
   miniGames:
-  - minigameId: 1
-    miniGameName: Transport
-    miniGameSceneName: SampleScene
+  - minigameId: 2
+    miniGameName: Recykling
+    miniGameSceneName: Recykling
 --- !u!212 &1577454549830758114
 SpriteRenderer:
   m_ObjectHideFlags: 0

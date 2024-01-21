@@ -38,11 +38,12 @@ public class LobbyActionController : MonoBehaviour
     public FriendsPanelController friendsPanelController = null;
     public ChalangesPanelController chalangesPanelController = null;
 
-    void Start()
+    async void Start()
     {
         cam = Camera.main;
 
         GameObject lobbyManager = GameObject.Find("LobbyManager");
+        await lobbyManager.GetComponent<LobbyManager>()?.Init();//.Wait();
         positions = lobbyManager.GetComponent<LobbyManager>()?.GetNPCsPositions();
         locations = positions;
         maxCharactersNumber = positions.Length - 2;
