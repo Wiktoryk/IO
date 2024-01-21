@@ -47,11 +47,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   statementsFileName: NPC4
   statements:
-  - "Oszcz\u0119dzanie enrgii jest wa\u017Cne."
+  - "Utylizuj urz\u0105dzenia w spos\xF3b odpowiedzialny!"
   miniGames:
   - minigameId: 1
-    miniGameName: EnergySaving
-    miniGameSceneName: EnergySaving
+    miniGameName: Nierecyklowalne
+    miniGameSceneName: Labirynt
 --- !u!212 &1577454549830758114
 SpriteRenderer:
   m_ObjectHideFlags: 0
