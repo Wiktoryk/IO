@@ -154,6 +154,7 @@ public class LobbyManager : MonoBehaviour
 
         Debug.Log("MiniGame Name: " + MiniGameStatus.Instance.MiniGameName);
         Debug.Log("MiniGame Score: " + MiniGameStatus.Instance.Score);
+        PlayerData.GetInstance().setXp(PlayerData.GetInstance().getXp() + 100u);
         endLevelPanelController.OpenPanel(MiniGameStatus.Instance);
     }
 
