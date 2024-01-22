@@ -32,4 +32,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/LoginRegistration.unity
     guid: e1d4e9626203bba46933de87a777cd43
-  m_configObjects: {}
+  - enabled: 1
+    path: Assets/Scenes/Labirynt.unity
+    guid: b06809d957372df4197908904cd3eb93
+  m_configObjects:
+    com.unity.adaptiveperformance.loader_settings: {fileID: 11400000, guid: bba28f713c3de5e48a4c38000db38c65, type: 2}
+    com.unity.adaptiveperformance.simulator.provider_settings: {fileID: 11400000, guid: 96b25503f2f9dfd42a0f8e4d67ee23c1, type: 2}
