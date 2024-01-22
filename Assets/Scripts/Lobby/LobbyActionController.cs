@@ -18,7 +18,7 @@ public class LobbyActionController : MonoBehaviour
     public GameObject interactWithNPCButton = null;
 
     private GameObject[] selectionMarks = null;
-    private float distanceBetweenSelections = 0.5f;
+    private float distanceBetweenSelections = 0.75f;
 
     private float[] locations = null;
     private float[] positions = null;
