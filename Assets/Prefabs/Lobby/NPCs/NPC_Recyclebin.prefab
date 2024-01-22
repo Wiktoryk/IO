@@ -49,7 +49,7 @@ MonoBehaviour:
   statements:
   - "Odpowiedzialny recykling ogranicza ilo\u015B\u0107 mikroplastik\xF3w na \u015Bwiecie!"
   miniGames:
-  - minigameId: 7
+  - minigameId: 1
     miniGameName: Recykling
     miniGameSceneName: Recykling
 --- !u!212 &1577454549830758114

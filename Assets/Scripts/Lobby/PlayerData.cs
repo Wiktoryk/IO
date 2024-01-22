@@ -91,7 +91,10 @@ public class PlayerData //: MonoBehaviour
 
         for (int i = 0; i < hs.Count; i++)
         {
-            minigamesHighScores[i] = hs[i];
+            if (minigamesHighScores[i] < hs[i])
+            {
+                minigamesHighScores[i] = hs[i];
+            }
         }
 
         return true;

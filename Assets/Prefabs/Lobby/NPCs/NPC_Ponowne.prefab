@@ -50,7 +50,7 @@ MonoBehaviour:
   - "Nie wyrzucaj rzeczy, kt\xF3re nadal mog\u0105 si\u0119 przyda\u0107! Znajd\u017A
     dla nich inne zastosowanie."
   miniGames:
-  - minigameId: 6
+  - minigameId: 4
     miniGameName: "Re-u\u017Cycie"
     miniGameSceneName: Ponowne wykorzystanie
 --- !u!212 &1577454549830758114

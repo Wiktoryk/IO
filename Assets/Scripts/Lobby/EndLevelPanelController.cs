@@ -71,7 +71,7 @@ public class EndLevelPanelController : MonoBehaviour
         if (miniGameStatus.Score > PlayerData.GetInstance().getMinigameHighScore((PlayerData.MinigameType)MiniGameStatus.Instance.MinigameId))
         {
             PlayerData.GetInstance().setMinigameHighScore((PlayerData.MinigameType)MiniGameStatus.Instance.MinigameId, miniGameStatus.Score);
-            PlayerData.GetInstance().UploadPlayerData();
+            //PlayerData.GetInstance().UploadPlayerData();
         }/**/
 
         miniGameName.text = miniGameStatus.MiniGameName;

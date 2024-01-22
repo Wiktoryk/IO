@@ -49,7 +49,7 @@ MonoBehaviour:
   statements:
   - Korzystanie z komunikacji miejskiej ogranicza spaliny wyrzucane w powietrze!
   miniGames:
-  - minigameId: 2
+  - minigameId: 5
     miniGameName: Transport
     miniGameSceneName: SampleScene
 --- !u!212 &1577454549830758114

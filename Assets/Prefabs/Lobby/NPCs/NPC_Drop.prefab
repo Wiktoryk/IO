@@ -50,7 +50,7 @@ MonoBehaviour:
   - "Pami\u0119taj o oszcz\u0119dzaniu wody! Zasoby s\u0142odkiej wody ca\u0142y
     czas malej\u0105!"
   miniGames:
-  - minigameId: 3
+  - minigameId: 1
     miniGameName: WaterSaving
     miniGameSceneName: MinigameWaterSaving
 --- !u!212 &1577454549830758114

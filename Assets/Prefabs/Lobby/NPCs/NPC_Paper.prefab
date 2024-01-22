@@ -49,7 +49,7 @@ MonoBehaviour:
   statements:
   - Nie marnuj papieru, ratuj puszcze i lasy tropikalne.
   miniGames:
-  - minigameId: 5
+  - minigameId: 7
     miniGameName: PaperRecycling
     miniGameSceneName: PaperRecycling
 --- !u!212 &1577454549830758114

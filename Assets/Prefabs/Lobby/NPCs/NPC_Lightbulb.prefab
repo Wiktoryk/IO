@@ -50,7 +50,7 @@ MonoBehaviour:
   - "Marnotrawstwo energii elektrycznej bezpo\u015Brednio przyczynia si\u0119 do
     wzrostu emisji w\u0119glowych!"
   miniGames:
-  - minigameId: 4
+  - minigameId: 3
     miniGameName: EnergySaving
     miniGameSceneName: EnergySaving
 --- !u!212 &1577454549830758114

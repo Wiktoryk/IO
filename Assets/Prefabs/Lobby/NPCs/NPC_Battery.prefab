@@ -49,7 +49,7 @@ MonoBehaviour:
   statements:
   - "Utylizuj urz\u0105dzenia w spos\xF3b odpowiedzialny!"
   miniGames:
-  - minigameId: 1
+  - minigameId: 6
     miniGameName: Nierecyklowalne
     miniGameSceneName: Labirynt
 --- !u!212 &1577454549830758114
