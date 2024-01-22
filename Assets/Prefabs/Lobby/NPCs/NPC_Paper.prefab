@@ -47,7 +47,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   statementsFileName: NPC4
   statements:
-  - "Pami\u0119aj o sensowny wykorzystaniu papieru."
+  - Nie marnuj papieru, ratuj puszcze i lasy tropikalne.
   miniGames:
   - minigameId: 5
     miniGameName: PaperRecycling

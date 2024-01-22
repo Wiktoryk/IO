@@ -42,7 +42,7 @@ public class EnergySavingDisplay : MonoBehaviour
 
     private void EndGame()
     {
-
+        Screen.orientation = ScreenOrientation.Portrait;
         gameObject.GetComponent<Office>().EndGame();
         gameObject.GetComponent<Office>().enabled = false;
         gameDisplay.SetActive(false);
@@ -86,12 +86,14 @@ public class EnergySavingDisplay : MonoBehaviour
     public void ReturnToLobby()
     {
         Debug.Log("MiniGameScoreExit: ");
+        Screen.orientation = ScreenOrientation.Portrait;
         MiniGameStatus.Instance.SetStatus("Gra o oszczêdzaniu energii", previousScore, result);
         SceneManager.LoadScene("LobbyScene");
     }
 
     public void QuitToLobby()
     {
+        Screen.orientation = ScreenOrientation.Portrait;
         MiniGameStatus.Instance.SetStatus("Gra o oszczêdzaniu energii", 0, false);
         SceneManager.LoadScene("LobbyScene");
     }
@@ -126,6 +128,7 @@ public class EnergySavingDisplay : MonoBehaviour
         {
             Debug.Log("MiniGameScoreExit: ");
             MiniGameStatus.Instance.SetStatus("Gra o oszczêdzaniu energii", previousScore);
+            Screen.orientation = ScreenOrientation.Portrait;
             SceneManager.LoadScene("LobbyScene");
         }
     }

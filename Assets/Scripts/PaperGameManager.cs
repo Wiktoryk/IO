@@ -38,6 +38,10 @@ public class PaperGameManager : MonoBehaviour
     private bool thereIsAnError;
     public bool gameIsFinished;
 
+    private void Awake() {
+        Screen.orientation = ScreenOrientation.Portrait;
+    }
+
     void Start()
     {
         prefabZone.GetWorldCorners(animalZoneCorners);
@@ -145,6 +149,7 @@ public class PaperGameManager : MonoBehaviour
 
     public void ReturnToLobby()
     {
+        Screen.orientation = ScreenOrientation.Portrait;
         SceneManager.LoadScene("LobbyScene");
     }
 }

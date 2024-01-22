@@ -33,6 +33,7 @@ namespace Reuse_Scripts {
                 {
                     Debug.Log(statistics.getScore());
 
+                    Screen.orientation = ScreenOrientation.Portrait;
                     MiniGameStatus.Instance.SetStatus("Ponowne wykorzystanie", statistics.getScore(), true);
                     SceneManager.LoadScene("LobbyScene");
                 }

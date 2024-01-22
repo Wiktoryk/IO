@@ -21,6 +21,7 @@ public class BioGameDisplay : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Screen.orientation = ScreenOrientation.Portrait;
         currentProductDisplay = GameObject.Find("CurrentProductDisplay");
         if(currentProductDisplay == null)
         {
@@ -42,6 +43,7 @@ public class BioGameDisplay : MonoBehaviour
     }
 
     public void ReturnToLobby() {
+        Screen.orientation = ScreenOrientation.Portrait;
         SceneManager.LoadScene("LobbyScene");
     }
     private void EndGame()

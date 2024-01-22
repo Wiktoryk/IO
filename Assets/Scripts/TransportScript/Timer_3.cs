@@ -34,6 +34,7 @@ namespace TransportScript {
                     Debug.Log(statistics.getScore());
 
                     MiniGameStatus.Instance.SetStatus("Transport", statistics.getScore(), true);
+                    Screen.orientation = ScreenOrientation.Portrait;
                     SceneManager.LoadScene("LobbyScene");
                 }
             }

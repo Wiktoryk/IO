@@ -47,7 +47,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   statementsFileName: NPC4
   statements:
-  - Korzystaj z komunikacji miejskiej.
+  - Korzystanie z komunikacji miejskiej ogranicza spaliny wyrzucane w powietrze!
   miniGames:
   - minigameId: 2
     miniGameName: Transport
