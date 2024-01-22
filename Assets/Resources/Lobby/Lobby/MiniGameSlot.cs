@@ -12,7 +12,7 @@ namespace LobbyUI
         [UnityEngine.Scripting.Preserve]
         public new class UxmlFactory : UxmlFactory<MiniGameSlot> { }
 
-        static private string documentPath = "Assets/UI Toolkit/Lobby/MiniGameSlot.uxml";
+        static private string documentPath = "Assets/Resources/Lobby/Lobby/MiniGameSlot.uxml";
 
 
         public delegate void OnPlayButtonClicked(VisualElement sender);
