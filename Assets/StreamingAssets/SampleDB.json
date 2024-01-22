@@ -1,10 +1,14 @@
 {
     "Database": {
-		"todayMinigames": 101,
+		"todayMinigames": {
+			"data": "2024.1.18",
+			"value": "7;4;5;1" 
+		}
         "users": {
             "HXLKH4qBuka6BxmXOzXeFBTYLKr2": {
                 "email": "test@test.com",
                 "nickname": "test",
+				"xp": 200,
                 "friends": {
                     "SDASASJKIUUWaw222jajs": true
                 },
