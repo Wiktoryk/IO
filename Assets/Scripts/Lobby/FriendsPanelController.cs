@@ -3,11 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.Windows;
 
 public class FriendsPanelController : MonoBehaviour
 {
-    public TMP_InputField inputField;
+    public InputField inputField;
 
     [Header("Friend list elements")]
     public ItemFriend ItemFriendPrefab;
@@ -59,13 +60,20 @@ public class FriendsPanelController : MonoBehaviour
 
     public async void SendInvitation()
     {
-        string invitedPlayerId = inputField.text;
+        string invitedPlayer = inputField.text;
+        //UserData udata = (UserData)(await DataManager.Instance.GetUserByEmail(invitedPlayer)).Item2;
+        //Debug.Log("!!!" + udata);
+        //invitedPlayer = udata.ID;
+        Debug.Log("Inviting " + invitedPlayer);
+        await DataManager.Instance.SendFriendRequest(invitedPlayer);
 
-        if (invitedPlayerId != PlayerData.GetInstance().getPlayerID())
+        /*if (invitedPlayer != PlayerData.GetInstance().getPlayerID())
         {
-            Debug.Log("Inviting " + invitedPlayerId);
-            await DataManager.Instance.SendFriendRequest(invitedPlayerId);
-        }
+            UserData udata = (UserData)( await DataManager.Instance.GetUserByEmail(invitedPlayer)).Item2;
+
+            Debug.Log("Inviting " + invitedPlayer);
+            await DataManager.Instance.SendFriendRequest(invitedPlayer);
+        }*/
 
         /*try
         {

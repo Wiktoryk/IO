@@ -73,7 +73,7 @@ public class ProfilePanelController : MonoBehaviour
 
     public void ChangePassword()
     {
-        string newPassword = ChangingPasswordPanel.GetComponentInChildren<TMP_InputField>().text;
+        string newPassword = ChangingPasswordPanel.GetComponentInChildren<InputField>().text;
 
         DataManager.Instance.ChangePassword(newPassword);
 
@@ -83,7 +83,7 @@ public class ProfilePanelController : MonoBehaviour
 
     public async void ChangeNickname()
     {
-        string newNickname = ChangingNicknamePanel.GetComponentInChildren<TMP_InputField>().text;
+        string newNickname = ChangingNicknamePanel.GetComponentInChildren<InputField>().text;
 
         await DataManager.Instance.ChangeNickname(newNickname);
         playerData.setNickname(newNickname);
