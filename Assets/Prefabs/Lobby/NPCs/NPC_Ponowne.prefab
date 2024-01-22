@@ -47,7 +47,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   statementsFileName: NPC4
   statements:
-  - "Recykling jest wa\u017Cny."
+  - "Nie wyrzucaj rzeczy, kt\xF3re nadal mog\u0105 si\u0119 przyda\u0107! Znajd\u017A
+    dla nich inne zastosowanie."
   miniGames:
   - minigameId: 6
     miniGameName: "Re-u\u017Cycie"

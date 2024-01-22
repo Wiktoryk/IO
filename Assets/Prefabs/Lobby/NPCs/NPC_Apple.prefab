@@ -47,7 +47,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   statementsFileName: NPC4
   statements:
-  - "Wa\u017Cne jest aby korzysta\u0107 z produkt\xF3w przyjaznych \u015Brodowisku."
+  - "Wa\u017Cne jest, aby korzysta\u0107 z produkt\xF3w przyjaznych \u015Brodowisku."
   miniGames:
   - minigameId: 0
     miniGameName: BioProducts
