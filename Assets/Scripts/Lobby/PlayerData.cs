@@ -79,9 +79,9 @@ public class PlayerData //: MonoBehaviour
         return instance;
     }
 
-    public bool DownloadPlayerData()
+    public async Task<bool> DownloadPlayerData()
     {
-        var result = DataManager.Instance.GetLoggedUser();
+        var result = await DataManager.Instance.FetchUserData();
         UserData udata = (UserData)result.Item2;
 
         playerID = udata.ID;
@@ -99,7 +99,7 @@ public class PlayerData //: MonoBehaviour
 
     public async Task<bool> UploadPlayerData()
     {
-        var result = DataManager.Instance.GetLoggedUser();
+        var result = await DataManager.Instance.FetchUserData();
         UserData udata = (UserData)result.Item2;
 
         udata.Nickname = nickname;

@@ -10,7 +10,7 @@ public class ChalangesPanelController : MonoBehaviour
 
     async void downloadChalangesData()
     {
-        var result = DataManager.Instance.GetLoggedUser();
+        var result = await DataManager.Instance.FetchUserData();
         UserData user = (UserData)result.Item2;
         List<ChallengeData> challenges = user.ChallengeData;
 

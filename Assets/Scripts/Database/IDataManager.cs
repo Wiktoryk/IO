@@ -14,7 +14,7 @@ public interface IDataManager
     Task<bool> CancelFriendRequest(string friendId);
     Task<bool> SaveScore(int minigameId, float score);
     Task<bool> UpdateUserXP(uint xp);
-    Tuple<ServerSearchError, UserData?> FetchUserData();
+    Task<Tuple<ServerSearchError, UserData?>> FetchUserData();
     Task<bool> SendChallenge(string friendId, ChallengeData challenge);
     Task<bool> CancelChallenge(ChallengeData challenge);
     Task<bool> RespondFriendRequest(string friendId, bool accept);
@@ -22,4 +22,6 @@ public interface IDataManager
     Task<Tuple<ServerSearchError, UserData?>> GetUserByNickname(string nickname);
     Task<Tuple<ServerSearchError, UserData?>> GetUserByEmail(string email);
     Task<Tuple<ServerSearchError, UserData?>> GetUserByID(string id);
+    Task<Tuple<ServerSearchError, UserData?>> GetLoggedUser();
+    Task<List<int>> GetMinigamesIDs();
 }

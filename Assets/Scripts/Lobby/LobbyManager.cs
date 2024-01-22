@@ -90,7 +90,8 @@ public class LobbyManager : MonoBehaviour
             initialized = true;
             //Debug.Log("Init1");
             await DataManager.Instance.Init();
-            if (DataManager.Instance.GetLoggedUser().Item2 == null)
+            var u = await DataManager.Instance.FetchUserData();
+            if (u.Item2 == null)
             {
                 await DataManager.Instance.Login("test@test.com", "123456");
             }
