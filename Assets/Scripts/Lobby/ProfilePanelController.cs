@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -34,9 +35,9 @@ public class ProfilePanelController : MonoBehaviour
     }
 
 
-    public void downloadPlayerData()
+    public async Task downloadPlayerData()
     {
-        if (playerData.DownloadPlayerData())
+        if (await playerData.DownloadPlayerData())
         {
             ID.text = playerData.getPlayerID().ToString();
             NicknameText.text = playerData.getNickname();

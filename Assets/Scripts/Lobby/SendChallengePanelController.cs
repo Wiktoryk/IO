@@ -28,7 +28,7 @@ public class SendChallengePanelController : MonoBehaviour
     {
         Object[] friendList = new Object[3];// = GetFriendList();
 
-        List<string> friends = ((UserData)DataManager.Instance.GetLoggedUser().Item2).Friends;
+        List<string> friends = ((UserData) (await DataManager.Instance.FetchUserData()).Item2).Friends;
 
         foreach (string friendID in friends)
         {

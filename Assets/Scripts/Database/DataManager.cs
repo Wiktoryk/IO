@@ -46,7 +46,7 @@ public class DataManager : IDataManager
 
     public async Task<ServerUserUpdateError> UpdateUser(UserData newUserData)
     {
-        var result = ServerAPI.Instance.GetLoggedUserData();
+        var result = await ServerAPI.Instance.GetLoggedUserData();
 
         if (result.Item1 != ServerSearchError.None)
         {
@@ -101,7 +101,7 @@ public class DataManager : IDataManager
 
     public async Task<bool> CancelFriendRequest(string friendId)
     {
-        // Usuwamy zaproszenie z listy zaprosze� u�ytkownika
+        // Usuwamy zaproszenie z listy wysłanych zaproszeń
         bool deleteUserFriendInvitesResult = await ServerAPI.Instance.DeleteUserFriendInvitesDatabase(friendId);
         if (!deleteUserFriendInvitesResult)
         {
@@ -109,9 +109,9 @@ public class DataManager : IDataManager
             return false;
         }
 
-        // Usuwamy zaproszenie z bazy danych
-        bool deleteFriendRequestResult = await ServerAPI.Instance.DeleteFriendRequestDatabase(friendId);
-        if (!deleteFriendRequestResult)
+        // Usuwamy zaproszenie z bazy danych u użytkownika
+        bool cancelFriendRequestResult = await ServerAPI.Instance.SendFriendRequestDatabase(friendId, false);
+        if (!cancelFriendRequestResult)
         {
             Debug.LogWarning("Failed to delete friend request from database");
             return false;
@@ -122,11 +122,12 @@ public class DataManager : IDataManager
 
     public async Task<bool> SaveScore(int minigameId, float score)
     {
+        var user = await ServerAPI.Instance.GetLoggedUserData();
         // Pobieramy aktualny najlepszy wynik u�ytkownika
         float currentHighscore = 0;
-        if (minigameId < ServerAPI.Instance.GetLoggedUserData().Item2.Value.Highscores.Count)
+        if (minigameId < user.Item2.Value.Highscores.Count)
         {
-            currentHighscore = ServerAPI.Instance.GetLoggedUserData().Item2.Value.Highscores[minigameId];
+            currentHighscore = user.Item2.Value.Highscores[minigameId];
         }
 
         // Je�li nowy wynik jest wy�szy ni� aktualny najlepszy wynik, aktualizujemy go
@@ -144,9 +145,9 @@ public class DataManager : IDataManager
         return await ServerAPI.Instance.UpdateUserXPDatabase(xp);
     }
 
-    public Tuple<ServerSearchError, UserData?> FetchUserData()
+    public async Task<Tuple<ServerSearchError, UserData?>> FetchUserData()
     {
-        var result = ServerAPI.Instance.GetLoggedUserData();
+        var result = await ServerAPI.Instance.GetLoggedUserData();
 
         if (result.Item1 != ServerSearchError.None)
         {
@@ -170,38 +171,38 @@ public class DataManager : IDataManager
     {
         if (accept)
         {
-            // 1. Usu� zaproszenie do znajomych z listy zaprosze� u�ytkownika
-            if (!(await ServerAPI.Instance.DeleteUserFriendInvitesDatabase(friendId)))
-            {
-                Debug.LogWarning("Failed to delete friend invite from user's list");
-                return false;
-            }
-
-            // 2. Dodaj nowego znajomego do listy znajomych u�ytkownika
+            // 1. Dodaj nowego znajomego do listy znajomych u�ytkownika
             if (!(await ServerAPI.Instance.UpdateUserFriendsListDatabase(friendId)))
             {
                 Debug.LogWarning("Failed to add friend to user's list");
                 return false;
             }
 
-            // 3. Usu� wys�ane zaproszenie do znajomych z listy zaprosze� znajomego
+            // 2. Usu� wys�ane zaproszenie do znajomych z listy zaprosze� znajomego
             if (!(await ServerAPI.Instance.DeleteFriendRequestDatabase(friendId)))
             {
-                Debug.LogWarning("Failed to delete friend request from friend's list");
+                Debug.LogWarning("Failed to send friend request to friend's list");
+                return false;
+            }
+			
+			// 3. Wyślij informacje o zaakceptowaniu requesta
+			if (!(await ServerAPI.Instance.SendFriendRequestDatabase(friendId, true)))
+            {
+                Debug.LogWarning("Failed to send friend request to friend's list");
                 return false;
             }
 
         }
         else
         {
-            // Je�li u�ytkownik nie akceptuje zaproszenia, usu� zaproszenie z listy zaprosze� u�ytkownika
-            if (!(await ServerAPI.Instance.DeleteUserFriendInvitesDatabase(friendId)))
+            // 1. Je�li u�ytkownik nie akceptuje zaproszenia, wyslij request o nie udanym zaproszeniu
+            if (!(await ServerAPI.Instance.SendFriendRequestDatabase(friendId, false)))
             {
                 Debug.LogWarning("Failed to delete friend invite from user's list");
                 return false;
             }
 
-            // i usu� wys�ane zaproszenie do znajomych z listy zaprosze� znajomego
+            // 2. usu� wys�ane zaproszenie do znajomych z listy zaprosze� znajomego
             if (!(await ServerAPI.Instance.DeleteFriendRequestDatabase(friendId)))
             {
                 Debug.LogWarning("Failed to delete friend request from friend's list");
@@ -246,9 +247,9 @@ public class DataManager : IDataManager
         return await ServerAPI.Instance.GetUserDataByID(id);
     }
 
-    public Tuple<ServerSearchError, UserData?> GetLoggedUser()
+    public async Task<Tuple<ServerSearchError, UserData?>> GetLoggedUser()
     {
-        return ServerAPI.Instance.GetLoggedUserData();
+        return await ServerAPI.Instance.GetLoggedUserData();
     }
 
     public async Task<List<int>> GetMinigamesIDs()

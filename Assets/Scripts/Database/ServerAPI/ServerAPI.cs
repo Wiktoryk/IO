@@ -686,7 +686,7 @@ public class ServerAPI
     {
         return await Task.Run(async () =>
         {
-            var DBTask = dbReference.Child("users").Child(friendId).Child("challanges").Child(firebaseLoggedUser.UserId + "_" + challenge.MinigameID.ToString()).Child("userId").SetValueAsync(challenge.UserID);
+            var DBTask = dbReference.Child("users").Child(friendId).Child("challanges").Child(firebaseLoggedUser.UserId + "_" + challenge.MinigameID.ToString()).Child("userId").SetValueAsync(firebaseLoggedUser.UserId);
             await DBTask;
 
             if (DBTask.Exception != null)
@@ -744,13 +744,17 @@ public class ServerAPI
         });        
     }
 
-    public Tuple<ServerSearchError, UserData?> GetLoggedUserData()
+    public async Task<Tuple<ServerSearchError, UserData?>> GetLoggedUserData()
     {
-        if (LoggedUser == null)
+        return await Task.Run(async () =>
         {
-            return new(ServerSearchError.UserNotLogged, null);
-        }
-        return new(ServerSearchError.None, LoggedUser.Value);
+            if (LoggedUser == null)
+            {
+                return new(ServerSearchError.UserNotLogged, null);
+            }
+
+            return await GetLoggedUserDatabase();
+        });
     }
 
     public async Task<List<int>> GetMinigamesIDs()
@@ -993,6 +997,38 @@ public class ServerAPI
             }
 
             user.Highscores = highscoresData;
+
+            // Analiza Requestów i Invitów
+
+            Dictionary<string, bool> reqs = user.FriendRequests.Where(_ => true).ToDictionary(i => i.Key, i => i.Value);
+
+            foreach (var req in reqs)
+            {
+                // Zaakceptowal zaproszenie
+                if (req.Value && user.FriendInvites.Contains(req.Key))
+                {
+                    user.FriendRequests.Remove(req.Key);
+                    user.FriendInvites.Remove(req.Key);
+                    user.Friends.Add(req.Key);
+                }
+                // zrezygnował z zaproszenia lub odmówił (w obu przypadkach usuwamy ten request, lecz w drugim usuwamy tez invite)
+                else if (!req.Value)
+                {
+                    user.FriendRequests.Remove(req.Key);
+
+                    if (user.FriendInvites.Contains(req.Key)) 
+                    {
+                        user.FriendInvites.Remove(req.Key);
+                    }
+                }
+            }
+
+            var result = await UpdateUserData(user);
+
+            if (result != ServerUserUpdateError.None)
+            {
+                return new Tuple<ServerSearchError, UserData?>(ServerSearchError.Other, null);
+            }
 
             return new Tuple<ServerSearchError, UserData?>(ServerSearchError.None, user);
         });

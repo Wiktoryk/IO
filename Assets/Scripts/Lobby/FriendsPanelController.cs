@@ -19,7 +19,7 @@ public class FriendsPanelController : MonoBehaviour
 
     async void downloadFriendData()
     {
-        var result = ServerAPI.Instance.GetLoggedUserData();
+        var result = await DataManager.Instance.FetchUserData();
         UserData user = (UserData)result.Item2;
         List<string> friends = user.Friends;
         Dictionary<string, bool> friendsInvitations = user.FriendRequests;
