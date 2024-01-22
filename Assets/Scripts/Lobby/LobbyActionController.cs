@@ -7,6 +7,7 @@ using UnityEngine.UIElements;
 
 public class LobbyActionController : MonoBehaviour
 {
+    private static LobbyActionController instance;
     private Camera cam;
 
     private int maxCharactersNumber = 0;
@@ -37,6 +38,23 @@ public class LobbyActionController : MonoBehaviour
     public ProfilePanelController profilePanelController = null;
     public FriendsPanelController friendsPanelController = null;
     public ChalangesPanelController chalangesPanelController = null;
+
+    void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(this.gameObject);
+        }
+    }
+
+    public static LobbyActionController Instance()
+    {
+        return instance;
+    }
 
     async void Start()
     {

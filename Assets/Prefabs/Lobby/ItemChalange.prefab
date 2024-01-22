@@ -458,6 +458,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3500bac36b4768a4381a75f117ecf5ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ChalangeControllerPrefab: {fileID: 0}
+  ChalangeControllerPrefab: {fileID: 4217660263212596563, guid: e1db38544c3bde1438658983f3d6aa49, type: 3}
   ChalangingPlayerNicknameText: {fileID: 2698945392718703033}
   lobbyActionController: {fileID: 0}

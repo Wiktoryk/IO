@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -52,6 +53,12 @@ public class ProfilePanelController : MonoBehaviour
             setMinigameHighScoreText(PlayerData.MinigameType.WASTES);
             setMinigameHighScoreText(PlayerData.MinigameType.PAPPER_SAVING);
         }
+    }
+
+    public void CopyId()
+    {
+        string id = ID.text;
+        //Clipboard
     }
 
     public void uploadPlayerData()
