@@ -274,7 +274,17 @@ public class ServerAPI
 
                 for (int i = 0; i < high.Count; i++)
                 {
-                    if (high[i] != LoggedUser.Value.Highscores[i])
+                    if (LoggedUser.Value.Highscores.Count > i)
+                    {
+                        if (high[i] != LoggedUser.Value.Highscores[i])
+                        {
+                            if (!await UpdateUserHighscoreDatabase(i, high[i]))
+                            {
+                                return ServerUserUpdateError.HighscoresUpdateFailed;
+                            }
+                        }
+                    }
+                    else
                     {
                         if (!await UpdateUserHighscoreDatabase(i, high[i]))
                         {
