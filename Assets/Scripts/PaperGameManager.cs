@@ -39,11 +39,12 @@ public class PaperGameManager : MonoBehaviour
     public bool gameIsFinished;
 
     private void Awake() {
-        Screen.orientation = ScreenOrientation.Portrait;
+     //   Screen.orientation = ScreenOrientation.Portrait;
+     Screen.orientation = ScreenOrientation.LandscapeLeft;
     }
 
-    void Start()
-    {
+    void Start() {
+
         prefabZone.GetWorldCorners(animalZoneCorners);
         paperZone.GetComponent<RectTransform>().GetWorldCorners(paperCorners);
         finishedGamePanel.SetActive(false);
