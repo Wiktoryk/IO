@@ -94,6 +94,8 @@ public class LobbyManager : MonoBehaviour
             {
                 await DataManager.Instance.Login("test@test.com", "123456");
             }
+
+            //PlayerData.GetInstance().setMinigameHighScore(PlayerData.MinigameType.RECYCLING, 200);
             //Debug.Log("Init3");
             /*Task<ServerLogInError> serverLogInErrorTask = DataManager.Instance.Login("test@test.com", "123456");
             serverLogInErrorTask.Wait();

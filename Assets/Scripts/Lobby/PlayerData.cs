@@ -102,6 +102,12 @@ public class PlayerData //: MonoBehaviour
         var result = DataManager.Instance.GetLoggedUser();
         UserData udata = (UserData)result.Item2;
 
+        await DataManager.Instance.UpdateUserXP(xp);
+        for (int i = 0; i < udata.Highscores.Count; i++)
+        {
+            await DataManager.Instance.SaveScore(i, minigamesHighScores[i]);
+        }
+
         udata.Nickname = nickname;
         udata.XP = xp;
         for (int i = 0; i < udata.Highscores.Count; i++)
@@ -110,12 +116,6 @@ public class PlayerData //: MonoBehaviour
         }
 
         await DataManager.Instance.UpdateUser(udata);
-
-        await DataManager.Instance.UpdateUserXP(xp);
-        for (int i = 0; i < udata.Highscores.Count; i++)
-        {
-            await DataManager.Instance.SaveScore(i, minigamesHighScores[i]);
-        }
 
         return true;
     }
