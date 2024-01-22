@@ -8,6 +8,7 @@ using UnityEngine.Windows;
 
 public class FriendsPanelController : MonoBehaviour
 {
+    private static FriendsPanelController instance;
     public InputField inputField;
 
     [Header("Friend list elements")]
@@ -17,6 +18,23 @@ public class FriendsPanelController : MonoBehaviour
     [Header("Friend list elements")]
     public ItemInvitation ItemInvitationPrefab;
     public GameObject InvitationContent;
+
+    void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(this.gameObject);
+        }
+    }
+
+    public static FriendsPanelController Instance()
+    {
+        return instance;
+    }
 
     async void downloadFriendData()
     {

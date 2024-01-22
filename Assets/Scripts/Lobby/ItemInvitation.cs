@@ -31,6 +31,9 @@ public class ItemInvitation : MonoBehaviour
 
         await DataManager.Instance.RespondFriendRequest(invitingPlayerId, true);
 
+        FriendsPanelController.Instance().show(false);
+        FriendsPanelController.Instance().show(true);
+
         Destroy(gameObject);
     }
 

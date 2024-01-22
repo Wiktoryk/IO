@@ -58,6 +58,7 @@ public class ProfilePanelController : MonoBehaviour
     public void CopyId()
     {
         string id = ID.text;
+        GUIUtility.systemCopyBuffer = id;
         //Clipboard
     }
 
