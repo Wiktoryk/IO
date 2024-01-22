@@ -21,6 +21,8 @@ public class ServerAPI
     private FirebaseUser firebaseLoggedUser = null;
     private UserData? LoggedUser = null;
 
+    private bool analyzeRequests = false;
+
     private static ServerAPI _instance = null;
     public static ServerAPI Instance { 
         get
@@ -157,6 +159,7 @@ public class ServerAPI
 
             firebaseLoggedUser = LoginTask.Result.User;
             LoggedUser = new UserData(firebaseLoggedUser, 0, new List<string>(), new List<float>(), new Dictionary<string, bool>(), new List<string>(), new List<ChallengeData>());
+            analyzeRequests = false;
             Tuple<ServerSearchError, UserData?> user = await GetLoggedUserDatabase();
             if (user.Item1 == ServerSearchError.None)
             {
@@ -164,6 +167,8 @@ public class ServerAPI
             }
             Debug.LogFormat("User signed in successfully: {0} ({1})", LoggedUser.Value.Nickname, LoggedUser.Value.Email);
             Debug.Log("Logged In");
+
+            analyzeRequests = true;
 
             return ServerLogInError.None;
         });
@@ -316,7 +321,10 @@ public class ServerAPI
                         }
                     }
                 }
-                foreach (string friendID in LoggedUser.Value.FriendInvites)
+
+                List<string> invs = LoggedUser.Value.FriendInvites.Where(_ => true).ToList();
+
+                foreach (string friendID in invs)
                 {
                     if (!userData.FriendInvites.Contains(friendID))
                     {
@@ -327,8 +335,9 @@ public class ServerAPI
                     }
                 }
 
+                Dictionary<string, bool> reqs = LoggedUser.Value.FriendRequests.Where(_ => true).ToDictionary(i => i.Key, i => i.Value);
                 // Remove Friend Requests
-                foreach (var request in LoggedUser.Value.FriendRequests)
+                foreach (var request in reqs)
                 {
                     if (!userData.FriendRequests.Contains(request))
                     {
@@ -1008,27 +1017,29 @@ public class ServerAPI
 
             user.Highscores = highscoresData;
 
-            // Analiza Requestów i Invitów
-
-            Dictionary<string, bool> reqs = user.FriendRequests.Where(_ => true).ToDictionary(i => i.Key, i => i.Value);
-
-            foreach (var req in reqs)
+            if (analyzeRequests)
             {
-                // Zaakceptowal zaproszenie
-                if (req.Value && user.FriendInvites.Contains(req.Key))
-                {
-                    user.FriendRequests.Remove(req.Key);
-                    user.FriendInvites.Remove(req.Key);
-                    user.Friends.Add(req.Key);
-                }
-                // zrezygnował z zaproszenia lub odmówił (w obu przypadkach usuwamy ten request, lecz w drugim usuwamy tez invite)
-                else if (!req.Value)
-                {
-                    user.FriendRequests.Remove(req.Key);
+                // Analiza Requestów i Invitów
+                Dictionary<string, bool> reqs = user.FriendRequests.Where(_ => true).ToDictionary(i => i.Key, i => i.Value);
 
-                    if (user.FriendInvites.Contains(req.Key)) 
+                foreach (var req in reqs)
+                {
+                    // Zaakceptowal zaproszenie
+                    if (req.Value && user.FriendInvites.Contains(req.Key))
                     {
+                        user.FriendRequests.Remove(req.Key);
                         user.FriendInvites.Remove(req.Key);
+                        user.Friends.Add(req.Key);
+                    }
+                    // zrezygnował z zaproszenia lub odmówił (w obu przypadkach usuwamy ten request, lecz w drugim usuwamy tez invite)
+                    else if (!req.Value)
+                    {
+                        user.FriendRequests.Remove(req.Key);
+
+                        if (user.FriendInvites.Contains(req.Key))
+                        {
+                            user.FriendInvites.Remove(req.Key);
+                        }
                     }
                 }
             }
@@ -1184,6 +1195,8 @@ public class ServerAPI
 
                 foreach (DataSnapshot childSnapshot in snapshot.Children.Reverse())
                 {
+                    Debug.Log(childSnapshot.Child("email").Value.ToString());
+                    Debug.Log(email);
                     if (childSnapshot.Child("email").Value.ToString().Equals(email))
                     {
                         user.ID = childSnapshot.Key;
