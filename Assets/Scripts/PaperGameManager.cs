@@ -70,7 +70,7 @@ public class PaperGameManager : MonoBehaviour
                 }
                 countDownText.color = Color.clear;
                 timerText.color = Color.white;
-                timerText.text = "Timer: " + timer.ToString("F1");
+                timerText.text = "Czas: " + timer.ToString("F1");
             }
             else
             {
@@ -103,7 +103,7 @@ public class PaperGameManager : MonoBehaviour
                 SpawnInsideTheZone();
             }
             */
-            scoreText.text = "Score: " + math.round(score).ToString();
+            scoreText.text = "Wynik: " + math.round(score).ToString();
         }
         else
         {
