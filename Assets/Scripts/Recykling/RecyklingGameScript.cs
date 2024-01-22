@@ -13,6 +13,7 @@ namespace Recykling {
         public GameObject trashPrefab;
         void Start()
         {
+            Screen.orientation = ScreenOrientation.LandscapeLeft;
             currentTrash = initialNumberOfTrash;
             gameTimer.timeLeft = 90;
             gameTimer.timerOn = true;
@@ -47,6 +48,7 @@ namespace Recykling {
                 gameTimer.timerOn = false;
                 Debug.Log("Points: " + pointsCounter.GetPoints());
 
+                Screen.orientation = ScreenOrientation.Portrait;
                 MiniGameStatus.Instance.SetStatus("Recykling", (int) pointsCounter.GetPoints(), true);
                 SceneManager.LoadScene("LobbyScene");
                 //tutaj bedzie GetResult(pointsCounter.GetPoints())

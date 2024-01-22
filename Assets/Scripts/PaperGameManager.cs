@@ -40,6 +40,7 @@ public class PaperGameManager : MonoBehaviour
 
     void Start()
     {
+        Screen.orientation = ScreenOrientation.LandscapeLeft;
         prefabZone.GetWorldCorners(animalZoneCorners);
         paperZone.GetComponent<RectTransform>().GetWorldCorners(paperCorners);
         finishedGamePanel.SetActive(false);
@@ -145,6 +146,7 @@ public class PaperGameManager : MonoBehaviour
 
     public void ReturnToLobby()
     {
+        Screen.orientation = ScreenOrientation.Portrait;
         SceneManager.LoadScene("LobbyScene");
     }
 }

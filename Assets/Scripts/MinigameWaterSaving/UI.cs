@@ -14,8 +14,10 @@ namespace MinigameWaterSaving
         [SerializeField] private GameObject _endCanvas;
         [SerializeField] private TextMeshProUGUI _endScore;
 
+
         private void Awake()
         {
+            Screen.orientation = ScreenOrientation.Portrait;
             _endCanvas.SetActive(false);
             Singleton = this;
             _timer.Interval = _duration;
@@ -48,6 +50,7 @@ namespace MinigameWaterSaving
         public void ToLobby()
         {
             MiniGameStatus.Instance.SetStatus("Oszczedzanie wody", Bucket.GetResult().Item2, Bucket.GetResult().Item1);
+            Screen.orientation = ScreenOrientation.Portrait;
             SceneManager.LoadScene("LobbyScene");
             Time.timeScale = 1;
         }

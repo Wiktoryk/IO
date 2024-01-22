@@ -11,6 +11,7 @@ namespace TransportScript {
         // Start is called before the first frame update
         void Start()
         {
+            Screen.orientation = ScreenOrientation.LandscapeLeft;
             menu.SetActive(false);
             menuButton.SetActive(true);
         }
@@ -34,6 +35,7 @@ namespace TransportScript {
         }
 
         public void End() {
+            Screen.orientation = ScreenOrientation.Portrait;
             MiniGameStatus.Instance.SetStatus("Transport", 0, false);
             SceneManager.LoadScene("LobbyScene");
 

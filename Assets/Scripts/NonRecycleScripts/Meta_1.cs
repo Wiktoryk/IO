@@ -12,6 +12,7 @@ namespace NonRecycleScripts {
             Destroy(destroyObject);
             Destroy(destroyObject2);
             MiniGameStatus.Instance.SetStatus("non-recycle", statistics.getScore(), true);
+            Screen.orientation = ScreenOrientation.Portrait;
             SceneManager.LoadScene("LobbyScene");
         }
     }

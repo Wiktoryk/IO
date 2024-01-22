@@ -11,6 +11,7 @@ namespace Reuse_Scripts {
         // Start is called before the first frame update
         void Start()
         {
+            Screen.orientation = ScreenOrientation.Portrait;
             menu.SetActive(false);
             menuButton.SetActive(true);
         }
@@ -35,6 +36,7 @@ namespace Reuse_Scripts {
 
         public void End() {
             MiniGameStatus.Instance.SetStatus("Ponowne wykorzystanie", 0, false);
+            Screen.orientation = ScreenOrientation.Portrait;
             SceneManager.LoadScene("LobbyScene");
 
         }
