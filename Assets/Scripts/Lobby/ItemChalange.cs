@@ -13,7 +13,6 @@ public class ItemChalange : MonoBehaviour
 
     public ChalangeController ChalangeControllerPrefab;
     public Text ChalangingPlayerNicknameText;
-    public LobbyActionController lobbyActionController;
 
     public void setChalangeData(int ChalangeId, string ChalangingPlayerId, int MinigameTypeIndex, float ChalangingPlayerScore, string ChalangingPlayerNickname, ChallengeData chData)
     {
@@ -31,12 +30,12 @@ public class ItemChalange : MonoBehaviour
         ChalangeController chalangeController = Instantiate(ChalangeControllerPrefab);
         chalangeController.setChalangeData(chalangeId, chalagingPlayerId, chalangingPlayerScore, minigameTypeId);
 
-        lobbyActionController.GoToMinigame(minigameTypeId);
+        LobbyActionController.Instance().GoToMinigame(minigameTypeId);
     }
 
-    public void DeclineChalange()
+    public async void DeclineChalange()
     {
-        DataManager.Instance.CancelChallenge(challengeData);
+        await DataManager.Instance.CancelChallenge(challengeData);
 
         Destroy(gameObject);
     }
