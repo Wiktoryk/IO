@@ -332,7 +332,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Defeat
+  m_text: "PORA\u017BKA"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: e284b4aa92090184e9fb425fd16d6fcc, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: e284b4aa92090184e9fb425fd16d6fcc, type: 2}
@@ -706,7 +706,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Success
+  m_text: SUKCES
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 9c4c261cffb4145498b4e1ab41baeb6f, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 9c4c261cffb4145498b4e1ab41baeb6f, type: 2}
